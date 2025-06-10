@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Volume2, VolumeX, Send, Pause, Settings } from 'lucide-react';
 import { useAIServices } from '../hooks/useAIServices';
+import VideoGenerationPanel from './VideoGenerationPanel';
 
 interface FormData {
   name: string;
@@ -846,6 +847,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     tavusApiKey: '9acf3d70659349aab5cb638470978303',
     elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d'
   });
+  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
 
   const { 
     isGenerating, 
@@ -881,10 +883,15 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       majorDecisions: '',
       dreamsNotPursued: ''
     });
+    setGeneratedVideoUrl(null);
   };
 
   const handleAPIConfig = (config: { tavusApiKey: string; elevenLabsApiKey: string }) => {
     setApiConfig(config);
+  };
+
+  const handleVideoGenerated = (videoUrl: string) => {
+    setGeneratedVideoUrl(videoUrl);
   };
 
   // Mock data for the simulation results
@@ -1091,8 +1098,16 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         {currentStep === 'results' && (
           <div>
             <TimelineSection events={timelineEvents} />
+            
+            {/* Video Generation Panel */}
+            <VideoGenerationPanel
+              formData={formData}
+              onVideoGenerated={handleVideoGenerated}
+              tavusApiKey={apiConfig.tavusApiKey}
+            />
+            
             <VideoMessage 
-              videoUrl={videoUrl} 
+              videoUrl={generatedVideoUrl || videoUrl} 
               audioUrls={audioUrls}
               isGenerating={isGenerating}
             />
