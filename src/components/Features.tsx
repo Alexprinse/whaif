@@ -6,19 +6,13 @@ interface FeatureProps {
   title: string;
   description: string;
   sectionId: string;
-  onClick: () => void;
 }
 
-interface FeaturesProps {
-  onNavigateToShadowTwin: () => void;
-}
-
-const FeatureCard: React.FC<FeatureProps> = ({ icon, title, description, sectionId, onClick }) => {
+const FeatureCard: React.FC<FeatureProps> = ({ icon, title, description, sectionId }) => {
   return (
     <div 
       id={sectionId}
-      onClick={onClick}
-      className="group relative p-8 rounded-2xl bg-black/20 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-violet-500/10 cursor-pointer"
+      className="group relative p-8 rounded-2xl bg-black/20 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-violet-500/10"
     >
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/10 via-blue-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
@@ -39,28 +33,25 @@ const FeatureCard: React.FC<FeatureProps> = ({ icon, title, description, section
   );
 };
 
-const Features: React.FC<FeaturesProps> = ({ onNavigateToShadowTwin }) => {
+const Features: React.FC = () => {
   const features = [
     {
-      icon: <User className="text-white\" size={32} />,
+      icon: <User className="text-white" size={32} />,
       title: "ShadowTwin",
       description: "Become your alternate self. Explore the paths not taken, the choices unmade, and the person you could have been in parallel dimensions.",
-      sectionId: "shadowtwin",
-      onClick: onNavigateToShadowTwin
+      sectionId: "shadowtwin"
     },
     {
-      icon: <Skull className="text-white" size={32} />,
+      icon: <Skull className="text-white\" size={32} />,
       title: "MicroDeath",
       description: "Witness your death, design your rebirth. Face mortality to understand life. Experience endings to appreciate beginnings.",
-      sectionId: "microdeath",
-      onClick: () => console.log('MicroDeath coming soon')
+      sectionId: "microdeath"
     },
     {
-      icon: <Building2 className="text-white\" size={32} />,
+      icon: <Building2 className="text-white" size={32} />,
       title: "YouInc",
       description: "Turn your life into a startup. Analyze your personal metrics, optimize your growth, and scale your potential like a business.",
-      sectionId: "youinc",
-      onClick: () => console.log('YouInc coming soon')
+      sectionId: "youinc"
     }
   ];
 

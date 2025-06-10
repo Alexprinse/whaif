@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 
-interface NavigationProps {
-  onNavigateToShadowTwin: () => void;
-}
-
-const Navigation: React.FC<NavigationProps> = ({ onNavigateToShadowTwin }) => {
+const Navigation: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -19,11 +15,6 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigateToShadowTwin }) => {
   }, []);
 
   const scrollToSection = (sectionId: string) => {
-    if (sectionId === 'shadowtwin') {
-      onNavigateToShadowTwin();
-      return;
-    }
-    
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
