@@ -42,7 +42,7 @@ const FeatureCard: React.FC<FeatureProps> = ({ icon, title, description, section
 const Features: React.FC<FeaturesProps> = ({ onNavigateToShadowTwin }) => {
   const features = [
     {
-      icon: <User className="text-white" size={32} />,
+      icon: <User className="text-white\" size={32} />,
       title: "ShadowTwin",
       description: "Become your alternate self. Explore the paths not taken, the choices unmade, and the person you could have been in parallel dimensions.",
       sectionId: "shadowtwin",
@@ -56,7 +56,7 @@ const Features: React.FC<FeaturesProps> = ({ onNavigateToShadowTwin }) => {
       onClick: () => console.log('MicroDeath coming soon')
     },
     {
-      icon: <Building2 className="text-white" size={32} />,
+      icon: <Building2 className="text-white\" size={32} />,
       title: "YouInc",
       description: "Turn your life into a startup. Analyze your personal metrics, optimize your growth, and scale your potential like a business.",
       sectionId: "youinc",

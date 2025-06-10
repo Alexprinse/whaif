@@ -108,7 +108,7 @@ const ShadowTwin: React.FC = () => {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'career': return <Briefcase className="text-blue-400" size={20} />;
+      case 'career': return <Briefcase className="text-blue-400\" size={20} />;
       case 'relationship': return <Heart className="text-pink-400" size={20} />;
       case 'achievement': return <Calendar className="text-yellow-400" size={20} />;
       case 'travel': return <Camera className="text-green-400" size={20} />;
