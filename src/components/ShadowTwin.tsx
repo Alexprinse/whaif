@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Volume2, VolumeX, Send, Pause } from 'lucide-react';
 
 interface FormData {
   name: string;
@@ -32,6 +32,268 @@ interface ComparisonData {
   shadowTwin: string;
   icon: React.ReactNode;
 }
+
+interface ChatMessage {
+  id: string;
+  sender: 'user' | 'shadowtwin';
+  message: string;
+  timestamp: Date;
+}
+
+// Audio Context Hook
+const useAmbientAudio = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    // Create a synthetic ambient audio context
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    const createAmbientSound = () => {
+      const oscillator1 = audioContext.createOscillator();
+      const oscillator2 = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator1.type = 'sine';
+      oscillator1.frequency.setValueAtTime(220, audioContext.currentTime);
+      oscillator2.type = 'sine';
+      oscillator2.frequency.setValueAtTime(330, audioContext.currentTime);
+      
+      gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
+      
+      oscillator1.connect(gainNode);
+      oscillator2.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      if (isPlaying) {
+        oscillator1.start();
+        oscillator2.start();
+        
+        // Create subtle frequency modulation
+        setInterval(() => {
+          if (isPlaying) {
+            oscillator1.frequency.setValueAtTime(220 + Math.sin(Date.now() * 0.001) * 10, audioContext.currentTime);
+            oscillator2.frequency.setValueAtTime(330 + Math.cos(Date.now() * 0.0015) * 15, audioContext.currentTime);
+          }
+        }, 100);
+      }
+    };
+
+    if (isPlaying) {
+      createAmbientSound();
+    }
+
+    return () => {
+      if (audioContext.state !== 'closed') {
+        audioContext.close();
+      }
+    };
+  }, [isPlaying]);
+
+  const toggleAudio = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  return { isPlaying, toggleAudio };
+};
+
+// Audio Controls Component
+const AudioControls: React.FC = () => {
+  const { isPlaying, toggleAudio } = useAmbientAudio();
+
+  return (
+    <div className="fixed top-6 right-6 z-50">
+      <button
+        onClick={toggleAudio}
+        className="p-3 bg-black/30 backdrop-blur-md border border-white/10 rounded-full text-white hover:border-violet-400/50 transition-all duration-300 group"
+        title={isPlaying ? 'Mute ambient audio' : 'Play ambient audio'}
+      >
+        {isPlaying ? (
+          <Volume2 size={20} className="text-violet-400" />
+        ) : (
+          <VolumeX size={20} className="text-gray-400 group-hover:text-violet-400" />
+        )}
+      </button>
+    </div>
+  );
+};
+
+// Voice Message Component
+const VoiceMessage: React.FC<{ message: string; isPlaying: boolean; onToggle: () => void }> = ({ 
+  message, 
+  isPlaying, 
+  onToggle 
+}) => {
+  return (
+    <div className="bg-black/20 backdrop-blur-md border border-white/10 rounded-xl p-4 mb-4">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onToggle}
+          className="w-12 h-12 bg-gradient-to-br from-violet-500 to-blue-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
+        >
+          {isPlaying ? (
+            <Pause className="text-white" size={20} />
+          ) : (
+            <Play className="text-white ml-1" size={20} />
+          )}
+        </button>
+        <div className="flex-1">
+          <p className="text-white font-medium mb-1">Voice Message from ShadowTwin</p>
+          <p className="text-gray-300 text-sm">{message}</p>
+          {isPlaying && (
+            <div className="flex items-center gap-1 mt-2">
+              <div className="w-1 h-4 bg-violet-400 rounded animate-pulse" />
+              <div className="w-1 h-6 bg-blue-400 rounded animate-pulse" style={{ animationDelay: '0.1s' }} />
+              <div className="w-1 h-3 bg-cyan-400 rounded animate-pulse" style={{ animationDelay: '0.2s' }} />
+              <div className="w-1 h-5 bg-violet-400 rounded animate-pulse" style={{ animationDelay: '0.3s' }} />
+              <span className="text-violet-400 text-xs ml-2">Playing...</span>
+            </div>
+          )}
+        </div>
+        <div className="text-right">
+          <div className="flex items-center gap-1 text-xs text-gray-400">
+            <Mic size={12} />
+            <span>ElevenLabs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Chat Interface Component
+const ChatInterface: React.FC = () => {
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      sender: 'shadowtwin',
+      message: "Hello! I'm your ShadowTwin - the version of you that chose the creative path. I'm living in Barcelona as a photographer. What would you like to know about this life?",
+      timestamp: new Date()
+    }
+  ]);
+  const [newMessage, setNewMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [playingVoice, setPlayingVoice] = useState<string | null>(null);
+
+  const handleSendMessage = () => {
+    if (!newMessage.trim()) return;
+
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      sender: 'user',
+      message: newMessage,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setNewMessage('');
+    setIsTyping(true);
+
+    // Simulate ShadowTwin response
+    setTimeout(() => {
+      const responses = [
+        "The creative life has been incredible! Every day I wake up excited about the stories I'll capture through my lens.",
+        "Barcelona changed everything for me. The art scene here is so vibrant, and I've connected with amazing artists from around the world.",
+        "Sometimes I wonder about the stability I gave up, but the fulfillment I get from my work makes it all worth it.",
+        "My latest documentary series has opened doors I never imagined. National Geographic wants to feature my work!",
+        "The freedom to travel and document different cultures has been the greatest gift of this path."
+      ];
+
+      const shadowResponse: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        sender: 'shadowtwin',
+        message: responses[Math.floor(Math.random() * responses.length)],
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, shadowResponse]);
+      setIsTyping(false);
+    }, 2000);
+  };
+
+  const toggleVoicePlayback = (messageId: string) => {
+    if (playingVoice === messageId) {
+      setPlayingVoice(null);
+    } else {
+      setPlayingVoice(messageId);
+      // Simulate voice playback duration
+      setTimeout(() => setPlayingVoice(null), 3000);
+    }
+  };
+
+  return (
+    <div className="bg-black/30 backdrop-blur-md border border-white/10 rounded-2xl p-6 max-w-4xl mx-auto">
+      <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <MessageSquare className="text-violet-400" size={24} />
+        Chat with Your ShadowTwin
+      </h3>
+
+      <div className="h-96 overflow-y-auto mb-4 space-y-4 scrollbar-thin scrollbar-thumb-violet-500/20">
+        {messages.map((message) => (
+          <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
+              message.sender === 'user' 
+                ? 'bg-gradient-to-r from-violet-500 to-blue-500 text-white' 
+                : 'bg-black/40 border border-white/10 text-white'
+            }`}>
+              <p className="text-sm">{message.message}</p>
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-xs opacity-70">
+                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+                {message.sender === 'shadowtwin' && (
+                  <button
+                    onClick={() => toggleVoicePlayback(message.id)}
+                    className="ml-2 p-1 rounded-full hover:bg-white/10 transition-colors duration-200"
+                    title="Play voice message"
+                  >
+                    {playingVoice === message.id ? (
+                      <Pause size={12} className="text-violet-400" />
+                    ) : (
+                      <Play size={12} className="text-gray-400 hover:text-violet-400" />
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+        
+        {isTyping && (
+          <div className="flex justify-start">
+            <div className="bg-black/40 border border-white/10 text-white px-4 py-3 rounded-2xl">
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                <span className="text-gray-400 text-sm ml-2">ShadowTwin is typing...</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-3">
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          placeholder="Ask your ShadowTwin anything..."
+          className="flex-1 px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-400/20"
+        />
+        <button
+          onClick={handleSendMessage}
+          disabled={!newMessage.trim()}
+          className="px-6 py-3 bg-gradient-to-r from-violet-500 to-blue-500 rounded-xl text-white font-medium hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
+        >
+          <Send size={16} />
+          Send
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const FormSection: React.FC<{
   formData: FormData;
@@ -212,6 +474,14 @@ const TimelineSection: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
 };
 
 const VideoMessage: React.FC = () => {
+  const [playingVoice, setPlayingVoice] = useState(false);
+
+  const voiceMessages = [
+    "Hey there! It's incredible to see you. I'm living the creative life we always dreamed about.",
+    "Barcelona has been amazing. Every sunrise brings new inspiration for my photography.",
+    "I know you sometimes wonder about the path not taken. I'm here to show you it's beautiful too."
+  ];
+
   return (
     <div className="mb-16">
       <h3 className="text-3xl font-bold text-white mb-8 text-center">
@@ -219,7 +489,7 @@ const VideoMessage: React.FC = () => {
         <span className="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent"> ShadowTwin</span>
       </h3>
       
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto space-y-6">
         <div className="relative aspect-video bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-teal-900/20 rounded-2xl border border-white/10 overflow-hidden group">
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
             <div className="text-center">
@@ -245,6 +515,18 @@ const VideoMessage: React.FC = () => {
           
           {/* Glowing border effect */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/20 via-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
+
+        {/* Voice Messages */}
+        <div className="space-y-4">
+          {voiceMessages.map((message, index) => (
+            <VoiceMessage
+              key={index}
+              message={message}
+              isPlaying={playingVoice}
+              onToggle={() => setPlayingVoice(!playingVoice)}
+            />
+          ))}
         </div>
       </div>
     </div>
@@ -407,14 +689,14 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2018',
       title: 'Moved to Barcelona',
       description: 'Left corporate job to pursue photography in Spain',
-      icon: <MapPin className="text-white\" size={16} />
+      icon: <MapPin className="text-white" size={16} />
     },
     {
       age: 24,
       year: '2020',
       title: 'First Gallery Exhibition',
       description: 'Solo photography exhibition "Urban Souls" featured in Barcelona Modern Art Gallery',
-      icon: <Camera className="text-white\" size={16} />
+      icon: <Camera className="text-white" size={16} />
     },
     {
       age: 26,
@@ -428,7 +710,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2024',
       title: 'International Recognition',
       description: 'Photography featured in National Geographic, established creative studio',
-      icon: <Trophy className="text-white\" size={16} />
+      icon: <Trophy className="text-white" size={16} />
     }
   ];
 
@@ -470,7 +752,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Location',
       realYou: 'Living in hometown',
       shadowTwin: 'Based in Barcelona, travels across Europe',
-      icon: <MapPin className="text-white\" size={20} />
+      icon: <MapPin className="text-white" size={20} />
     },
     {
       category: 'Key Achievements',
@@ -482,12 +764,15 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Lifestyle',
       realYou: 'Routine-focused, security-oriented',
       shadowTwin: 'Adventure-driven, creatively fulfilled, internationally connected',
-      icon: <Heart className="text-white\" size={20} />
+      icon: <Heart className="text-white" size={20} />
     }
   ];
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Audio Controls */}
+      <AudioControls />
+
       {/* Hero Section */}
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-cyan-900/20" />
@@ -544,7 +829,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <div className="text-center py-20">
             <div className="max-w-2xl mx-auto">
               <div className="w-32 h-32 mx-auto mb-8 relative">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin\" style={{ animationDuration: '3s' }}>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin" style={{ animationDuration: '3s' }}>
                   <div className="absolute inset-2 rounded-full bg-black" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -581,6 +866,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <VideoMessage />
             <SocialFeed posts={socialPosts} />
             <ComparisonTable data={comparisonData} />
+            <ChatInterface />
             <ReflectionSection onTryAgain={handleTryAgain} />
           </div>
         )}
