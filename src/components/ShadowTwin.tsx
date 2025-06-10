@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Volume2, VolumeX, Send, Pause } from 'lucide-react';
+import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Volume2, VolumeX, Send, Pause, Settings } from 'lucide-react';
+import { useAIServices } from '../hooks/useAIServices';
 
 interface FormData {
   name: string;
@@ -38,7 +39,87 @@ interface ChatMessage {
   sender: 'user' | 'shadowtwin';
   message: string;
   timestamp: Date;
+  audioUrl?: string;
 }
+
+// API Configuration Component
+const APIConfigModal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (config: { tavusApiKey: string; elevenLabsApiKey: string }) => void;
+}> = ({ isOpen, onClose, onSave }) => {
+  const [tavusApiKey, setTavusApiKey] = useState('');
+  const [elevenLabsApiKey, setElevenLabsApiKey] = useState('');
+
+  if (!isOpen) return null;
+
+  const handleSave = () => {
+    onSave({ tavusApiKey, elevenLabsApiKey });
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-black/80 backdrop-blur-md border border-white/20 rounded-2xl p-8 max-w-md w-full">
+        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <Settings className="text-violet-400" size={24} />
+          AI Service Configuration
+        </h3>
+        
+        <div className="space-y-6">
+          <div>
+            <label className="block text-white font-medium mb-2">
+              Tavus API Key
+            </label>
+            <input
+              type="password"
+              value={tavusApiKey}
+              onChange={(e) => setTavusApiKey(e.target.value)}
+              placeholder="Enter your Tavus API key"
+              className="w-full p-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-violet-400/50 focus:outline-none"
+            />
+            <p className="text-gray-400 text-sm mt-1">For AI video generation</p>
+          </div>
+
+          <div>
+            <label className="block text-white font-medium mb-2">
+              ElevenLabs API Key
+            </label>
+            <input
+              type="password"
+              value={elevenLabsApiKey}
+              onChange={(e) => setElevenLabsApiKey(e.target.value)}
+              placeholder="Enter your ElevenLabs API key"
+              className="w-full p-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none"
+            />
+            <p className="text-gray-400 text-sm mt-1">For AI voice generation</p>
+          </div>
+
+          <div className="bg-violet-500/10 border border-violet-400/20 rounded-lg p-4">
+            <p className="text-violet-300 text-sm">
+              <strong>Demo Mode:</strong> Leave fields empty to use simulated AI responses without actual API calls.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-3 mt-8">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-3 border border-white/20 rounded-lg text-white hover:bg-white/5 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="flex-1 px-4 py-3 bg-gradient-to-r from-violet-500 to-blue-500 rounded-lg text-white font-medium hover:scale-105 transition-transform"
+          >
+            Save Configuration
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Audio Context Hook
 const useAmbientAudio = () => {
@@ -119,20 +200,60 @@ const AudioControls: React.FC = () => {
 };
 
 // Voice Message Component
-const VoiceMessage: React.FC<{ message: string; isPlaying: boolean; onToggle: () => void }> = ({ 
+const VoiceMessage: React.FC<{ 
+  message: string; 
+  audioUrl?: string;
+  isPlaying: boolean; 
+  onToggle: () => void;
+  isGenerating?: boolean;
+}> = ({ 
   message, 
+  audioUrl,
   isPlaying, 
-  onToggle 
+  onToggle,
+  isGenerating = false
 }) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (audioUrl && !audioRef.current) {
+      audioRef.current = new Audio(audioUrl);
+      audioRef.current.addEventListener('ended', onToggle);
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.removeEventListener('ended', onToggle);
+      }
+    };
+  }, [audioUrl, onToggle]);
+
+  const handlePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      onToggle();
+    } else {
+      // Fallback for demo mode
+      onToggle();
+    }
+  };
+
   return (
     <div className="bg-black/20 backdrop-blur-md border border-white/10 rounded-xl p-4 mb-4">
       <div className="flex items-center gap-3">
         <button
-          onClick={onToggle}
-          className="w-12 h-12 bg-gradient-to-br from-violet-500 to-blue-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
+          onClick={handlePlay}
+          disabled={isGenerating}
+          className="w-12 h-12 bg-gradient-to-br from-violet-500 to-blue-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 disabled:opacity-50"
         >
-          {isPlaying ? (
-            <Pause className="text-white\" size={20} />
+          {isGenerating ? (
+            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : isPlaying ? (
+            <Pause className="text-white" size={20} />
           ) : (
             <Play className="text-white ml-1" size={20} />
           )}
@@ -153,7 +274,7 @@ const VoiceMessage: React.FC<{ message: string; isPlaying: boolean; onToggle: ()
         <div className="text-right">
           <div className="flex items-center gap-1 text-xs text-gray-400">
             <Mic size={12} />
-            <span>ElevenLabs</span>
+            <span>{audioUrl ? 'ElevenLabs' : 'Demo'}</span>
           </div>
         </div>
       </div>
@@ -162,20 +283,24 @@ const VoiceMessage: React.FC<{ message: string; isPlaying: boolean; onToggle: ()
 };
 
 // Chat Interface Component
-const ChatInterface: React.FC = () => {
+const ChatInterface: React.FC<{ 
+  formData: FormData;
+  generateVoiceResponse: (message: string, formData: FormData) => Promise<string | null>;
+}> = ({ formData, generateVoiceResponse }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
       sender: 'shadowtwin',
-      message: "Hello! I'm your ShadowTwin - the version of you that chose the creative path. I'm living in Barcelona as a photographer. What would you like to know about this life?",
+      message: `Hello ${formData.name}! I'm your ShadowTwin - the version of you that chose the creative path. I'm living in Barcelona as a photographer. What would you like to know about this life?`,
       timestamp: new Date()
     }
   ]);
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [playingVoice, setPlayingVoice] = useState<string | null>(null);
+  const [generatingVoice, setGeneratingVoice] = useState<string | null>(null);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     const userMessage: ChatMessage = {
@@ -190,7 +315,7 @@ const ChatInterface: React.FC = () => {
     setIsTyping(true);
 
     // Simulate ShadowTwin response
-    setTimeout(() => {
+    setTimeout(async () => {
       const responses = [
         "The creative life has been incredible! Every day I wake up excited about the stories I'll capture through my lens.",
         "Barcelona changed everything for me. The art scene here is so vibrant, and I've connected with amazing artists from around the world.",
@@ -199,15 +324,33 @@ const ChatInterface: React.FC = () => {
         "The freedom to travel and document different cultures has been the greatest gift of this path."
       ];
 
+      const responseText = responses[Math.floor(Math.random() * responses.length)];
+      const messageId = (Date.now() + 1).toString();
+
       const shadowResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: messageId,
         sender: 'shadowtwin',
-        message: responses[Math.floor(Math.random() * responses.length)],
+        message: responseText,
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, shadowResponse]);
       setIsTyping(false);
+
+      // Generate voice for the response
+      setGeneratingVoice(messageId);
+      try {
+        const audioUrl = await generateVoiceResponse(responseText, formData);
+        if (audioUrl) {
+          setMessages(prev => prev.map(msg => 
+            msg.id === messageId ? { ...msg, audioUrl } : msg
+          ));
+        }
+      } catch (error) {
+        console.error('Error generating voice:', error);
+      } finally {
+        setGeneratingVoice(null);
+      }
     }, 2000);
   };
 
@@ -244,10 +387,13 @@ const ChatInterface: React.FC = () => {
                 {message.sender === 'shadowtwin' && (
                   <button
                     onClick={() => toggleVoicePlayback(message.id)}
-                    className="ml-2 p-1 rounded-full hover:bg-white/10 transition-colors duration-200"
+                    disabled={generatingVoice === message.id}
+                    className="ml-2 p-1 rounded-full hover:bg-white/10 transition-colors duration-200 disabled:opacity-50"
                     title="Play voice message"
                   >
-                    {playingVoice === message.id ? (
+                    {generatingVoice === message.id ? (
+                      <div className="w-3 h-3 border border-violet-400/30 border-t-violet-400 rounded-full animate-spin" />
+                    ) : playingVoice === message.id ? (
                       <Pause size={12} className="text-violet-400" />
                     ) : (
                       <Play size={12} className="text-gray-400 hover:text-violet-400" />
@@ -473,8 +619,13 @@ const TimelineSection: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
   );
 };
 
-const VideoMessage: React.FC = () => {
+const VideoMessage: React.FC<{ 
+  videoUrl?: string; 
+  audioUrls: string[];
+  isGenerating: boolean;
+}> = ({ videoUrl, audioUrls, isGenerating }) => {
   const [playingVoice, setPlayingVoice] = useState(false);
+  const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
 
   const voiceMessages = [
     "Hey there! It's incredible to see you. I'm living the creative life we always dreamed about.",
@@ -491,27 +642,48 @@ const VideoMessage: React.FC = () => {
       
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="relative aspect-video bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-teal-900/20 rounded-2xl border border-white/10 overflow-hidden group">
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-cyan-500 rounded-full flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
-                <Play className="text-white ml-1" size={32} />
-              </div>
-              <h4 className="text-white font-bold text-xl mb-3">AI-Generated Video Message</h4>
-              <p className="text-gray-300 mb-6 max-w-md mx-auto">
-                Watch yourself in an alternate reality, speaking about the life you could have lived
-              </p>
-              <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
-                <div className="flex items-center gap-2">
-                  <Video size={16} className="text-violet-400" />
-                  <span>Tavus AI</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mic size={16} className="text-blue-400" />
-                  <span>ElevenLabs Voice</span>
+          {videoUrl ? (
+            <video 
+              src={videoUrl} 
+              controls 
+              className="w-full h-full object-cover"
+              poster="/api/placeholder/800/450"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <div className="text-center">
+                {isGenerating ? (
+                  <>
+                    <div className="w-20 h-20 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin mb-6 mx-auto" />
+                    <h4 className="text-white font-bold text-xl mb-3">Generating AI Video...</h4>
+                    <p className="text-gray-300 mb-6 max-w-md mx-auto">
+                      Creating your personalized ShadowTwin video using Tavus AI
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-cyan-500 rounded-full flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
+                      <Play className="text-white ml-1" size={32} />
+                    </div>
+                    <h4 className="text-white font-bold text-xl mb-3">AI-Generated Video Message</h4>
+                    <p className="text-gray-300 mb-6 max-w-md mx-auto">
+                      Watch yourself in an alternate reality, speaking about the life you could have lived
+                    </p>
+                  </>
+                )}
+                <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <Video size={16} className="text-violet-400" />
+                    <span>Tavus AI</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mic size={16} className="text-blue-400" />
+                    <span>ElevenLabs Voice</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
           
           {/* Glowing border effect */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/20 via-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -523,8 +695,13 @@ const VideoMessage: React.FC = () => {
             <VoiceMessage
               key={index}
               message={message}
-              isPlaying={playingVoice}
-              onToggle={() => setPlayingVoice(!playingVoice)}
+              audioUrl={audioUrls[index]}
+              isPlaying={playingVoice && currentAudioIndex === index}
+              onToggle={() => {
+                setPlayingVoice(!playingVoice);
+                setCurrentAudioIndex(index);
+              }}
+              isGenerating={isGenerating && !audioUrls[index]}
             />
           ))}
         </div>
@@ -664,12 +841,36 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     majorDecisions: '',
     dreamsNotPursued: ''
   });
+  const [showAPIConfig, setShowAPIConfig] = useState(false);
+  const [apiConfig, setApiConfig] = useState<{ tavusApiKey: string; elevenLabsApiKey: string }>({
+    tavusApiKey: '',
+    elevenLabsApiKey: ''
+  });
 
-  const handleSubmit = () => {
+  const { 
+    isGenerating, 
+    videoUrl, 
+    audioUrls, 
+    error, 
+    generateShadowTwinContent, 
+    generateVoiceResponse 
+  } = useAIServices(apiConfig);
+
+  const handleSubmit = async () => {
     setCurrentStep('generating');
-    setTimeout(() => {
-      setCurrentStep('results');
-    }, 4000);
+    
+    try {
+      await generateShadowTwinContent(formData);
+      setTimeout(() => {
+        setCurrentStep('results');
+      }, 2000);
+    } catch (error) {
+      console.error('Error generating ShadowTwin:', error);
+      // Still proceed to results for demo
+      setTimeout(() => {
+        setCurrentStep('results');
+      }, 2000);
+    }
   };
 
   const handleTryAgain = () => {
@@ -682,6 +883,10 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     });
   };
 
+  const handleAPIConfig = (config: { tavusApiKey: string; elevenLabsApiKey: string }) => {
+    setApiConfig(config);
+  };
+
   // Mock data for the simulation results
   const timelineEvents: TimelineEvent[] = [
     {
@@ -689,14 +894,14 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2018',
       title: 'Moved to Barcelona',
       description: 'Left corporate job to pursue photography in Spain',
-      icon: <MapPin className="text-white\" size={16} />
+      icon: <MapPin className="text-white" size={16} />
     },
     {
       age: 24,
       year: '2020',
       title: 'First Gallery Exhibition',
       description: 'Solo photography exhibition "Urban Souls" featured in Barcelona Modern Art Gallery',
-      icon: <Camera className="text-white\" size={16} />
+      icon: <Camera className="text-white" size={16} />
     },
     {
       age: 26,
@@ -710,7 +915,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2024',
       title: 'International Recognition',
       description: 'Photography featured in National Geographic, established creative studio',
-      icon: <Trophy className="text-white\" size={16} />
+      icon: <Trophy className="text-white" size={16} />
     }
   ];
 
@@ -752,7 +957,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Location',
       realYou: 'Living in hometown',
       shadowTwin: 'Based in Barcelona, travels across Europe',
-      icon: <MapPin className="text-white\" size={20} />
+      icon: <MapPin className="text-white" size={20} />
     },
     {
       category: 'Key Achievements',
@@ -764,7 +969,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Lifestyle',
       realYou: 'Routine-focused, security-oriented',
       shadowTwin: 'Adventure-driven, creatively fulfilled, internationally connected',
-      icon: <Heart className="text-white\" size={20} />
+      icon: <Heart className="text-white" size={20} />
     }
   ];
 
@@ -772,6 +977,13 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     <div className="min-h-screen bg-black text-white">
       {/* Audio Controls */}
       <AudioControls />
+
+      {/* API Configuration Modal */}
+      <APIConfigModal
+        isOpen={showAPIConfig}
+        onClose={() => setShowAPIConfig(false)}
+        onSave={handleAPIConfig}
+      />
 
       {/* Hero Section */}
       <section className="py-20 relative overflow-hidden">
@@ -796,22 +1008,38 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex items-center gap-4 mb-8">
-            <button
-              onClick={onBack}
-              className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
-            >
-              <ArrowLeft size={24} />
-            </button>
-            <div>
-              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                Meet Your ShadowTwin
-              </h1>
-              <p className="text-xl md:text-2xl text-gray-300 mt-4">
-                An AI-simulated version of the life you never lived.
-              </p>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={onBack}
+                className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+              >
+                <ArrowLeft size={24} />
+              </button>
+              <div>
+                <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                  Meet Your ShadowTwin
+                </h1>
+                <p className="text-xl md:text-2xl text-gray-300 mt-4">
+                  An AI-simulated version of the life you never lived.
+                </p>
+              </div>
             </div>
+            
+            <button
+              onClick={() => setShowAPIConfig(true)}
+              className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+              title="Configure AI Services"
+            >
+              <Settings size={24} />
+            </button>
           </div>
+
+          {error && (
+            <div className="mb-8 p-4 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
+              <p className="text-yellow-300 text-sm">{error}</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -829,7 +1057,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <div className="text-center py-20">
             <div className="max-w-2xl mx-auto">
               <div className="w-32 h-32 mx-auto mb-8 relative">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin\" style={{ animationDuration: '3s' }}>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin" style={{ animationDuration: '3s' }}>
                   <div className="absolute inset-2 rounded-full bg-black" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -863,10 +1091,17 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         {currentStep === 'results' && (
           <div>
             <TimelineSection events={timelineEvents} />
-            <VideoMessage />
+            <VideoMessage 
+              videoUrl={videoUrl} 
+              audioUrls={audioUrls}
+              isGenerating={isGenerating}
+            />
             <SocialFeed posts={socialPosts} />
             <ComparisonTable data={comparisonData} />
-            <ChatInterface />
+            <ChatInterface 
+              formData={formData}
+              generateVoiceResponse={generateVoiceResponse}
+            />
             <ReflectionSection onTryAgain={handleTryAgain} />
           </div>
         )}
