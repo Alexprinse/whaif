@@ -48,8 +48,8 @@ const APIConfigModal: React.FC<{
   onClose: () => void;
   onSave: (config: { tavusApiKey: string; elevenLabsApiKey: string }) => void;
 }> = ({ isOpen, onClose, onSave }) => {
-  const [tavusApiKey, setTavusApiKey] = useState('');
-  const [elevenLabsApiKey, setElevenLabsApiKey] = useState('');
+  const [tavusApiKey, setTavusApiKey] = useState('9acf3d70659349aab5cb638470978303');
+  const [elevenLabsApiKey, setElevenLabsApiKey] = useState('sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d');
 
   if (!isOpen) return null;
 
@@ -95,9 +95,9 @@ const APIConfigModal: React.FC<{
             <p className="text-gray-400 text-sm mt-1">For AI voice generation</p>
           </div>
 
-          <div className="bg-violet-500/10 border border-violet-400/20 rounded-lg p-4">
-            <p className="text-violet-300 text-sm">
-              <strong>Demo Mode:</strong> Leave fields empty to use simulated AI responses without actual API calls.
+          <div className="bg-green-500/10 border border-green-400/20 rounded-lg p-4">
+            <p className="text-green-300 text-sm">
+              <strong>✅ API Keys Configured:</strong> Your Tavus and ElevenLabs keys are pre-loaded and ready to use!
             </p>
           </div>
         </div>
@@ -253,7 +253,7 @@ const VoiceMessage: React.FC<{
           {isGenerating ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : isPlaying ? (
-            <Pause className="text-white\" size={20} />
+            <Pause className="text-white" size={20} />
           ) : (
             <Play className="text-white ml-1" size={20} />
           )}
@@ -843,8 +843,8 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   });
   const [showAPIConfig, setShowAPIConfig] = useState(false);
   const [apiConfig, setApiConfig] = useState<{ tavusApiKey: string; elevenLabsApiKey: string }>({
-    tavusApiKey: '',
-    elevenLabsApiKey: ''
+    tavusApiKey: '9acf3d70659349aab5cb638470978303',
+    elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d'
   });
 
   const { 
@@ -894,14 +894,14 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2018',
       title: 'Moved to Barcelona',
       description: 'Left corporate job to pursue photography in Spain',
-      icon: <MapPin className="text-white\" size={16} />
+      icon: <MapPin className="text-white" size={16} />
     },
     {
       age: 24,
       year: '2020',
       title: 'First Gallery Exhibition',
       description: 'Solo photography exhibition "Urban Souls" featured in Barcelona Modern Art Gallery',
-      icon: <Camera className="text-white\" size={16} />
+      icon: <Camera className="text-white" size={16} />
     },
     {
       age: 26,
@@ -915,7 +915,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2024',
       title: 'International Recognition',
       description: 'Photography featured in National Geographic, established creative studio',
-      icon: <Trophy className="text-white\" size={16} />
+      icon: <Trophy className="text-white" size={16} />
     }
   ];
 
@@ -957,7 +957,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Location',
       realYou: 'Living in hometown',
       shadowTwin: 'Based in Barcelona, travels across Europe',
-      icon: <MapPin className="text-white\" size={20} />
+      icon: <MapPin className="text-white" size={20} />
     },
     {
       category: 'Key Achievements',
@@ -969,7 +969,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Lifestyle',
       realYou: 'Routine-focused, security-oriented',
       shadowTwin: 'Adventure-driven, creatively fulfilled, internationally connected',
-      icon: <Heart className="text-white\" size={20} />
+      icon: <Heart className="text-white" size={20} />
     }
   ];
 
@@ -1057,7 +1057,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <div className="text-center py-20">
             <div className="max-w-2xl mx-auto">
               <div className="w-32 h-32 mx-auto mb-8 relative">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin\" style={{ animationDuration: '3s' }}>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin" style={{ animationDuration: '3s' }}>
                   <div className="absolute inset-2 rounded-full bg-black" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
