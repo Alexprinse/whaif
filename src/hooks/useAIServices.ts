@@ -71,7 +71,7 @@ export const useAIServices = (config: AIServicesConfig) => {
         const videoResponse = await tavusService.createVideo({
           replica_id: replica.replica_id,
           script: script,
-          background: 'modern_office', // or 'creative_studio', 'outdoor_cafe'
+          background: 'creative_studio', // Changed from 'modern_office' to 'creative_studio'
           properties: {
             voice_settings: {
               stability: 0.6,
