@@ -253,7 +253,7 @@ const VoiceMessage: React.FC<{
           {isGenerating ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : isPlaying ? (
-            <Pause className="text-white" size={20} />
+            <Pause className="text-white\" size={20} />
           ) : (
             <Play className="text-white ml-1" size={20} />
           )}
@@ -894,14 +894,14 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2018',
       title: 'Moved to Barcelona',
       description: 'Left corporate job to pursue photography in Spain',
-      icon: <MapPin className="text-white" size={16} />
+      icon: <MapPin className="text-white\" size={16} />
     },
     {
       age: 24,
       year: '2020',
       title: 'First Gallery Exhibition',
       description: 'Solo photography exhibition "Urban Souls" featured in Barcelona Modern Art Gallery',
-      icon: <Camera className="text-white" size={16} />
+      icon: <Camera className="text-white\" size={16} />
     },
     {
       age: 26,
@@ -915,7 +915,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2024',
       title: 'International Recognition',
       description: 'Photography featured in National Geographic, established creative studio',
-      icon: <Trophy className="text-white" size={16} />
+      icon: <Trophy className="text-white\" size={16} />
     }
   ];
 
@@ -957,7 +957,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Location',
       realYou: 'Living in hometown',
       shadowTwin: 'Based in Barcelona, travels across Europe',
-      icon: <MapPin className="text-white" size={20} />
+      icon: <MapPin className="text-white\" size={20} />
     },
     {
       category: 'Key Achievements',
@@ -969,7 +969,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Lifestyle',
       realYou: 'Routine-focused, security-oriented',
       shadowTwin: 'Adventure-driven, creatively fulfilled, internationally connected',
-      icon: <Heart className="text-white" size={20} />
+      icon: <Heart className="text-white\" size={20} />
     }
   ];
 
@@ -1057,7 +1057,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <div className="text-center py-20">
             <div className="max-w-2xl mx-auto">
               <div className="w-32 h-32 mx-auto mb-8 relative">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin" style={{ animationDuration: '3s' }}>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin\" style={{ animationDuration: '3s' }}>
                   <div className="absolute inset-2 rounded-full bg-black" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
