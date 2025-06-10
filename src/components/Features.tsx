@@ -6,13 +6,27 @@ interface FeatureProps {
   title: string;
   description: string;
   sectionId: string;
+  onNavigate: (view: string) => void;
 }
 
-const FeatureCard: React.FC<FeatureProps> = ({ icon, title, description, sectionId }) => {
+const FeatureCard: React.FC<FeatureProps> = ({ icon, title, description, sectionId, onNavigate }) => {
+  const handleClick = () => {
+    if (sectionId === 'shadowtwin') {
+      onNavigate('shadowtwin');
+    } else {
+      // For other features, scroll to section (placeholder for now)
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <div 
       id={sectionId}
-      className="group relative p-8 rounded-2xl bg-black/20 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-violet-500/10"
+      onClick={handleClick}
+      className="group relative p-8 rounded-2xl bg-black/20 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-violet-500/10 cursor-pointer"
     >
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/10 via-blue-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
@@ -33,7 +47,11 @@ const FeatureCard: React.FC<FeatureProps> = ({ icon, title, description, section
   );
 };
 
-const Features: React.FC = () => {
+interface FeaturesProps {
+  onNavigate: (view: string) => void;
+}
+
+const Features: React.FC<FeaturesProps> = ({ onNavigate }) => {
   const features = [
     {
       icon: <User className="text-white" size={32} />,
@@ -42,7 +60,7 @@ const Features: React.FC = () => {
       sectionId: "shadowtwin"
     },
     {
-      icon: <Skull className="text-white\" size={32} />,
+      icon: <Skull className="text-white" size={32} />,
       title: "MicroDeath",
       description: "Witness your death, design your rebirth. Face mortality to understand life. Experience endings to appreciate beginnings.",
       sectionId: "microdeath"
@@ -73,7 +91,7 @@ const Features: React.FC = () => {
 
         <div className="grid md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <FeatureCard key={index} {...feature} />
+            <FeatureCard key={index} {...feature} onNavigate={onNavigate} />
           ))}
         </div>
       </div>

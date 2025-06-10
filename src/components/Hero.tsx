@@ -1,7 +1,11 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 
-const Hero: React.FC = () => {
+interface HeroProps {
+  onNavigate: (view: string) => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background gradient */}
@@ -42,7 +46,10 @@ const Hero: React.FC = () => {
           </p>
         </div>
 
-        <button className="group relative px-8 py-4 bg-gradient-to-r from-violet-600 to-blue-600 rounded-full text-white font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-violet-500/25 animate-fadeInUp animation-delay-400">
+        <button 
+          onClick={() => onNavigate('shadowtwin')}
+          className="group relative px-8 py-4 bg-gradient-to-r from-violet-600 to-blue-600 rounded-full text-white font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-violet-500/25 animate-fadeInUp animation-delay-400"
+        >
           <span className="relative z-10 flex items-center gap-2">
             <Sparkles size={20} />
             Enter the Simulation

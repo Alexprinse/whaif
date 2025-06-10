@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 
-const Navigation: React.FC = () => {
+interface NavigationProps {
+  onNavigate: (view: string) => void;
+}
+
+const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -22,6 +26,15 @@ const Navigation: React.FC = () => {
     }
   };
 
+  const handleNavigation = (view: string) => {
+    if (view === 'shadowtwin') {
+      onNavigate('shadowtwin');
+    } else {
+      scrollToSection(view);
+    }
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
@@ -37,19 +50,19 @@ const Navigation: React.FC = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <button 
-              onClick={() => scrollToSection('shadowtwin')}
+              onClick={() => handleNavigation('shadowtwin')}
               className="text-gray-300 hover:text-white transition-colors duration-200 hover:glow"
             >
               ShadowTwin
             </button>
             <button 
-              onClick={() => scrollToSection('microdeath')}
+              onClick={() => handleNavigation('microdeath')}
               className="text-gray-300 hover:text-white transition-colors duration-200 hover:glow"
             >
               MicroDeath
             </button>
             <button 
-              onClick={() => scrollToSection('youinc')}
+              onClick={() => handleNavigation('youinc')}
               className="text-gray-300 hover:text-white transition-colors duration-200 hover:glow"
             >
               YouInc
@@ -69,19 +82,19 @@ const Navigation: React.FC = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 py-4 space-y-4 bg-black/40 backdrop-blur-md rounded-lg border border-white/10">
             <button 
-              onClick={() => scrollToSection('shadowtwin')}
+              onClick={() => handleNavigation('shadowtwin')}
               className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white transition-colors duration-200"
             >
               ShadowTwin
             </button>
             <button 
-              onClick={() => scrollToSection('microdeath')}
+              onClick={() => handleNavigation('microdeath')}
               className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white transition-colors duration-200"
             >
               MicroDeath
             </button>
             <button 
-              onClick={() => scrollToSection('youinc')}
+              onClick={() => handleNavigation('youinc')}
               className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white transition-colors duration-200"
             >
               YouInc
