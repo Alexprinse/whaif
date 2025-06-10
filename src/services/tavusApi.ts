@@ -68,18 +68,25 @@ export class TavusService {
     }
   }
 
-  async createReplica(name: string, videoFile: File): Promise<{ replica_id: string }> {
+  async createReplica(name: string, videoUrl: string, audioUrl?: string): Promise<{ replica_id: string }> {
     try {
-      const formData = new FormData();
-      formData.append('train_video_file', videoFile);
-      formData.append('replica_name', name);
+      const payload: any = {
+        replica_name: name,
+        video_url: videoUrl,
+      };
+
+      // Add audio_url if provided
+      if (audioUrl) {
+        payload.audio_url = audioUrl;
+      }
 
       const response = await fetch(`${this.baseUrl}/replicas`, {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'x-api-key': this.apiKey,
         },
-        body: formData,
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {

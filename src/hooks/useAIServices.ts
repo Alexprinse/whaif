@@ -58,40 +58,45 @@ export const useAIServices = (config: AIServicesConfig) => {
 
       // Step 2: Generate video (if user uploaded selfie)
       if (formData.selfie) {
-        // First create a replica from the selfie
-        const replica = await tavusService.createReplica(
-          `${formData.name}_shadowtwin`,
-          formData.selfie
-        );
-
+        // For now, we'll skip video generation since it requires publicly accessible URLs
+        // This would need to be implemented with a file upload service
+        setError('Video generation requires uploading files to a public storage service. Audio generation completed successfully.');
+        
+        // Placeholder implementation - would need actual file upload service
+        // const videoUrl = await uploadFileToStorage(formData.selfie);
+        // const replica = await tavusService.createReplica(
+        //   `${formData.name}_shadowtwin`,
+        //   videoUrl
+        // );
+        
         // Generate script for video
-        const script = tavusService.generateShadowTwinScript(formData);
-
+        // const script = tavusService.generateShadowTwinScript(formData);
+        
         // Create video with the replica
-        const videoResponse = await tavusService.createVideo({
-          replica_id: replica.replica_id,
-          script: script,
-          background: 'creative_studio', // Changed from 'modern_office' to 'creative_studio'
-          properties: {
-            voice_settings: {
-              stability: 0.6,
-              similarity_boost: 0.8,
-            },
-          },
-        });
+        // const videoResponse = await tavusService.createVideo({
+        //   replica_id: replica.replica_id,
+        //   script: script,
+        //   background: 'creative_studio',
+        //   properties: {
+        //     voice_settings: {
+        //       stability: 0.6,
+        //       similarity_boost: 0.8,
+        //     },
+        //   },
+        // });
 
         // Poll for video completion
-        let videoStatus = videoResponse;
-        while (videoStatus.status === 'queued' || videoStatus.status === 'generating') {
-          await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
-          videoStatus = await tavusService.getVideoStatus(videoResponse.video_id);
-        }
+        // let videoStatus = videoResponse;
+        // while (videoStatus.status === 'queued' || videoStatus.status === 'generating') {
+        //   await new Promise(resolve => setTimeout(resolve, 5000));
+        //   videoStatus = await tavusService.getVideoStatus(videoResponse.video_id);
+        // }
 
-        if (videoStatus.status === 'completed' && videoStatus.video_url) {
-          setVideoUrl(videoStatus.video_url);
-        } else {
-          throw new Error('Video generation failed');
-        }
+        // if (videoStatus.status === 'completed' && videoStatus.video_url) {
+        //   setVideoUrl(videoStatus.video_url);
+        // } else {
+        //   throw new Error('Video generation failed');
+        // }
       }
 
     } catch (err) {
