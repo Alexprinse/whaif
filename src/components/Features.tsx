@@ -54,7 +54,7 @@ interface FeaturesProps {
 const Features: React.FC<FeaturesProps> = ({ onNavigate }) => {
   const features = [
     {
-      icon: <User className="text-white" size={32} />,
+      icon: <User className="text-white\" size={32} />,
       title: "ShadowTwin",
       description: "Become your alternate self. Explore the paths not taken, the choices unmade, and the person you could have been in parallel dimensions.",
       sectionId: "shadowtwin"
@@ -66,7 +66,7 @@ const Features: React.FC<FeaturesProps> = ({ onNavigate }) => {
       sectionId: "microdeath"
     },
     {
-      icon: <Building2 className="text-white" size={32} />,
+      icon: <Building2 className="text-white\" size={32} />,
       title: "YouInc",
       description: "Turn your life into a startup. Analyze your personal metrics, optimize your growth, and scale your potential like a business.",
       sectionId: "youinc"

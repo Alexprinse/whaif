@@ -176,7 +176,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
   const uploadSteps = [
     {
-      icon: <Upload className="text-white" size={20} />,
+      icon: <Upload className="text-white\" size={20} />,
       title: "Life Biography",
       description: "Tell us about your background, education, and key life decisions",
       placeholder: "I grew up in a small town, studied computer science, chose stability over my dream of becoming an artist..."
@@ -188,7 +188,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       placeholder: "I almost moved to Paris to study art, considered starting my own business, thought about traveling the world..."
     },
     {
-      icon: <Sparkles className="text-white" size={20} />,
+      icon: <Sparkles className="text-white\" size={20} />,
       title: "Dreams & Aspirations",
       description: "What did you want to become? What life did you envision?",
       placeholder: "I wanted to be a successful artist, live in a creative community, have my work displayed in galleries..."
