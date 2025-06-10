@@ -256,7 +256,7 @@ const VoiceMessage: React.FC<{
           ) : isPlaying ? (
             <Pause className="text-white\" size={20} />
           ) : (
-            <Play className="text-white ml-1" size={20} />
+            <Play className="text-white ml-1\" size={20} />
           )}
         </button>
         <div className="flex-1">
@@ -915,7 +915,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2022',
       title: 'Travel Documentary Series',
       description: 'Created award-winning documentary series about street artists across Europe',
-      icon: <Video className="text-white" size={16} />
+      icon: <Video className="text-white\" size={16} />
     },
     {
       age: 28,
@@ -958,7 +958,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Career',
       realYou: 'Software Engineer at tech company',
       shadowTwin: 'Award-winning photographer and documentary filmmaker',
-      icon: <Briefcase className="text-white" size={20} />
+      icon: <Briefcase className="text-white\" size={20} />
     },
     {
       category: 'Location',
@@ -970,7 +970,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Key Achievements',
       realYou: 'Stable income, good work-life balance',
       shadowTwin: 'National Geographic feature, gallery exhibitions, documentary awards',
-      icon: <Trophy className="text-white" size={20} />
+      icon: <Trophy className="text-white\" size={20} />
     },
     {
       category: 'Lifestyle',

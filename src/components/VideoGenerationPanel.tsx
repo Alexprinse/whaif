@@ -250,11 +250,11 @@ const VideoGenerationPanel: React.FC<VideoGenerationPanelProps> = ({
 
   const getStepIcon = (step: GenerationStep, index: number) => {
     if (step.status === 'completed') {
-      return <CheckCircle className="text-green-400" size={20} />;
+      return <CheckCircle className="text-green-400\" size={20} />;
     } else if (step.status === 'error') {
       return <AlertCircle className="text-red-400" size={20} />;
     } else if (step.status === 'processing') {
-      return <Loader2 className="text-violet-400 animate-spin" size={20} />;
+      return <Loader2 className="text-violet-400 animate-spin\" size={20} />;
     } else if (index === currentStep && isGenerating) {
       return <Clock className="text-yellow-400" size={20} />;
     } else {
