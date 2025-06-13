@@ -989,7 +989,7 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
     tavusApiKey: '9acf3d70659349aab5cb638470978303',
     elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d'
   });
-  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
+  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | undefined>(undefined);
 
   const { 
     isGenerating, 
@@ -1029,7 +1029,7 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
       majorDecisions: '',
       dreamsNotPursued: ''
     });
-    setGeneratedVideoUrl(null);
+    setGeneratedVideoUrl(undefined);
   };
 
   const handleAPIConfig = (config: { tavusApiKey: string; elevenLabsApiKey: string }) => {

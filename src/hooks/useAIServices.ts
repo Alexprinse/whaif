@@ -1,14 +1,7 @@
 import { useState, useCallback } from 'react';
 import { TavusService } from '../services/tavusApi';
 import { ElevenLabsService } from '../services/elevenLabsApi';
-
-interface FormData {
-  name: string;
-  currentBio: string;
-  majorDecisions: string;
-  dreamsNotPursued: string;
-  selfie?: File;
-}
+import { FormData } from '../types';
 
 interface AIServicesConfig {
   tavusApiKey?: string;
