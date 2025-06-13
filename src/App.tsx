@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -27,9 +28,11 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      {renderView()}
-    </div>
+    <ThemeProvider>
+      <div className="min-h-screen bg-theme-primary text-theme-primary overflow-x-hidden transition-colors duration-300">
+        {renderView()}
+      </div>
+    </ThemeProvider>
   );
 }
 

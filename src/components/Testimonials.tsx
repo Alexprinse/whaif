@@ -49,21 +49,21 @@ const Testimonials: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-20 bg-gradient-to-b from-transparent to-slate-900/50">
+    <section className="py-20 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-transparent dark:to-slate-900/50">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-400/20 rounded-full text-yellow-400 text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-400/20 rounded-full text-yellow-600 dark:text-yellow-400 text-sm font-medium mb-6">
             <Star size={16} />
             Client Success Stories
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             Trusted by
             <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"> Professionals</span>
           </h2>
           
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             See how our AI simulations have helped thousands of professionals gain clarity and make better life decisions.
           </p>
         </div>
@@ -80,12 +80,12 @@ const Testimonials: React.FC = () => {
                     : 'opacity-0 transform translate-x-full absolute inset-0'
                 }`}
               >
-                <div className="bg-black/30 backdrop-blur-md border border-white/10 rounded-2xl p-8 md:p-12">
+                <div className="bg-white/70 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl p-8 md:p-12">
                   <div className="flex flex-col md:flex-row items-start gap-8">
                     {/* Quote content */}
                     <div className="flex-1">
-                      <Quote className="text-blue-400 mb-6" size={32} />
-                      <blockquote className="text-xl md:text-2xl text-white font-light leading-relaxed mb-8">
+                      <Quote className="text-blue-600 dark:text-blue-400 mb-6" size={32} />
+                      <blockquote className="text-xl md:text-2xl text-gray-900 dark:text-white font-light leading-relaxed mb-8">
                         "{testimonial.text}"
                       </blockquote>
                       
@@ -99,15 +99,15 @@ const Testimonials: React.FC = () => {
                     
                     {/* Author info */}
                     <div className="flex items-center gap-4 md:flex-col md:items-center md:text-center">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500/20 to-violet-500/20 border border-white/10 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-violet-100 dark:from-blue-500/20 dark:to-violet-500/20 border border-gray-200 dark:border-white/10 flex items-center justify-center">
                         {testimonial.avatar}
                       </div>
                       <div>
-                        <cite className="text-white font-semibold text-lg not-italic">
+                        <cite className="text-gray-900 dark:text-white font-semibold text-lg not-italic">
                           {testimonial.author}
                         </cite>
-                        <p className="text-gray-400 text-sm">{testimonial.role}</p>
-                        <p className="text-gray-500 text-xs">{testimonial.company}</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">{testimonial.role}</p>
+                        <p className="text-gray-500 dark:text-gray-500 text-xs">{testimonial.company}</p>
                       </div>
                     </div>
                   </div>
@@ -125,30 +125,30 @@ const Testimonials: React.FC = () => {
               onClick={() => setCurrentIndex(index)}
               className={`transition-all duration-300 ${
                 index === currentIndex 
-                  ? 'w-8 h-2 bg-blue-400 rounded-full' 
-                  : 'w-2 h-2 bg-gray-600 rounded-full hover:bg-gray-500'
+                  ? 'w-8 h-2 bg-blue-600 dark:bg-blue-400 rounded-full' 
+                  : 'w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full hover:bg-gray-500 dark:hover:bg-gray-500'
               }`}
             />
           ))}
         </div>
 
         {/* Stats section */}
-        <div className="grid md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-white/10">
+        <div className="grid md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-gray-300 dark:border-white/10">
           <div className="text-center">
-            <div className="text-3xl font-bold text-white mb-2">4.9/5</div>
-            <div className="text-gray-400 text-sm">Average Rating</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">4.9/5</div>
+            <div className="text-gray-600 dark:text-gray-400 text-sm">Average Rating</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-white mb-2">10,000+</div>
-            <div className="text-gray-400 text-sm">Simulations Completed</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">10,000+</div>
+            <div className="text-gray-600 dark:text-gray-400 text-sm">Simulations Completed</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-white mb-2">95%</div>
-            <div className="text-gray-400 text-sm">Would Recommend</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">95%</div>
+            <div className="text-gray-600 dark:text-gray-400 text-sm">Would Recommend</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-white mb-2">24/7</div>
-            <div className="text-gray-400 text-sm">Support Available</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">24/7</div>
+            <div className="text-gray-600 dark:text-gray-400 text-sm">Support Available</div>
           </div>
         </div>
       </div>
