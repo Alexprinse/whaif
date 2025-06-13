@@ -1257,11 +1257,6 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
               tavusApiKey={apiConfig.tavusApiKey}
             />
             
-            <VideoMessage 
-              videoUrl={generatedVideoUrl || videoUrl} 
-              audioUrls={audioUrls}
-              isGenerating={isGenerating}
-            />
             <SocialFeed posts={socialPosts} />
             <ComparisonTable data={comparisonData} />
             <ChatInterface 
