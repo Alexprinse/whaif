@@ -971,124 +971,172 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
         onSave={handleAPIConfig}
       />
 
-      {/* Enhanced Hero Section */}
-      <section className="py-20 relative overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-cyan-900/20" />
-          {/* Floating particles */}
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full bg-gradient-to-r from-violet-400/20 to-cyan-400/20 animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 8 + 4}px`,
-                height: `${Math.random() * 8 + 4}px`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${Math.random() * 6 + 4}s`
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex items-center justify-between mb-12">
-            <div className="flex items-center gap-6">
-              <button
-                onClick={onBack}
-                className="p-4 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 text-gray-300 hover:text-white hover:border-violet-400/50 transition-all duration-300 hover:scale-110"
-              >
-                <ArrowLeft size={24} />
-              </button>
-              <div>
-                <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
-                  ShadowTwin
-                </h1>
-                <p className="text-xl md:text-2xl text-gray-300">
-                  Meet the version of you that chose a different path
-                </p>
-              </div>
-            </div>
-            
-            <button
-              onClick={() => setShowAPIConfig(true)}
-              className="p-4 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 text-gray-300 hover:text-white hover:border-cyan-400/50 transition-all duration-300 hover:scale-110"
-              title="Configure AI Services"
-            >
-              <Settings size={24} />
-            </button>
+      {/* Hero Section moved to top */}
+      {currentStep === 'hero' && (
+        <section className="py-20 relative overflow-hidden">
+          {/* Animated background */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-cyan-900/20" />
+            {/* Floating particles */}
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute rounded-full bg-gradient-to-r from-violet-400/20 to-cyan-400/20 animate-float"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  width: `${Math.random() * 8 + 4}px`,
+                  height: `${Math.random() * 8 + 4}px`,
+                  animationDelay: `${Math.random() * 5}s`,
+                  animationDuration: `${Math.random() * 6 + 4}s`
+                }}
+              />
+            ))}
           </div>
 
-          {error && (
-            <div className="mb-8 p-6 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-400/30 rounded-2xl">
-              <p className="text-yellow-300">{error}</p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 pb-20">
-        {currentStep === 'hero' && (
-          <HeroSection onStartJourney={() => setCurrentStep('form')} />
-        )}
-
-        {currentStep === 'form' && (
-          <FormSection
-            formData={formData}
-            setFormData={setFormData}
-            onSubmit={handleSubmit}
-          />
-        )}
-
-        {currentStep === 'generating' && renderGenerating()}
-
-        {currentStep === 'results' && (
-          <div className="space-y-20">
-            <LifeMetricsSection metrics={lifeMetrics} />
-            <TimelineSection events={timelineEvents} />
-            
-            {/* Video Generation Panel */}
-            <VideoGenerationPanel
-              formData={formData}
-              onVideoGenerated={() => {}}
-              tavusApiKey={apiConfig.tavusApiKey}
-            />
-            
-            {/* Action Buttons */}
-            <div className="text-center">
-              <div className="bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
-                <h3 className="text-3xl font-bold text-white mb-6">
-                  Ready to Explore
-                  <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> More?</span>
-                </h3>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <button
-                    onClick={handleTryAgain}
-                    className="px-8 py-4 bg-gradient-to-r from-violet-500 to-blue-500 rounded-2xl text-white font-semibold hover:scale-105 transition-all duration-300 flex items-center gap-3 justify-center shadow-lg shadow-violet-500/25"
-                  >
-                    <RotateCcw size={20} />
-                    Create Another Twin
-                  </button>
-                  
-                  <button className="px-8 py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/5 transition-all duration-300 flex items-center gap-3 justify-center">
-                    <Download size={20} />
-                    Download Journey
-                  </button>
-                  
-                  <button className="px-8 py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/5 transition-all duration-300 flex items-center gap-3 justify-center">
-                    <Share2 size={20} />
-                    Share Discovery
-                  </button>
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="flex items-center justify-between mb-12">
+              <div className="flex items-center gap-6">
+                <button
+                  onClick={onBack}
+                  className="p-4 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 text-gray-300 hover:text-white hover:border-violet-400/50 transition-all duration-300 hover:scale-110"
+                >
+                  <ArrowLeft size={24} />
+                </button>
+                <div>
+                  <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
+                    ShadowTwin
+                  </h1>
+                  <p className="text-xl md:text-2xl text-gray-300">
+                    Meet the version of you that chose a different path
+                  </p>
                 </div>
               </div>
+              
+              <button
+                onClick={() => setShowAPIConfig(true)}
+                className="p-4 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 text-gray-300 hover:text-white hover:border-cyan-400/50 transition-all duration-300 hover:scale-110"
+                title="Configure AI Services"
+              >
+                <Settings size={24} />
+              </button>
+            </div>
+
+            {error && (
+              <div className="mb-8 p-6 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-400/30 rounded-2xl">
+                <p className="text-yellow-300">{error}</p>
+              </div>
+            )}
+
+            {/* Hero Content */}
+            <div className="max-w-7xl mx-auto px-6 pb-20">
+              <HeroSection onStartJourney={() => setCurrentStep('form')} />
             </div>
           </div>
-        )}
-      </div>
+        </section>
+      )}
+
+      {/* Other sections */}
+      {currentStep !== 'hero' && (
+        <>
+          {/* Header for non-hero steps */}
+          <section className="py-12 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-cyan-900/20" />
+            
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <button
+                    onClick={onBack}
+                    className="p-4 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 text-gray-300 hover:text-white hover:border-violet-400/50 transition-all duration-300 hover:scale-110"
+                  >
+                    <ArrowLeft size={24} />
+                  </button>
+                  <div>
+                    <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                      ShadowTwin
+                    </h1>
+                    <p className="text-lg md:text-xl text-gray-300 mt-2">
+                      Meet the version of you that chose a different path
+                    </p>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={() => setShowAPIConfig(true)}
+                  className="p-4 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 text-gray-300 hover:text-white hover:border-cyan-400/50 transition-all duration-300 hover:scale-110"
+                  title="Configure AI Services"
+                >
+                  <Settings size={24} />
+                </button>
+              </div>
+
+              {error && (
+                <div className="mt-8 p-6 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-400/30 rounded-2xl">
+                  <p className="text-yellow-300">{error}</p>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Main Content */}
+          <div className="max-w-7xl mx-auto px-6 pb-20">
+            {currentStep === 'form' && (
+              <FormSection
+                formData={formData}
+                setFormData={setFormData}
+                onSubmit={handleSubmit}
+              />
+            )}
+
+            {currentStep === 'generating' && renderGenerating()}
+
+            {currentStep === 'results' && (
+              <div className="space-y-20">
+                <LifeMetricsSection metrics={lifeMetrics} />
+                <TimelineSection events={timelineEvents} />
+                
+                {/* Video Generation Panel */}
+                <VideoGenerationPanel
+                  formData={formData}
+                  onVideoGenerated={() => {}}
+                  tavusApiKey={apiConfig.tavusApiKey}
+                />
+                
+                {/* Action Buttons */}
+                <div className="text-center">
+                  <div className="bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+                    <h3 className="text-3xl font-bold text-white mb-6">
+                      Ready to Explore
+                      <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> More?</span>
+                    </h3>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <button
+                        onClick={handleTryAgain}
+                        className="px-8 py-4 bg-gradient-to-r from-violet-500 to-blue-500 rounded-2xl text-white font-semibold hover:scale-105 transition-all duration-300 flex items-center gap-3 justify-center shadow-lg shadow-violet-500/25"
+                      >
+                        <RotateCcw size={20} />
+                        Create Another Twin
+                      </button>
+                      
+                      <button className="px-8 py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/5 transition-all duration-300 flex items-center gap-3 justify-center">
+                        <Download size={20} />
+                        Download Journey
+                      </button>
+                      
+                      <button className="px-8 py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/5 transition-all duration-300 flex items-center gap-3 justify-center">
+                        <Share2 size={20} />
+                        Share Discovery
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
