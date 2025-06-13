@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Volume2, VolumeX, Send, Pause, Settings } from 'lucide-react';
+import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Send, Pause, Settings } from 'lucide-react';
 import { useAIServices } from '../hooks/useAIServices';
 import VideoGenerationPanel from './VideoGenerationPanel';
 
@@ -122,84 +122,6 @@ const APIConfigModal: React.FC<{
   );
 };
 
-// Audio Context Hook
-const useAmbientAudio = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    // Create a synthetic ambient audio context
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    
-    const createAmbientSound = () => {
-      const oscillator1 = audioContext.createOscillator();
-      const oscillator2 = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator1.type = 'sine';
-      oscillator1.frequency.setValueAtTime(220, audioContext.currentTime);
-      oscillator2.type = 'sine';
-      oscillator2.frequency.setValueAtTime(330, audioContext.currentTime);
-      
-      gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
-      
-      oscillator1.connect(gainNode);
-      oscillator2.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      if (isPlaying) {
-        oscillator1.start();
-        oscillator2.start();
-        
-        // Create subtle frequency modulation
-        setInterval(() => {
-          if (isPlaying) {
-            oscillator1.frequency.setValueAtTime(220 + Math.sin(Date.now() * 0.001) * 10, audioContext.currentTime);
-            oscillator2.frequency.setValueAtTime(330 + Math.cos(Date.now() * 0.0015) * 15, audioContext.currentTime);
-          }
-        }, 100);
-      }
-    };
-
-    if (isPlaying) {
-      createAmbientSound();
-    }
-
-    return () => {
-      if (audioContext.state !== 'closed') {
-        audioContext.close();
-      }
-    };
-  }, [isPlaying]);
-
-  const toggleAudio = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  return { isPlaying, toggleAudio };
-};
-
-// Audio Controls Component
-const AudioControls: React.FC = () => {
-  const { isPlaying, toggleAudio } = useAmbientAudio();
-
-  return (
-    <div className="fixed top-6 right-6 z-50">
-      <button
-        onClick={toggleAudio}
-        className="p-3 bg-black/30 backdrop-blur-md border border-white/10 rounded-full text-white hover:border-violet-400/50 transition-all duration-300 group"
-        title={isPlaying ? 'Mute ambient audio' : 'Play ambient audio'}
-      >
-        {isPlaying ? (
-          <Volume2 size={20} className="text-violet-400" />
-        ) : (
-          <VolumeX size={20} className="text-gray-400 group-hover:text-violet-400" />
-        )}
-      </button>
-    </div>
-  );
-};
-
 // Voice Message Component
 const VoiceMessage: React.FC<{ 
   message: string; 
@@ -254,9 +176,9 @@ const VoiceMessage: React.FC<{
           {isGenerating ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : isPlaying ? (
-            <Pause className="text-white\" size={20} />
+            <Pause className="text-white" size={20} />
           ) : (
-            <Play className="text-white ml-1\" size={20} />
+            <Play className="text-white ml-1" size={20} />
           )}
         </button>
         <div className="flex-1">
@@ -901,28 +823,28 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       year: '2018',
       title: 'Moved to Barcelona',
       description: 'Left corporate job to pursue photography in Spain',
-      icon: <MapPin className="text-white\" size={16} />
+      icon: <MapPin className="text-white" size={16} />
     },
     {
       age: 24,
       year: '2020',
       title: 'First Gallery Exhibition',
       description: 'Solo photography exhibition "Urban Souls" featured in Barcelona Modern Art Gallery',
-      icon: <Camera className="text-white\" size={16} />
+      icon: <Camera className="text-white" size={16} />
     },
     {
       age: 26,
       year: '2022',
       title: 'Travel Documentary Series',
       description: 'Created award-winning documentary series about street artists across Europe',
-      icon: <Video className="text-white\" size={16} />
+      icon: <Video className="text-white" size={16} />
     },
     {
       age: 28,
       year: '2024',
       title: 'International Recognition',
       description: 'Photography featured in National Geographic, established creative studio',
-      icon: <Trophy className="text-white\" size={16} />
+      icon: <Trophy className="text-white" size={16} />
     }
   ];
 
@@ -958,33 +880,30 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       category: 'Career',
       realYou: 'Software Engineer at tech company',
       shadowTwin: 'Award-winning photographer and documentary filmmaker',
-      icon: <Briefcase className="text-white\" size={20} />
+      icon: <Briefcase className="text-white" size={20} />
     },
     {
       category: 'Location',
       realYou: 'Living in hometown',
       shadowTwin: 'Based in Barcelona, travels across Europe',
-      icon: <MapPin className="text-white\" size={20} />
+      icon: <MapPin className="text-white" size={20} />
     },
     {
       category: 'Key Achievements',
       realYou: 'Stable income, good work-life balance',
       shadowTwin: 'National Geographic feature, gallery exhibitions, documentary awards',
-      icon: <Trophy className="text-white\" size={20} />
+      icon: <Trophy className="text-white" size={20} />
     },
     {
       category: 'Lifestyle',
       realYou: 'Routine-focused, security-oriented',
       shadowTwin: 'Adventure-driven, creatively fulfilled, internationally connected',
-      icon: <Heart className="text-white\" size={20} />
+      icon: <Heart className="text-white" size={20} />
     }
   ];
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Audio Controls */}
-      <AudioControls />
-
       {/* API Configuration Modal */}
       <APIConfigModal
         isOpen={showAPIConfig}
@@ -1064,7 +983,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <div className="text-center py-20">
             <div className="max-w-2xl mx-auto">
               <div className="w-32 h-32 mx-auto mb-8 relative">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin\" style={{ animationDuration: '3s' }}>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin" style={{ animationDuration: '3s' }}>
                   <div className="absolute inset-2 rounded-full bg-black" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
