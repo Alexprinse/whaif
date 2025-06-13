@@ -99,6 +99,13 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           </div>
         </div>
       </div>
+
+      {/* Seamless transition to next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-black pointer-events-none" />
+      
+      {/* Connecting visual elements */}
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-16 bg-gradient-to-b from-blue-400/50 to-transparent" />
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full bg-blue-400/30 animate-pulse" />
     </section>
   );
 };

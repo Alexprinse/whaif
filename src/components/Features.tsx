@@ -128,11 +128,14 @@ const Features: React.FC<FeaturesProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <section className="py-20 relative">
-      {/* Professional separator */}
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+    <section className="py-20 relative bg-gradient-to-b from-black via-slate-900/30 to-slate-800/20">
+      {/* Seamless connection from hero */}
+      <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black to-transparent" />
       
-      <div className="max-w-7xl mx-auto px-6">
+      {/* Connecting visual element */}
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-12 bg-gradient-to-b from-blue-400/30 to-transparent" />
+      
+      <div className="max-w-7xl mx-auto px-6 relative">
         {/* Section header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-400/20 rounded-full text-blue-400 text-sm font-medium mb-6">
@@ -186,8 +189,8 @@ const Features: React.FC<FeaturesProps> = ({ onNavigate }) => {
         </div>
       </div>
       
-      {/* Bottom separator */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-violet-400 to-transparent" />
+      {/* Transition to next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-slate-900/50" />
     </section>
   );
 };
