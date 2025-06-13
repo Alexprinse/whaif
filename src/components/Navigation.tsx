@@ -29,6 +29,20 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Disable body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -229,8 +243,8 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-white/10">
-            <div className="px-6 py-6 space-y-4">
+          <div className="lg:hidden fixed top-20 left-0 right-0 bottom-0 bg-black/95 backdrop-blur-xl border-b border-white/10 overflow-y-auto">
+            <div className="px-6 py-6 space-y-4 h-full">
               {/* Mobile search */}
               <div className="relative">
                 <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />

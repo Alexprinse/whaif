@@ -7,7 +7,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20 md:pt-0">
       {/* Professional gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900/50 to-indigo-900/30" />
       
@@ -20,10 +20,10 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         <div className="absolute bottom-32 left-1/3 w-14 h-14 border border-blue-300/25 -rotate-45" />
       </div>
 
-      <div className="text-center z-10 max-w-6xl mx-auto px-6">
+      <div className="text-center z-10 max-w-6xl mx-auto px-6 py-8 md:py-0">
         {/* Main headline */}
-        <div className="mb-12">
-          <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+        <div className="mb-8 md:mb-12">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 md:mb-8 leading-tight">
             <span className="text-white">
               Explore Your
             </span>
@@ -33,30 +33,30 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             </span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed">
             Advanced AI simulation platform that reveals the paths not taken. 
             Discover who you could have become through immersive alternate life experiences.
           </p>
 
           {/* Key benefits */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 text-gray-300">
-              <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                <Users size={20} className="text-blue-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12 max-w-4xl mx-auto">
+            <div className="flex items-center gap-3 text-gray-300 justify-center sm:justify-start">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                <Users size={16} className="md:w-5 md:h-5 text-blue-400" />
               </div>
-              <span>AI-Powered Personas</span>
+              <span className="text-sm md:text-base">AI-Powered Personas</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-300">
-              <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-                <Award size={20} className="text-violet-400" />
+            <div className="flex items-center gap-3 text-gray-300 justify-center sm:justify-start">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
+                <Award size={16} className="md:w-5 md:h-5 text-violet-400" />
               </div>
-              <span>Professional Insights</span>
+              <span className="text-sm md:text-base">Professional Insights</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-300">
-              <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
-                <Globe size={20} className="text-cyan-400" />
+            <div className="flex items-center gap-3 text-gray-300 justify-center sm:justify-start">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                <Globe size={16} className="md:w-5 md:h-5 text-cyan-400" />
               </div>
-              <span>Global Recognition</span>
+              <span className="text-sm md:text-base">Global Recognition</span>
             </div>
           </div>
         </div>
@@ -65,15 +65,15 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <button 
             onClick={() => onNavigate('shadowtwin')}
-            className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25 flex items-center gap-3"
+            className="group relative px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-semibold text-base md:text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25 flex items-center gap-3 w-full sm:w-auto justify-center"
           >
             <span className="relative z-10">Start Simulation</span>
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
+            <ArrowRight size={18} className="md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-300" />
             <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500 to-violet-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
           </button>
           
-          <button className="group px-8 py-4 border-2 border-white/20 rounded-lg text-white font-semibold text-lg transition-all duration-300 hover:border-white/40 hover:bg-white/5 flex items-center gap-3">
-            <Play size={20} />
+          <button className="group px-6 md:px-8 py-3 md:py-4 border-2 border-white/20 rounded-lg text-white font-semibold text-base md:text-lg transition-all duration-300 hover:border-white/40 hover:bg-white/5 flex items-center gap-3 w-full sm:w-auto justify-center">
+            <Play size={18} className="md:w-5 md:h-5" />
             Watch Demo
           </button>
         </div>
