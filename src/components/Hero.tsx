@@ -8,23 +8,23 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Theme-aware gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 dark:from-slate-900 dark:via-blue-900/50 dark:to-indigo-900/30" />
+      {/* Professional gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900/50 to-indigo-900/30" />
       
       {/* Subtle geometric patterns - positioned to avoid nav overlap */}
-      <div className="absolute inset-0 opacity-10 dark:opacity-5">
-        <div className="absolute top-32 left-20 w-24 h-24 border border-gray-400 dark:border-white/30 rotate-45" />
-        <div className="absolute bottom-40 right-32 w-20 h-20 border border-blue-400/60 dark:border-blue-400/40 rotate-12" />
-        <div className="absolute top-2/3 left-1/4 w-16 h-16 border border-violet-400/50 dark:border-violet-400/30 -rotate-12" />
-        <div className="absolute top-1/2 right-1/4 w-12 h-12 border border-cyan-400/50 dark:border-cyan-400/30 rotate-45" />
-        <div className="absolute bottom-32 left-1/3 w-14 h-14 border border-blue-300/40 dark:border-blue-300/25 -rotate-45" />
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-32 left-20 w-24 h-24 border border-white/30 rotate-45" />
+        <div className="absolute bottom-40 right-32 w-20 h-20 border border-blue-400/40 rotate-12" />
+        <div className="absolute top-2/3 left-1/4 w-16 h-16 border border-violet-400/30 -rotate-12" />
+        <div className="absolute top-1/2 right-1/4 w-12 h-12 border border-cyan-400/30 rotate-45" />
+        <div className="absolute bottom-32 left-1/3 w-14 h-14 border border-blue-300/25 -rotate-45" />
       </div>
 
       <div className="text-center z-10 max-w-6xl mx-auto px-6">
         {/* Main headline */}
         <div className="mb-12">
           <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-            <span className="text-gray-900 dark:text-white">
+            <span className="text-white">
               Explore Your
             </span>
             <br />
@@ -33,28 +33,28 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             </span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
             Advanced AI simulation platform that reveals the paths not taken. 
             Discover who you could have become through immersive alternate life experiences.
           </p>
 
           {/* Key benefits */}
           <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center">
-                <Users size={20} className="text-blue-600 dark:text-blue-400" />
+            <div className="flex items-center gap-3 text-gray-300">
+              <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                <Users size={20} className="text-blue-400" />
               </div>
               <span>AI-Powered Personas</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-500/20 flex items-center justify-center">
-                <Award size={20} className="text-violet-600 dark:text-violet-400" />
+            <div className="flex items-center gap-3 text-gray-300">
+              <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
+                <Award size={20} className="text-violet-400" />
               </div>
               <span>Professional Insights</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <div className="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-500/20 flex items-center justify-center">
-                <Globe size={20} className="text-cyan-600 dark:text-cyan-400" />
+            <div className="flex items-center gap-3 text-gray-300">
+              <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                <Globe size={20} className="text-cyan-400" />
               </div>
               <span>Global Recognition</span>
             </div>
@@ -72,7 +72,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500 to-violet-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
           </button>
           
-          <button className="group px-8 py-4 border-2 border-gray-300 dark:border-white/20 rounded-lg text-gray-700 dark:text-white font-semibold text-lg transition-all duration-300 hover:border-gray-400 dark:hover:border-white/40 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3">
+          <button className="group px-8 py-4 border-2 border-white/20 rounded-lg text-white font-semibold text-lg transition-all duration-300 hover:border-white/40 hover:bg-white/5 flex items-center gap-3">
             <Play size={20} />
             Watch Demo
           </button>
@@ -80,7 +80,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       </div>
 
       {/* Seamless transition to next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white dark:to-black pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-black pointer-events-none" />
       
       {/* Connecting visual elements */}
       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-16 bg-gradient-to-b from-blue-400/50 to-transparent" />

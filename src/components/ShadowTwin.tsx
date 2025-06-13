@@ -61,15 +61,15 @@ const APIConfigModal: React.FC<{
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white/90 dark:bg-black/80 backdrop-blur-md border border-gray-200 dark:border-white/20 rounded-2xl p-8 max-w-md w-full">
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+      <div className="bg-black/80 backdrop-blur-md border border-white/20 rounded-2xl p-8 max-w-md w-full">
+        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
           <Settings className="text-violet-400" size={24} />
           AI Service Configuration
         </h3>
         
         <div className="space-y-6">
           <div>
-            <label className="block text-gray-900 dark:text-white font-medium mb-2">
+            <label className="block text-white font-medium mb-2">
               Tavus API Key
             </label>
             <input
@@ -77,13 +77,13 @@ const APIConfigModal: React.FC<{
               value={tavusApiKey}
               onChange={(e) => setTavusApiKey(e.target.value)}
               placeholder="Enter your Tavus API key"
-              className="w-full p-3 bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-violet-400/50 focus:outline-none"
+              className="w-full p-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-violet-400/50 focus:outline-none"
             />
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">For AI video generation</p>
+            <p className="text-gray-400 text-sm mt-1">For AI video generation</p>
           </div>
 
           <div>
-            <label className="block text-gray-900 dark:text-white font-medium mb-2">
+            <label className="block text-white font-medium mb-2">
               ElevenLabs API Key
             </label>
             <input
@@ -91,13 +91,13 @@ const APIConfigModal: React.FC<{
               value={elevenLabsApiKey}
               onChange={(e) => setElevenLabsApiKey(e.target.value)}
               placeholder="Enter your ElevenLabs API key"
-              className="w-full p-3 bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-400/50 focus:outline-none"
+              className="w-full p-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none"
             />
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">For AI voice generation</p>
+            <p className="text-gray-400 text-sm mt-1">For AI voice generation</p>
           </div>
 
-          <div className="bg-green-100 dark:bg-green-500/10 border border-green-200 dark:border-green-400/20 rounded-lg p-4">
-            <p className="text-green-700 dark:text-green-300 text-sm">
+          <div className="bg-green-500/10 border border-green-400/20 rounded-lg p-4">
+            <p className="text-green-300 text-sm">
               <strong>✅ API Keys Configured:</strong> Your Tavus and ElevenLabs keys are pre-loaded and ready to use!
             </p>
           </div>
@@ -106,7 +106,7 @@ const APIConfigModal: React.FC<{
         <div className="flex gap-3 mt-8">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 border border-gray-200 dark:border-white/20 rounded-lg text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+            className="flex-1 px-4 py-3 border border-white/20 rounded-lg text-white hover:bg-white/5 transition-colors"
           >
             Cancel
           </button>
@@ -166,7 +166,7 @@ const VoiceMessage: React.FC<{
   };
 
   return (
-    <div className="bg-white/50 dark:bg-black/20 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl p-4 mb-4">
+    <div className="bg-black/20 backdrop-blur-md border border-white/10 rounded-xl p-4 mb-4">
       <div className="flex items-center gap-3">
         <button
           onClick={handlePlay}
@@ -182,8 +182,8 @@ const VoiceMessage: React.FC<{
           )}
         </button>
         <div className="flex-1">
-          <p className="text-gray-900 dark:text-white font-medium mb-1">Voice Message from ShadowTwin</p>
-          <p className="text-gray-600 dark:text-gray-300 text-sm">{message}</p>
+          <p className="text-white font-medium mb-1">Voice Message from ShadowTwin</p>
+          <p className="text-gray-300 text-sm">{message}</p>
           {isPlaying && (
             <div className="flex items-center gap-1 mt-2">
               <div className="w-1 h-4 bg-violet-400 rounded animate-pulse" />
@@ -195,7 +195,7 @@ const VoiceMessage: React.FC<{
           )}
         </div>
         <div className="text-right">
-          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-1 text-xs text-gray-400">
             <Mic size={12} />
             <span>{audioUrl ? 'ElevenLabs' : 'Demo'}</span>
           </div>
@@ -288,8 +288,8 @@ const ChatInterface: React.FC<{
   };
 
   return (
-    <div className="bg-white/50 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl p-6 max-w-4xl mx-auto">
-      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+    <div className="bg-black/30 backdrop-blur-md border border-white/10 rounded-2xl p-6 max-w-4xl mx-auto">
+      <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
         <MessageSquare className="text-violet-400" size={24} />
         Chat with Your ShadowTwin
       </h3>
@@ -300,7 +300,7 @@ const ChatInterface: React.FC<{
             <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
               message.sender === 'user' 
                 ? 'bg-gradient-to-r from-violet-500 to-blue-500 text-white' 
-                : 'bg-gray-100 dark:bg-black/40 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white'
+                : 'bg-black/40 border border-white/10 text-white'
             }`}>
               <p className="text-sm">{message.message}</p>
               <div className="flex items-center justify-between mt-2">
@@ -311,7 +311,7 @@ const ChatInterface: React.FC<{
                   <button
                     onClick={() => toggleVoicePlayback(message.id)}
                     disabled={generatingVoice === message.id}
-                    className="ml-2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors duration-200 disabled:opacity-50"
+                    className="ml-2 p-1 rounded-full hover:bg-white/10 transition-colors duration-200 disabled:opacity-50"
                     title="Play voice message"
                   >
                     {generatingVoice === message.id ? (
@@ -319,7 +319,7 @@ const ChatInterface: React.FC<{
                     ) : playingVoice === message.id ? (
                       <Pause size={12} className="text-violet-400" />
                     ) : (
-                      <Play size={12} className="text-gray-500 dark:text-gray-400 hover:text-violet-400" />
+                      <Play size={12} className="text-gray-400 hover:text-violet-400" />
                     )}
                   </button>
                 )}
@@ -330,12 +330,12 @@ const ChatInterface: React.FC<{
         
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 dark:bg-black/40 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-4 py-3 rounded-2xl">
+            <div className="bg-black/40 border border-white/10 text-white px-4 py-3 rounded-2xl">
               <div className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
                 <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
                 <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">ShadowTwin is typing...</span>
+                <span className="text-gray-400 text-sm ml-2">ShadowTwin is typing...</span>
               </div>
             </div>
           </div>
@@ -349,7 +349,7 @@ const ChatInterface: React.FC<{
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           placeholder="Ask your ShadowTwin anything..."
-          className="flex-1 px-4 py-3 bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-400/20"
+          className="flex-1 px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-400/20"
         />
         <button
           onClick={handleSendMessage}
@@ -379,11 +379,11 @@ const FormSection: React.FC<{
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
           Tell Us About
           <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Your Story</span>
         </h2>
-        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
           Share your journey, decisions, and dreams. Our AI will create a parallel universe where you made different choices.
         </p>
       </div>
@@ -391,7 +391,7 @@ const FormSection: React.FC<{
       <div className="grid gap-8">
         {/* Name Input */}
         <div className="group">
-          <label className="block text-gray-900 dark:text-white font-medium mb-3 flex items-center gap-2">
+          <label className="block text-white font-medium mb-3 flex items-center gap-2">
             <User size={20} className="text-violet-400" />
             What's your name?
           </label>
@@ -400,13 +400,13 @@ const FormSection: React.FC<{
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Enter your full name"
-            className="w-full p-4 bg-white/70 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-400/20 transition-all duration-300"
+            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-400/20 transition-all duration-300"
           />
         </div>
 
         {/* Current Bio */}
         <div className="group">
-          <label className="block text-gray-900 dark:text-white font-medium mb-3 flex items-center gap-2">
+          <label className="block text-white font-medium mb-3 flex items-center gap-2">
             <MessageSquare size={20} className="text-blue-400" />
             Tell us about your current life
           </label>
@@ -415,13 +415,13 @@ const FormSection: React.FC<{
             onChange={(e) => setFormData({ ...formData, currentBio: e.target.value })}
             placeholder="Describe your background, education, career, relationships, and current situation..."
             rows={4}
-            className="w-full p-4 bg-white/70 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-400/50 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-300 resize-none"
+            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-300 resize-none"
           />
         </div>
 
         {/* Major Decisions */}
         <div className="group">
-          <label className="block text-gray-900 dark:text-white font-medium mb-3 flex items-center gap-2">
+          <label className="block text-white font-medium mb-3 flex items-center gap-2">
             <Briefcase size={20} className="text-teal-400" />
             What major life decisions did you make?
           </label>
@@ -430,13 +430,13 @@ const FormSection: React.FC<{
             onChange={(e) => setFormData({ ...formData, majorDecisions: e.target.value })}
             placeholder="Career choices, where you moved, relationships, education paths, financial decisions..."
             rows={4}
-            className="w-full p-4 bg-white/70 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-teal-400/50 focus:outline-none focus:ring-2 focus:ring-teal-400/20 transition-all duration-300 resize-none"
+            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-teal-400/50 focus:outline-none focus:ring-2 focus:ring-teal-400/20 transition-all duration-300 resize-none"
           />
         </div>
 
         {/* Dreams Not Pursued */}
         <div className="group">
-          <label className="block text-gray-900 dark:text-white font-medium mb-3 flex items-center gap-2">
+          <label className="block text-white font-medium mb-3 flex items-center gap-2">
             <Sparkles size={20} className="text-pink-400" />
             What dreams did you not pursue?
           </label>
@@ -445,13 +445,13 @@ const FormSection: React.FC<{
             onChange={(e) => setFormData({ ...formData, dreamsNotPursued: e.target.value })}
             placeholder="Creative pursuits, travel dreams, business ideas, alternative careers, relationships..."
             rows={4}
-            className="w-full p-4 bg-white/70 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-pink-400/50 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 resize-none"
+            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-pink-400/50 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 resize-none"
           />
         </div>
 
         {/* Selfie Upload */}
         <div className="group">
-          <label className="block text-gray-900 dark:text-white font-medium mb-3 flex items-center gap-2">
+          <label className="block text-white font-medium mb-3 flex items-center gap-2">
             <Camera size={20} className="text-cyan-400" />
             Upload a photo (optional)
           </label>
@@ -465,14 +465,14 @@ const FormSection: React.FC<{
             />
             <label
               htmlFor="selfie-upload"
-              className="flex items-center justify-center w-full p-8 bg-white/50 dark:bg-black/30 backdrop-blur-md border-2 border-dashed border-gray-300 dark:border-white/20 rounded-xl text-gray-500 dark:text-gray-400 hover:border-cyan-400/50 hover:text-cyan-400 transition-all duration-300 cursor-pointer group"
+              className="flex items-center justify-center w-full p-8 bg-black/30 backdrop-blur-md border-2 border-dashed border-white/20 rounded-xl text-gray-400 hover:border-cyan-400/50 hover:text-cyan-400 transition-all duration-300 cursor-pointer group"
             >
               <div className="text-center">
                 <Upload size={32} className="mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
                 <p className="font-medium">
                   {formData.selfie ? formData.selfie.name : 'Click to upload your photo'}
                 </p>
-                <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 mt-1">
                   This helps create a more personalized simulation
                 </p>
               </div>
@@ -502,7 +502,7 @@ const FormSection: React.FC<{
 const TimelineSection: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
   return (
     <div className="mb-16">
-      <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+      <h3 className="text-3xl font-bold text-white mb-8 text-center">
         Your Alternate
         <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Timeline</span>
       </h3>
@@ -515,23 +515,23 @@ const TimelineSection: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
           {events.map((event, index) => (
             <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
               <div className={`w-5/12 ${index % 2 === 0 ? 'text-right pr-8' : 'text-left pl-8'}`}>
-                <div className="p-6 bg-white/50 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl hover:border-violet-400/30 transition-all duration-300 group">
+                <div className="p-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl hover:border-violet-400/30 transition-all duration-300 group">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       {event.icon}
                     </div>
                     <div>
                       <p className="text-violet-400 font-bold">Age {event.age}</p>
-                      <p className="text-gray-500 dark:text-gray-400 text-sm">{event.year}</p>
+                      <p className="text-gray-400 text-sm">{event.year}</p>
                     </div>
                   </div>
-                  <h4 className="text-gray-900 dark:text-white font-bold text-lg mb-2">{event.title}</h4>
-                  <p className="text-gray-600 dark:text-gray-300">{event.description}</p>
+                  <h4 className="text-white font-bold text-lg mb-2">{event.title}</h4>
+                  <p className="text-gray-300">{event.description}</p>
                 </div>
               </div>
               
               {/* Timeline dot */}
-              <div className="relative z-10 w-6 h-6 bg-gradient-to-br from-violet-500 to-cyan-500 rounded-full border-4 border-white dark:border-black flex-shrink-0" />
+              <div className="relative z-10 w-6 h-6 bg-gradient-to-br from-violet-500 to-cyan-500 rounded-full border-4 border-black flex-shrink-0" />
               
               <div className="w-5/12" />
             </div>
@@ -558,13 +558,13 @@ const VideoMessage: React.FC<{
 
   return (
     <div className="mb-16">
-      <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+      <h3 className="text-3xl font-bold text-white mb-8 text-center">
         Message from Your
         <span className="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent"> ShadowTwin</span>
       </h3>
       
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="relative aspect-video bg-gradient-to-br from-violet-100 to-blue-100 dark:from-violet-900/20 dark:via-blue-900/20 dark:to-teal-900/20 rounded-2xl border border-gray-200 dark:border-white/10 overflow-hidden group">
+        <div className="relative aspect-video bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-teal-900/20 rounded-2xl border border-white/10 overflow-hidden group">
           {videoUrl ? (
             <video 
               src={videoUrl} 
@@ -573,13 +573,13 @@ const VideoMessage: React.FC<{
               poster="/api/placeholder/800/450"
             />
           ) : (
-            <div className="absolute inset-0 bg-gray-100 dark:bg-black/40 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
               <div className="text-center">
                 {isGenerating ? (
                   <>
-                    <div className="w-20 h-20 border-4 border-violet-200 dark:border-violet-500/30 border-t-violet-500 rounded-full animate-spin mb-6 mx-auto" />
-                    <h4 className="text-gray-900 dark:text-white font-bold text-xl mb-3">Generating AI Video...</h4>
-                    <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
+                    <div className="w-20 h-20 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin mb-6 mx-auto" />
+                    <h4 className="text-white font-bold text-xl mb-3">Generating AI Video...</h4>
+                    <p className="text-gray-300 mb-6 max-w-md mx-auto">
                       Creating your personalized ShadowTwin video using Tavus AI
                     </p>
                   </>
@@ -588,13 +588,13 @@ const VideoMessage: React.FC<{
                     <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-cyan-500 rounded-full flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
                       <Play className="text-white ml-1" size={32} />
                     </div>
-                    <h4 className="text-gray-900 dark:text-white font-bold text-xl mb-3">AI-Generated Video Message</h4>
-                    <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
+                    <h4 className="text-white font-bold text-xl mb-3">AI-Generated Video Message</h4>
+                    <p className="text-gray-300 mb-6 max-w-md mx-auto">
                       Watch yourself in an alternate reality, speaking about the life you could have lived
                     </p>
                   </>
                 )}
-                <div className="flex items-center justify-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
                   <div className="flex items-center gap-2">
                     <Video size={16} className="text-violet-400" />
                     <span>Tavus AI</span>
@@ -636,16 +636,16 @@ const VideoMessage: React.FC<{
 const SocialFeed: React.FC<{ posts: SocialPost[] }> = ({ posts }) => {
   return (
     <div className="mb-16">
-      <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+      <h3 className="text-3xl font-bold text-white mb-8 text-center">
         Your Shadow
         <span className="bg-gradient-to-r from-pink-400 to-violet-400 bg-clip-text text-transparent"> Social Life</span>
       </h3>
       
       <div className="grid md:grid-cols-3 gap-6">
         {posts.map((post, index) => (
-          <div key={index} className="bg-white/50 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden hover:border-violet-400/30 transition-all duration-300 group">
-            <div className="aspect-square bg-gradient-to-br from-violet-100 to-pink-100 dark:from-violet-500/20 dark:to-pink-500/20 flex items-center justify-center">
-              <div className="text-center text-gray-500 dark:text-gray-400">
+          <div key={index} className="bg-black/30 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden hover:border-violet-400/30 transition-all duration-300 group">
+            <div className="aspect-square bg-gradient-to-br from-violet-500/20 to-pink-500/20 flex items-center justify-center">
+              <div className="text-center text-gray-400">
                 {post.platform === 'instagram' ? <Instagram size={48} /> : <Twitter size={48} />}
                 <p className="mt-2 text-sm">AI-Generated Image</p>
               </div>
@@ -657,10 +657,10 @@ const SocialFeed: React.FC<{ posts: SocialPost[] }> = ({ posts }) => {
                   <Instagram size={16} className="text-pink-400" /> : 
                   <Twitter size={16} className="text-blue-400" />
                 }
-                <span className="text-gray-500 dark:text-gray-400 text-sm">{post.time}</span>
+                <span className="text-gray-400 text-sm">{post.time}</span>
               </div>
               
-              <p className="text-gray-900 dark:text-white mb-3">{post.caption}</p>
+              <p className="text-white mb-3">{post.caption}</p>
               
               <div className="flex flex-wrap gap-1 mb-3">
                 {post.hashtags.map((tag, tagIndex) => (
@@ -668,7 +668,7 @@ const SocialFeed: React.FC<{ posts: SocialPost[] }> = ({ posts }) => {
                 ))}
               </div>
               
-              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm">
+              <div className="flex items-center gap-2 text-gray-400 text-sm">
                 <Heart size={14} />
                 <span>{post.likes} likes</span>
               </div>
@@ -683,7 +683,7 @@ const SocialFeed: React.FC<{ posts: SocialPost[] }> = ({ posts }) => {
 const ComparisonTable: React.FC<{ data: ComparisonData[] }> = ({ data }) => {
   return (
     <div className="mb-16">
-      <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+      <h3 className="text-3xl font-bold text-white mb-8 text-center">
         Real You vs
         <span className="bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent"> ShadowTwin</span>
       </h3>
@@ -691,22 +691,22 @@ const ComparisonTable: React.FC<{ data: ComparisonData[] }> = ({ data }) => {
       <div className="max-w-6xl mx-auto">
         <div className="grid gap-6">
           {data.map((item, index) => (
-            <div key={index} className="bg-white/50 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl p-6 hover:border-teal-400/30 transition-all duration-300">
+            <div key={index} className="bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:border-teal-400/30 transition-all duration-300">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-blue-500 flex items-center justify-center">
                   {item.icon}
                 </div>
-                <h4 className="text-gray-900 dark:text-white font-bold text-lg">{item.category}</h4>
+                <h4 className="text-white font-bold text-lg">{item.category}</h4>
               </div>
               
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="p-4 bg-gray-100 dark:bg-black/20 rounded-lg border border-gray-200 dark:border-white/5">
-                  <h5 className="text-gray-600 dark:text-gray-400 font-medium mb-2">Real You</h5>
-                  <p className="text-gray-900 dark:text-white">{item.realYou}</p>
+                <div className="p-4 bg-black/20 rounded-lg border border-white/5">
+                  <h5 className="text-gray-400 font-medium mb-2">Real You</h5>
+                  <p className="text-white">{item.realYou}</p>
                 </div>
-                <div className="p-4 bg-gradient-to-br from-violet-50 to-cyan-50 dark:from-violet-500/10 dark:to-cyan-500/10 rounded-lg border border-violet-200 dark:border-violet-400/20">
-                  <h5 className="text-violet-600 dark:text-violet-400 font-medium mb-2">ShadowTwin</h5>
-                  <p className="text-gray-900 dark:text-white">{item.shadowTwin}</p>
+                <div className="p-4 bg-gradient-to-br from-violet-500/10 to-cyan-500/10 rounded-lg border border-violet-400/20">
+                  <h5 className="text-violet-400 font-medium mb-2">ShadowTwin</h5>
+                  <p className="text-white">{item.shadowTwin}</p>
                 </div>
               </div>
             </div>
@@ -721,13 +721,13 @@ const ReflectionSection: React.FC<{ onTryAgain: () => void }> = ({ onTryAgain })
   return (
     <div className="mb-16">
       <div className="max-w-4xl mx-auto text-center">
-        <div className="p-8 bg-white/50 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl">
-          <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+        <div className="p-8 bg-black/30 backdrop-blur-md border border-white/10 rounded-2xl">
+          <h3 className="text-3xl font-bold text-white mb-6">
             What Would You Do
             <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Differently Today?</span>
           </h3>
           
-          <blockquote className="text-xl text-gray-600 dark:text-gray-300 italic mb-8 max-w-2xl mx-auto">
+          <blockquote className="text-xl text-gray-300 italic mb-8 max-w-2xl mx-auto">
             "Seeing your ShadowTwin isn't about regret—it's about understanding the infinite possibilities that still exist within you."
           </blockquote>
           
@@ -740,12 +740,12 @@ const ReflectionSection: React.FC<{ onTryAgain: () => void }> = ({ onTryAgain })
               Try Different Choices
             </button>
             
-            <button className="px-8 py-3 border border-gray-300 dark:border-white/20 rounded-full text-gray-700 dark:text-white font-semibold hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-300 flex items-center gap-2 justify-center">
+            <button className="px-8 py-3 border border-white/20 rounded-full text-white font-semibold hover:bg-white/5 transition-all duration-300 flex items-center gap-2 justify-center">
               <Download size={20} />
               Download Report
             </button>
             
-            <button className="px-8 py-3 border border-gray-300 dark:border-white/20 rounded-full text-gray-700 dark:text-white font-semibold hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-300 flex items-center gap-2 justify-center">
+            <button className="px-8 py-3 border border-white/20 rounded-full text-white font-semibold hover:bg-white/5 transition-all duration-300 flex items-center gap-2 justify-center">
               <Share2 size={20} />
               Share ShadowTwin
             </button>
@@ -903,7 +903,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-theme-primary text-theme-primary">
+    <div className="min-h-screen bg-black text-white">
       {/* API Configuration Modal */}
       <APIConfigModal
         isOpen={showAPIConfig}
@@ -913,14 +913,14 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
       {/* Hero Section */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 dark:from-violet-900/20 dark:via-blue-900/20 dark:to-cyan-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-cyan-900/20" />
         
         {/* Animated background particles */}
         <div className="absolute inset-0">
           {[...Array(15)].map((_, i) => (
             <div
               key={i}
-              className="absolute rounded-full bg-gradient-to-r from-violet-200/40 to-cyan-200/40 dark:from-violet-400/20 dark:to-cyan-400/20 animate-float"
+              className="absolute rounded-full bg-gradient-to-r from-violet-400/20 to-cyan-400/20 animate-float"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
@@ -938,7 +938,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <div className="flex items-center gap-4">
               <button
                 onClick={onBack}
-                className="p-3 rounded-xl bg-white/50 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300"
+                className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
               >
                 <ArrowLeft size={24} />
               </button>
@@ -946,7 +946,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
                   Meet Your ShadowTwin
                 </h1>
-                <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mt-4">
+                <p className="text-xl md:text-2xl text-gray-300 mt-4">
                   An AI-simulated version of the life you never lived.
                 </p>
               </div>
@@ -954,7 +954,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             
             <button
               onClick={() => setShowAPIConfig(true)}
-              className="p-3 rounded-xl bg-white/50 dark:bg-black/30 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300"
+              className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
               title="Configure AI Services"
             >
               <Settings size={24} />
@@ -962,8 +962,8 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           </div>
 
           {error && (
-            <div className="mb-8 p-4 bg-yellow-100 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-400/20 rounded-lg">
-              <p className="text-yellow-700 dark:text-yellow-300 text-sm">{error}</p>
+            <div className="mb-8 p-4 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
+              <p className="text-yellow-300 text-sm">{error}</p>
             </div>
           )}
         </div>
@@ -984,19 +984,19 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <div className="max-w-2xl mx-auto">
               <div className="w-32 h-32 mx-auto mb-8 relative">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin" style={{ animationDuration: '3s' }}>
-                  <div className="absolute inset-2 rounded-full bg-white dark:bg-black" />
+                  <div className="absolute inset-2 rounded-full bg-black" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Sparkles className="text-violet-400" size={48} />
                 </div>
               </div>
               
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-4xl font-bold text-white mb-6">
                 Generating Your
                 <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> ShadowTwin</span>
               </h2>
               
-              <div className="space-y-4 text-gray-600 dark:text-gray-300">
+              <div className="space-y-4 text-gray-300">
                 <p className="flex items-center justify-center gap-2">
                   <Clock size={16} className="text-violet-400" />
                   Analyzing your life choices...
