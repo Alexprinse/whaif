@@ -1,20 +1,29 @@
 import React from 'react';
-import { User, Skull, Building2 } from 'lucide-react';
+import { User, Skull, Building2, ArrowRight, Zap, Shield, Brain } from 'lucide-react';
 
 interface FeatureProps {
   icon: React.ReactNode;
   title: string;
   description: string;
+  benefits: string[];
   sectionId: string;
   onNavigate: (view: string) => void;
+  featured?: boolean;
 }
 
-const FeatureCard: React.FC<FeatureProps> = ({ icon, title, description, sectionId, onNavigate }) => {
+const FeatureCard: React.FC<FeatureProps> = ({ 
+  icon, 
+  title, 
+  description, 
+  benefits, 
+  sectionId, 
+  onNavigate, 
+  featured = false 
+}) => {
   const handleClick = () => {
     if (sectionId === 'shadowtwin') {
       onNavigate('shadowtwin');
     } else {
-      // For other features, scroll to section (placeholder for now)
       const element = document.getElementById(sectionId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
@@ -26,22 +35,48 @@ const FeatureCard: React.FC<FeatureProps> = ({ icon, title, description, section
     <div 
       id={sectionId}
       onClick={handleClick}
-      className="group relative p-8 rounded-2xl bg-black/20 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-violet-500/10 cursor-pointer"
+      className={`group relative p-8 rounded-2xl backdrop-blur-md border transition-all duration-300 hover:scale-105 cursor-pointer ${
+        featured 
+          ? 'bg-gradient-to-br from-blue-500/10 via-violet-500/10 to-cyan-500/10 border-blue-400/30 hover:border-blue-400/50' 
+          : 'bg-black/20 border-white/10 hover:border-white/20'
+      }`}
     >
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/10 via-blue-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      {featured && (
+        <div className="absolute -top-3 left-6 px-3 py-1 bg-gradient-to-r from-blue-500 to-violet-500 rounded-full text-white text-xs font-semibold">
+          Most Popular
+        </div>
+      )}
       
       <div className="relative z-10">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+        <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 ${
+          featured 
+            ? 'bg-gradient-to-br from-blue-500 to-violet-500' 
+            : 'bg-gradient-to-br from-gray-600 to-gray-700'
+        }`}>
           {icon}
         </div>
         
-        <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-violet-400 group-hover:to-blue-400 group-hover:bg-clip-text transition-all duration-300">
+        <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-violet-400 group-hover:bg-clip-text transition-all duration-300">
           {title}
         </h3>
         
-        <p className="text-gray-300 leading-relaxed">
+        <p className="text-gray-300 leading-relaxed mb-6">
           {description}
         </p>
+
+        <ul className="space-y-2 mb-6">
+          {benefits.map((benefit, index) => (
+            <li key={index} className="flex items-center gap-2 text-sm text-gray-400">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+              {benefit}
+            </li>
+          ))}
+        </ul>
+
+        <div className="flex items-center gap-2 text-blue-400 font-medium group-hover:gap-3 transition-all duration-300">
+          <span>Explore {title}</span>
+          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
+        </div>
       </div>
     </div>
   );
@@ -54,50 +89,105 @@ interface FeaturesProps {
 const Features: React.FC<FeaturesProps> = ({ onNavigate }) => {
   const features = [
     {
-      icon: <User className="text-white\" size={32} />,
+      icon: <User className="text-white" size={32} />,
       title: "ShadowTwin",
-      description: "Become your alternate self. Explore the paths not taken, the choices unmade, and the person you could have been in parallel dimensions.",
-      sectionId: "shadowtwin"
+      description: "Create an AI-powered alternate version of yourself that explores the paths not taken and decisions unmade.",
+      benefits: [
+        "AI video generation with your likeness",
+        "Personalized alternate life scenarios",
+        "Interactive conversations with your twin",
+        "Professional insights and reflections"
+      ],
+      sectionId: "shadowtwin",
+      featured: true
     },
     {
       icon: <Skull className="text-white" size={32} />,
       title: "MicroDeath",
-      description: "Witness your death, design your rebirth. Face mortality to understand life. Experience endings to appreciate beginnings.",
+      description: "Experience simulated mortality to gain profound insights about life, purpose, and what truly matters.",
+      benefits: [
+        "Guided reflection exercises",
+        "Life priority assessment",
+        "Legacy planning tools",
+        "Mindfulness integration"
+      ],
       sectionId: "microdeath"
     },
     {
-      icon: <Building2 className="text-white\" size={32} />,
+      icon: <Building2 className="text-white" size={32} />,
       title: "YouInc",
-      description: "Turn your life into a startup. Analyze your personal metrics, optimize your growth, and scale your potential like a business.",
+      description: "Analyze your life as a business entity with metrics, growth strategies, and optimization opportunities.",
+      benefits: [
+        "Personal ROI calculations",
+        "Skill portfolio analysis",
+        "Growth opportunity mapping",
+        "Strategic life planning"
+      ],
       sectionId: "youinc"
     }
   ];
 
   return (
     <section className="py-20 relative">
-      {/* Glowing separator line */}
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-violet-400 to-transparent" />
+      {/* Professional separator */}
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
       
       <div className="max-w-7xl mx-auto px-6">
+        {/* Section header */}
         <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-400/20 rounded-full text-blue-400 text-sm font-medium mb-6">
+            <Zap size={16} />
+            AI-Powered Simulations
+          </div>
+          
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Choose Your
-            <span className="bg-gradient-to-r from-violet-400 to-teal-400 bg-clip-text text-transparent"> Simulation</span>
+            Three Paths to
+            <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent"> Self-Discovery</span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Three portals to alternate realities. Each one reveals a different aspect of the infinite possibilities within you.
+          
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            Each simulation uses advanced AI to create personalized experiences that reveal new perspectives 
+            about your potential, priorities, and possibilities.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        {/* Features grid */}
+        <div className="grid lg:grid-cols-3 gap-8 mb-16">
           {features.map((feature, index) => (
             <FeatureCard key={index} {...feature} onNavigate={onNavigate} />
           ))}
         </div>
+
+        {/* Additional benefits */}
+        <div className="grid md:grid-cols-3 gap-8 pt-16 border-t border-white/10">
+          <div className="text-center">
+            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
+              <Shield size={24} className="text-green-400" />
+            </div>
+            <h3 className="text-white font-semibold mb-2">Privacy First</h3>
+            <p className="text-gray-400 text-sm">Your data is encrypted and never shared. Complete privacy guaranteed.</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4">
+              <Brain size={24} className="text-blue-400" />
+            </div>
+            <h3 className="text-white font-semibold mb-2">AI-Powered</h3>
+            <p className="text-gray-400 text-sm">Advanced machine learning creates realistic, personalized scenarios.</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="w-12 h-12 rounded-full bg-violet-500/20 flex items-center justify-center mx-auto mb-4">
+              <Zap size={24} className="text-violet-400" />
+            </div>
+            <h3 className="text-white font-semibold mb-2">Instant Results</h3>
+            <p className="text-gray-400 text-sm">Get immediate insights and begin your simulation in minutes.</p>
+          </div>
+        </div>
       </div>
       
-      {/* Bottom glowing separator line */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+      {/* Bottom separator */}
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-violet-400 to-transparent" />
     </section>
   );
 };
