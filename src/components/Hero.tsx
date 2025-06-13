@@ -7,7 +7,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Professional gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900/50 to-indigo-900/30" />
       
@@ -76,27 +76,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             <Play size={20} />
             Watch Demo
           </button>
-        </div>
-
-        {/* Trust indicators */}
-        <div className="mt-16 pt-8 border-t border-white/10">
-          <p className="text-gray-400 text-sm mb-4">Trusted by professionals worldwide</p>
-          <div className="flex justify-center items-center gap-8 text-gray-500">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">10K+</div>
-              <div className="text-xs">Simulations Created</div>
-            </div>
-            <div className="w-px h-8 bg-gray-600" />
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">95%</div>
-              <div className="text-xs">User Satisfaction</div>
-            </div>
-            <div className="w-px h-8 bg-gray-600" />
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">50+</div>
-              <div className="text-xs">Countries</div>
-            </div>
-          </div>
         </div>
       </div>
 
