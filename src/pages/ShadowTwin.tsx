@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Send, Pause, Settings, Eye, Brain, Zap, Star, Globe, ChevronRight, Plus, Filter, Search, BookOpen, Coffee, Plane, Music } from 'lucide-react';
+import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Send, Pause, Settings, Eye, Brain, Zap, Star, Globe, ChevronRight, Plus, Filter, Search, BookOpen, Coffee, Plane, Music, Quote, CheckCircle, Users, Award } from 'lucide-react';
 import { useAIServices } from '../hooks/useAIServices';
 import VideoGenerationPanel from '../components/VideoGenerationPanel';
 
@@ -60,6 +60,22 @@ interface LifeMetric {
   realValue: number;
   shadowValue: number;
   unit: string;
+  icon: React.ReactNode;
+  color: string;
+}
+
+interface Testimonial {
+  name: string;
+  role: string;
+  company: string;
+  quote: string;
+  avatar: React.ReactNode;
+  rating: number;
+}
+
+interface TutorialStep {
+  title: string;
+  description: string;
   icon: React.ReactNode;
   color: string;
 }
@@ -142,6 +158,268 @@ const APIConfigModal: React.FC<{
           >
             Save & Continue
           </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Hero Section with Tutorial and Testimonials
+const HeroSection: React.FC<{ onStartJourney: () => void }> = ({ onStartJourney }) => {
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  const tutorialSteps: TutorialStep[] = [
+    {
+      title: "Share Your Story",
+      description: "Tell us about your life, decisions, and dreams you haven't pursued yet",
+      icon: <MessageSquare className="text-white" size={24} />,
+      color: "from-violet-500 to-purple-500"
+    },
+    {
+      title: "AI Analysis",
+      description: "Our advanced AI analyzes your choices and creates an alternate timeline",
+      icon: <Brain className="text-white" size={24} />,
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      title: "Meet Your Twin",
+      description: "Interact with your ShadowTwin through AI-generated videos and conversations",
+      icon: <Video className="text-white" size={24} />,
+      color: "from-cyan-500 to-teal-500"
+    },
+    {
+      title: "Discover Insights",
+      description: "Gain profound insights about your potential and unexplored possibilities",
+      icon: <Sparkles className="text-white" size={24} />,
+      color: "from-pink-500 to-orange-500"
+    }
+  ];
+
+  const testimonials: Testimonial[] = [
+    {
+      name: "Sarah Chen",
+      role: "Creative Director",
+      company: "Adobe",
+      quote: "ShadowTwin showed me the artist I could have been. It inspired me to start painting again after 10 years. Now I have my first gallery showing next month!",
+      avatar: <User className="text-violet-400" size={20} />,
+      rating: 5
+    },
+    {
+      name: "Marcus Rodriguez",
+      role: "Software Engineer",
+      company: "Google",
+      quote: "Seeing my alternate life as a travel photographer made me realize I was living too safely. I've since taken a sabbatical to explore Southeast Asia.",
+      avatar: <Camera className="text-blue-400" size={20} />,
+      rating: 5
+    },
+    {
+      name: "Dr. Emily Watson",
+      role: "Research Scientist",
+      company: "MIT",
+      quote: "The experience was profound. My ShadowTwin helped me understand that it's never too late to pursue multiple passions. I'm now writing my first novel.",
+      avatar: <BookOpen className="text-green-400" size={20} />,
+      rating: 5
+    }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="space-y-20">
+      {/* Main Hero */}
+      <div className="text-center">
+        <div className="mb-8">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-400/30 rounded-full text-violet-300 text-sm font-medium mb-8">
+            <Sparkles size={16} />
+            AI-Powered Life Simulation
+          </div>
+          
+          <h2 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
+            Meet Your
+            <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent"> ShadowTwin</span>
+          </h2>
+          
+          <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed mb-12">
+            Discover the version of yourself that made different choices. Through advanced AI simulation, 
+            explore alternate life paths and gain profound insights about your untapped potential.
+          </p>
+
+          {/* Key Benefits */}
+          <div className="grid md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto">
+            <div className="p-6 bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-400/20 rounded-2xl">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+                <Video className="text-white" size={24} />
+              </div>
+              <h3 className="text-white font-bold text-lg mb-2">AI Video Generation</h3>
+              <p className="text-gray-400">Watch yourself in alternate reality through personalized AI-generated videos</p>
+            </div>
+            
+            <div className="p-6 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-400/20 rounded-2xl">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                <MessageSquare className="text-white" size={24} />
+              </div>
+              <h3 className="text-white font-bold text-lg mb-2">Interactive Conversations</h3>
+              <p className="text-gray-400">Chat with your ShadowTwin and learn about their journey and choices</p>
+            </div>
+            
+            <div className="p-6 bg-gradient-to-br from-cyan-500/10 to-teal-500/10 border border-cyan-400/20 rounded-2xl">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center">
+                <Brain className="text-white" size={24} />
+              </div>
+              <h3 className="text-white font-bold text-lg mb-2">Deep Insights</h3>
+              <p className="text-gray-400">Gain clarity about your values, priorities, and unexplored possibilities</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* How It Works */}
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <h3 className="text-4xl font-bold text-white mb-4">
+            How It
+            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> Works</span>
+          </h3>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Our advanced AI creates a personalized alternate reality based on your unique story
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {tutorialSteps.map((step, index) => (
+            <div key={index} className="relative group">
+              <div className="p-8 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-xl border border-white/10 rounded-3xl hover:border-violet-400/30 transition-all duration-500 hover:scale-105">
+                <div className="text-center">
+                  <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                    {step.icon}
+                  </div>
+                  <div className="w-8 h-8 mx-auto mb-4 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center text-white font-bold">
+                    {index + 1}
+                  </div>
+                  <h4 className="text-white font-bold text-lg mb-3">{step.title}</h4>
+                  <p className="text-gray-400 leading-relaxed">{step.description}</p>
+                </div>
+              </div>
+              
+              {/* Connection line */}
+              {index < tutorialSteps.length - 1 && (
+                <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-violet-500 to-cyan-500 transform -translate-y-1/2" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Testimonials */}
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h3 className="text-4xl font-bold text-white mb-4">
+            Life-Changing
+            <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"> Experiences</span>
+          </h3>
+          <p className="text-gray-400 text-lg">
+            See how ShadowTwin has inspired thousands to explore new possibilities
+          </p>
+        </div>
+
+        <div className="relative">
+          <div className="bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12">
+            <div className="text-center">
+              <Quote className="text-violet-400 mx-auto mb-6" size={48} />
+              
+              <blockquote className="text-xl md:text-2xl text-white font-light leading-relaxed mb-8">
+                "{testimonials[currentTestimonial].quote}"
+              </blockquote>
+              
+              <div className="flex items-center justify-center gap-1 mb-6">
+                {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                  <Star key={i} className="text-yellow-400 fill-current" size={16} />
+                ))}
+              </div>
+              
+              <div className="flex items-center justify-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-500/20 to-cyan-500/20 border border-white/10 flex items-center justify-center">
+                  {testimonials[currentTestimonial].avatar}
+                </div>
+                <div className="text-left">
+                  <cite className="text-white font-semibold not-italic">
+                    {testimonials[currentTestimonial].name}
+                  </cite>
+                  <p className="text-gray-400 text-sm">
+                    {testimonials[currentTestimonial].role} at {testimonials[currentTestimonial].company}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Testimonial indicators */}
+          <div className="flex justify-center space-x-3 mt-8">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentTestimonial(index)}
+                className={`transition-all duration-300 ${
+                  index === currentTestimonial 
+                    ? 'w-8 h-2 bg-violet-400 rounded-full' 
+                    : 'w-2 h-2 bg-gray-600 rounded-full hover:bg-gray-500'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+        <div className="text-center p-6 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-xl border border-white/10 rounded-2xl">
+          <div className="text-3xl font-bold text-violet-400 mb-2">50K+</div>
+          <div className="text-gray-400">ShadowTwins Created</div>
+        </div>
+        <div className="text-center p-6 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-xl border border-white/10 rounded-2xl">
+          <div className="text-3xl font-bold text-blue-400 mb-2">4.9/5</div>
+          <div className="text-gray-400">User Rating</div>
+        </div>
+        <div className="text-center p-6 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-xl border border-white/10 rounded-2xl">
+          <div className="text-3xl font-bold text-cyan-400 mb-2">89%</div>
+          <div className="text-gray-400">Life Changes Made</div>
+        </div>
+        <div className="text-center p-6 bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-xl border border-white/10 rounded-2xl">
+          <div className="text-3xl font-bold text-green-400 mb-2">24/7</div>
+          <div className="text-gray-400">AI Support</div>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="text-center">
+        <div className="bg-gradient-to-br from-violet-500/10 to-cyan-500/10 border border-violet-400/30 rounded-3xl p-12 max-w-3xl mx-auto">
+          <h3 className="text-3xl font-bold text-white mb-6">
+            Ready to Meet Your
+            <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> ShadowTwin?</span>
+          </h3>
+          
+          <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
+            Embark on a journey of self-discovery and explore the infinite possibilities that exist within you.
+          </p>
+          
+          <button
+            onClick={onStartJourney}
+            className="group relative px-12 py-4 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-600 rounded-2xl text-white font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-violet-500/25 flex items-center gap-3 mx-auto"
+          >
+            <Sparkles size={24} />
+            <span className="relative z-10">Begin Your Journey</span>
+            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500 via-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
+          </button>
+          
+          <p className="text-gray-500 text-sm mt-4">
+            ✨ Free to start • 🔒 Privacy protected • ⚡ Results in minutes
+          </p>
         </div>
       </div>
     </div>
@@ -505,7 +783,7 @@ interface ShadowTwinProps {
 }
 
 const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
-  const [currentStep, setCurrentStep] = useState('form'); // 'form', 'generating', 'results'
+  const [currentStep, setCurrentStep] = useState('hero'); // 'hero', 'form', 'generating', 'results'
   const [formData, setFormData] = useState<FormData>({
     name: user?.name || '',
     currentBio: '',
@@ -544,7 +822,7 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
   };
 
   const handleTryAgain = () => {
-    setCurrentStep('form');
+    setCurrentStep('hero');
     setFormData({
       name: user?.name || '',
       currentBio: '',
@@ -753,6 +1031,10 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 pb-20">
+        {currentStep === 'hero' && (
+          <HeroSection onStartJourney={() => setCurrentStep('form')} />
+        )}
+
         {currentStep === 'form' && (
           <FormSection
             formData={formData}
