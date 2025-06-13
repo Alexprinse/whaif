@@ -7,15 +7,17 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
       {/* Professional gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900/50 to-indigo-900/30" />
       
-      {/* Subtle geometric patterns */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 left-20 w-32 h-32 border border-white/20 rotate-45" />
-        <div className="absolute bottom-32 right-32 w-24 h-24 border border-blue-400/30 rotate-12" />
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 border border-violet-400/20 -rotate-12" />
+      {/* Subtle geometric patterns - positioned to avoid nav overlap */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-32 left-20 w-24 h-24 border border-white/30 rotate-45" />
+        <div className="absolute bottom-40 right-32 w-20 h-20 border border-blue-400/40 rotate-12" />
+        <div className="absolute top-2/3 left-1/4 w-16 h-16 border border-violet-400/30 -rotate-12" />
+        <div className="absolute top-1/2 right-1/4 w-12 h-12 border border-cyan-400/30 rotate-45" />
+        <div className="absolute bottom-32 left-1/3 w-14 h-14 border border-blue-300/25 -rotate-45" />
       </div>
 
       <div className="text-center z-10 max-w-6xl mx-auto px-6">
