@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Search, User, ChevronDown } from 'lucide-react';
+import { Menu, X, Search, User, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
 
 interface NavigationProps {
   onNavigate: (view: string) => void;
+  user: User | null;
+  onAuthClick: (mode: 'signin' | 'signup') => void;
+  onLogout: () => void;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
+const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, onLogout }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -28,8 +38,8 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
   };
 
   const handleNavigation = (view: string) => {
-    if (view === 'shadowtwin') {
-      onNavigate('shadowtwin');
+    if (['shadowtwin', 'microdeath', 'youinc'].includes(view)) {
+      onNavigate(view);
     } else {
       scrollToSection(view);
     }
@@ -50,6 +60,12 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
     { name: 'Community', description: 'Join our community', action: () => {} }
   ];
 
+  const userDropdownItems = [
+    { name: 'Profile', icon: <UserCircle size={16} />, action: () => {} },
+    { name: 'Settings', icon: <Settings size={16} />, action: () => {} },
+    { name: 'Sign Out', icon: <LogOut size={16} />, action: onLogout }
+  ];
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
@@ -60,9 +76,12 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+            <button 
+              onClick={() => onNavigate('home')}
+              className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
+            >
               WHATIF
-            </div>
+            </button>
           </div>
           
           {/* Desktop Navigation */}
@@ -145,19 +164,58 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
               <Search size={20} />
             </button>
 
-            {/* User account */}
-            <button className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors duration-200">
-              <User size={20} />
-              <span className="text-sm">Sign In</span>
-            </button>
+            {/* User account or auth buttons */}
+            {user ? (
+              <div 
+                className="relative"
+                onMouseEnter={() => setActiveDropdown('user')}
+                onMouseLeave={() => setActiveDropdown(null)}
+              >
+                <button className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors duration-200">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
+                    {user.avatar ? (
+                      <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                    ) : (
+                      <span className="text-white text-sm font-medium">
+                        {user.name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-white text-sm font-medium">{user.name}</span>
+                  <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${activeDropdown === 'user' ? 'rotate-180' : ''}`} />
+                </button>
 
-            {/* CTA Button */}
-            <button 
-              onClick={() => handleNavigation('shadowtwin')}
-              className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
-            >
-              Get Started
-            </button>
+                {activeDropdown === 'user' && (
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2">
+                    {userDropdownItems.map((item, index) => (
+                      <button
+                        key={index}
+                        onClick={item.action}
+                        className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-3 text-gray-300 hover:text-white"
+                      >
+                        {item.icon}
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => onAuthClick('signin')}
+                  className="text-gray-300 hover:text-white transition-colors duration-200 font-medium"
+                >
+                  Sign In
+                </button>
+                <button 
+                  onClick={() => onAuthClick('signup')}
+                  className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
+                >
+                  Get Started
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -214,14 +272,48 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate }) => {
                 </button>
               </div>
 
-              {/* Mobile CTA */}
+              {/* Mobile auth */}
               <div className="pt-4 border-t border-white/10">
-                <button 
-                  onClick={() => handleNavigation('shadowtwin')}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300"
-                >
-                  Get Started
-                </button>
+                {user ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 px-4 py-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
+                        {user.avatar ? (
+                          <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                        ) : (
+                          <span className="text-white font-medium">
+                            {user.name.charAt(0).toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-white font-medium">{user.name}</div>
+                        <div className="text-gray-400 text-sm">{user.email}</div>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={onLogout}
+                      className="w-full px-4 py-3 text-left text-red-400 hover:bg-red-500/10 rounded-lg transition-colors duration-200"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <button 
+                      onClick={() => onAuthClick('signin')}
+                      className="w-full px-6 py-3 border border-white/20 rounded-lg text-white font-medium hover:bg-white/5 transition-all duration-300"
+                    >
+                      Sign In
+                    </button>
+                    <button 
+                      onClick={() => onAuthClick('signup')}
+                      className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300"
+                    >
+                      Get Started
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
