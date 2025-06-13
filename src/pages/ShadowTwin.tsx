@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Send, Pause, Settings } from 'lucide-react';
+import { 
+  Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, 
+  Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, 
+  Instagram, Twitter, MapPin, Trophy, Clock, Send, Pause, Settings,
+  Zap, Eye, Moon, Star, Shield, Flame, Snowflake, Wind, Target,
+  BarChart3, Award, BookOpen, Users, TrendingUp, Lock, Unlock
+} from 'lucide-react';
 import { useAIServices } from '../hooks/useAIServices';
 import VideoGenerationPanel from '../components/VideoGenerationPanel';
 
@@ -18,1039 +24,624 @@ interface FormData {
   selfie?: File;
 }
 
-interface TimelineEvent {
-  age: number;
+interface ShadowAbility {
+  id: string;
+  name: string;
+  description: string;
+  level: number;
+  maxLevel: number;
+  icon: React.ReactNode;
+  color: string;
+  unlocked: boolean;
+  experience: number;
+  maxExperience: number;
+}
+
+interface Achievement {
+  id: string;
   title: string;
   description: string;
   icon: React.ReactNode;
-  year: string;
+  unlocked: boolean;
+  unlockedAt?: Date;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
 }
-
-interface SocialPost {
-  platform: 'instagram' | 'twitter';
-  image: string;
-  caption: string;
-  hashtags: string[];
-  likes: number;
-  time: string;
-}
-
-interface ComparisonData {
-  category: string;
-  realYou: string;
-  shadowTwin: string;
-  icon: React.ReactNode;
-}
-
-interface ChatMessage {
-  id: string;
-  sender: 'user' | 'shadowtwin';
-  message: string;
-  timestamp: Date;
-  audioUrl?: string;
-}
-
-// API Configuration Component
-const APIConfigModal: React.FC<{
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (config: { tavusApiKey: string; elevenLabsApiKey: string }) => void;
-}> = ({ isOpen, onClose, onSave }) => {
-  const [tavusApiKey, setTavusApiKey] = useState('9acf3d70659349aab5cb638470978303');
-  const [elevenLabsApiKey, setElevenLabsApiKey] = useState('sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d');
-
-  if (!isOpen) return null;
-
-  const handleSave = () => {
-    onSave({ tavusApiKey, elevenLabsApiKey });
-    onClose();
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-black/80 backdrop-blur-md border border-white/20 rounded-2xl p-8 max-w-md w-full">
-        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-          <Settings className="text-violet-400" size={24} />
-          AI Service Configuration
-        </h3>
-        
-        <div className="space-y-6">
-          <div>
-            <label className="block text-white font-medium mb-2">
-              Tavus API Key
-            </label>
-            <input
-              type="password"
-              value={tavusApiKey}
-              onChange={(e) => setTavusApiKey(e.target.value)}
-              placeholder="Enter your Tavus API key"
-              className="w-full p-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-violet-400/50 focus:outline-none"
-            />
-            <p className="text-gray-400 text-sm mt-1">For AI video generation</p>
-          </div>
-
-          <div>
-            <label className="block text-white font-medium mb-2">
-              ElevenLabs API Key
-            </label>
-            <input
-              type="password"
-              value={elevenLabsApiKey}
-              onChange={(e) => setElevenLabsApiKey(e.target.value)}
-              placeholder="Enter your ElevenLabs API key"
-              className="w-full p-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none"
-            />
-            <p className="text-gray-400 text-sm mt-1">For AI voice generation</p>
-          </div>
-
-          <div className="bg-green-500/10 border border-green-400/20 rounded-lg p-4">
-            <p className="text-green-300 text-sm">
-              <strong>✅ API Keys Configured:</strong> Your Tavus and ElevenLabs keys are pre-loaded and ready to use!
-            </p>
-          </div>
-        </div>
-
-        <div className="flex gap-3 mt-8">
-          <button
-            onClick={onClose}
-            className="flex-1 px-4 py-3 border border-white/20 rounded-lg text-white hover:bg-white/5 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-violet-500 to-blue-500 rounded-lg text-white font-medium hover:scale-105 transition-transform"
-          >
-            Save Configuration
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Voice Message Component
-const VoiceMessage: React.FC<{ 
-  message: string; 
-  audioUrl?: string;
-  isPlaying: boolean; 
-  onToggle: () => void;
-  isGenerating?: boolean;
-}> = ({ 
-  message, 
-  audioUrl,
-  isPlaying, 
-  onToggle,
-  isGenerating = false
-}) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    if (audioUrl && !audioRef.current) {
-      audioRef.current = new Audio(audioUrl);
-      audioRef.current.addEventListener('ended', onToggle);
-    }
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener('ended', onToggle);
-      }
-    };
-  }, [audioUrl, onToggle]);
-
-  const handlePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      onToggle();
-    } else {
-      // Fallback for demo mode
-      onToggle();
-    }
-  };
-
-  return (
-    <div className="bg-black/20 backdrop-blur-md border border-white/10 rounded-xl p-4 mb-4">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={handlePlay}
-          disabled={isGenerating}
-          className="w-12 h-12 bg-gradient-to-br from-violet-500 to-blue-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 disabled:opacity-50"
-        >
-          {isGenerating ? (
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : isPlaying ? (
-            <Pause className="text-white" size={20} />
-          ) : (
-            <Play className="text-white ml-1" size={20} />
-          )}
-        </button>
-        <div className="flex-1">
-          <p className="text-white font-medium mb-1">Voice Message from ShadowTwin</p>
-          <p className="text-gray-300 text-sm">{message}</p>
-          {isPlaying && (
-            <div className="flex items-center gap-1 mt-2">
-              <div className="w-1 h-4 bg-violet-400 rounded animate-pulse" />
-              <div className="w-1 h-6 bg-blue-400 rounded animate-pulse" style={{ animationDelay: '0.1s' }} />
-              <div className="w-1 h-3 bg-cyan-400 rounded animate-pulse" style={{ animationDelay: '0.2s' }} />
-              <div className="w-1 h-5 bg-violet-400 rounded animate-pulse" style={{ animationDelay: '0.3s' }} />
-              <span className="text-violet-400 text-xs ml-2">Playing...</span>
-            </div>
-          )}
-        </div>
-        <div className="text-right">
-          <div className="flex items-center gap-1 text-xs text-gray-400">
-            <Mic size={12} />
-            <span>{audioUrl ? 'ElevenLabs' : 'Demo'}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Chat Interface Component
-const ChatInterface: React.FC<{ 
-  formData: FormData;
-  generateVoiceResponse: (message: string, formData: FormData) => Promise<string | null>;
-}> = ({ formData, generateVoiceResponse }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      sender: 'shadowtwin',
-      message: `Hello ${formData.name}! I'm your ShadowTwin - the version of you that chose the creative path. I'm living in Barcelona as a photographer. What would you like to know about this life?`,
-      timestamp: new Date()
-    }
-  ]);
-  const [newMessage, setNewMessage] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [playingVoice, setPlayingVoice] = useState<string | null>(null);
-  const [generatingVoice, setGeneratingVoice] = useState<string | null>(null);
-
-  const handleSendMessage = async () => {
-    if (!newMessage.trim()) return;
-
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      sender: 'user',
-      message: newMessage,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setNewMessage('');
-    setIsTyping(true);
-
-    // Simulate ShadowTwin response
-    setTimeout(async () => {
-      const responses = [
-        "The creative life has been incredible! Every day I wake up excited about the stories I'll capture through my lens.",
-        "Barcelona changed everything for me. The art scene here is so vibrant, and I've connected with amazing artists from around the world.",
-        "Sometimes I wonder about the stability I gave up, but the fulfillment I get from my work makes it all worth it.",
-        "My latest documentary series has opened doors I never imagined. National Geographic wants to feature my work!",
-        "The freedom to travel and document different cultures has been the greatest gift of this path."
-      ];
-
-      const responseText = responses[Math.floor(Math.random() * responses.length)];
-      const messageId = (Date.now() + 1).toString();
-
-      const shadowResponse: ChatMessage = {
-        id: messageId,
-        sender: 'shadowtwin',
-        message: responseText,
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, shadowResponse]);
-      setIsTyping(false);
-
-      // Generate voice for the response
-      setGeneratingVoice(messageId);
-      try {
-        const audioUrl = await generateVoiceResponse(responseText, formData);
-        if (audioUrl) {
-          setMessages(prev => prev.map(msg => 
-            msg.id === messageId ? { ...msg, audioUrl } : msg
-          ));
-        }
-      } catch (error) {
-        console.error('Error generating voice:', error);
-      } finally {
-        setGeneratingVoice(null);
-      }
-    }, 2000);
-  };
-
-  const toggleVoicePlayback = (messageId: string) => {
-    if (playingVoice === messageId) {
-      setPlayingVoice(null);
-    } else {
-      setPlayingVoice(messageId);
-      // Simulate voice playback duration
-      setTimeout(() => setPlayingVoice(null), 3000);
-    }
-  };
-
-  return (
-    <div className="bg-black/30 backdrop-blur-md border border-white/10 rounded-2xl p-6 max-w-4xl mx-auto">
-      <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-        <MessageSquare className="text-violet-400" size={24} />
-        Chat with Your ShadowTwin
-      </h3>
-
-      <div className="h-96 overflow-y-auto mb-4 space-y-4 scrollbar-thin scrollbar-thumb-violet-500/20">
-        {messages.map((message) => (
-          <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
-              message.sender === 'user' 
-                ? 'bg-gradient-to-r from-violet-500 to-blue-500 text-white' 
-                : 'bg-black/40 border border-white/10 text-white'
-            }`}>
-              <p className="text-sm">{message.message}</p>
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-xs opacity-70">
-                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-                {message.sender === 'shadowtwin' && (
-                  <button
-                    onClick={() => toggleVoicePlayback(message.id)}
-                    disabled={generatingVoice === message.id}
-                    className="ml-2 p-1 rounded-full hover:bg-white/10 transition-colors duration-200 disabled:opacity-50"
-                    title="Play voice message"
-                  >
-                    {generatingVoice === message.id ? (
-                      <div className="w-3 h-3 border border-violet-400/30 border-t-violet-400 rounded-full animate-spin" />
-                    ) : playingVoice === message.id ? (
-                      <Pause size={12} className="text-violet-400" />
-                    ) : (
-                      <Play size={12} className="text-gray-400 hover:text-violet-400" />
-                    )}
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-        
-        {isTyping && (
-          <div className="flex justify-start">
-            <div className="bg-black/40 border border-white/10 text-white px-4 py-3 rounded-2xl">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                <span className="text-gray-400 text-sm ml-2">ShadowTwin is typing...</span>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="flex gap-3">
-        <input
-          type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-          placeholder="Ask your ShadowTwin anything..."
-          className="flex-1 px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-400/20"
-        />
-        <button
-          onClick={handleSendMessage}
-          disabled={!newMessage.trim()}
-          className="px-6 py-3 bg-gradient-to-r from-violet-500 to-blue-500 rounded-xl text-white font-medium hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
-        >
-          <Send size={16} />
-          Send
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const FormSection: React.FC<{
-  formData: FormData;
-  setFormData: (data: FormData) => void;
-  onSubmit: () => void;
-}> = ({ formData, setFormData, onSubmit }) => {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, selfie: file });
-    }
-  };
-
-  return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-          Tell Us About
-          <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Your Story</span>
-        </h2>
-        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-          Share your journey, decisions, and dreams. Our AI will create a parallel universe where you made different choices.
-        </p>
-      </div>
-
-      <div className="grid gap-8">
-        {/* Name Input */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <User size={20} className="text-violet-400" />
-            What's your name?
-          </label>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Enter your full name"
-            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-400/20 transition-all duration-300"
-          />
-        </div>
-
-        {/* Current Bio */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <MessageSquare size={20} className="text-blue-400" />
-            Tell us about your current life
-          </label>
-          <textarea
-            value={formData.currentBio}
-            onChange={(e) => setFormData({ ...formData, currentBio: e.target.value })}
-            placeholder="Describe your background, education, career, relationships, and current situation..."
-            rows={4}
-            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-300 resize-none"
-          />
-        </div>
-
-        {/* Major Decisions */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <Briefcase size={20} className="text-teal-400" />
-            What major life decisions did you make?
-          </label>
-          <textarea
-            value={formData.majorDecisions}
-            onChange={(e) => setFormData({ ...formData, majorDecisions: e.target.value })}
-            placeholder="Career choices, where you moved, relationships, education paths, financial decisions..."
-            rows={4}
-            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-teal-400/50 focus:outline-none focus:ring-2 focus:ring-teal-400/20 transition-all duration-300 resize-none"
-          />
-        </div>
-
-        {/* Dreams Not Pursued */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <Sparkles size={20} className="text-pink-400" />
-            What dreams did you not pursue?
-          </label>
-          <textarea
-            value={formData.dreamsNotPursued}
-            onChange={(e) => setFormData({ ...formData, dreamsNotPursued: e.target.value })}
-            placeholder="Creative pursuits, travel dreams, business ideas, alternative careers, relationships..."
-            rows={4}
-            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-pink-400/50 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 resize-none"
-          />
-        </div>
-
-        {/* Selfie Upload */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <Camera size={20} className="text-cyan-400" />
-            Upload a photo (optional)
-          </label>
-          <div className="relative">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-              id="selfie-upload"
-            />
-            <label
-              htmlFor="selfie-upload"
-              className="flex items-center justify-center w-full p-8 bg-black/30 backdrop-blur-md border-2 border-dashed border-white/20 rounded-xl text-gray-400 hover:border-cyan-400/50 hover:text-cyan-400 transition-all duration-300 cursor-pointer group"
-            >
-              <div className="text-center">
-                <Upload size={32} className="mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
-                <p className="font-medium">
-                  {formData.selfie ? formData.selfie.name : 'Click to upload your photo'}
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  This helps create a more personalized simulation
-                </p>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <div className="text-center pt-8">
-          <button
-            onClick={onSubmit}
-            disabled={!formData.name || !formData.currentBio || !formData.majorDecisions || !formData.dreamsNotPursued}
-            className="group relative px-12 py-4 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-600 rounded-full text-white font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-          >
-            <span className="relative z-10 flex items-center gap-3">
-              <Sparkles size={24} />
-              Simulate My ShadowTwin
-            </span>
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 via-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const TimelineSection: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
-  return (
-    <div className="mb-16">
-      <h3 className="text-3xl font-bold text-white mb-8 text-center">
-        Your Alternate
-        <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Timeline</span>
-      </h3>
-      
-      <div className="relative">
-        {/* Timeline line */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-violet-500 via-blue-500 to-cyan-500 rounded-full" />
-        
-        <div className="space-y-12">
-          {events.map((event, index) => (
-            <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
-              <div className={`w-5/12 ${index % 2 === 0 ? 'text-right pr-8' : 'text-left pl-8'}`}>
-                <div className="p-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl hover:border-violet-400/30 transition-all duration-300 group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      {event.icon}
-                    </div>
-                    <div>
-                      <p className="text-violet-400 font-bold">Age {event.age}</p>
-                      <p className="text-gray-400 text-sm">{event.year}</p>
-                    </div>
-                  </div>
-                  <h4 className="text-white font-bold text-lg mb-2">{event.title}</h4>
-                  <p className="text-gray-300">{event.description}</p>
-                </div>
-              </div>
-              
-              {/* Timeline dot */}
-              <div className="relative z-10 w-6 h-6 bg-gradient-to-br from-violet-500 to-cyan-500 rounded-full border-4 border-black flex-shrink-0" />
-              
-              <div className="w-5/12" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const VideoMessage: React.FC<{ 
-  videoUrl?: string; 
-  audioUrls: string[];
-  isGenerating: boolean;
-}> = ({ videoUrl, audioUrls, isGenerating }) => {
-  const [playingVoice, setPlayingVoice] = useState(false);
-  const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
-
-  const voiceMessages = [
-    "Hey there! It's incredible to see you. I'm living the creative life we always dreamed about.",
-    "Barcelona has been amazing. Every sunrise brings new inspiration for my photography.",
-    "I know you sometimes wonder about the path not taken. I'm here to show you it's beautiful too."
-  ];
-
-  return (
-    <div className="mb-16">
-      <h3 className="text-3xl font-bold text-white mb-8 text-center">
-        Message from Your
-        <span className="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent"> ShadowTwin</span>
-      </h3>
-      
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="relative aspect-video bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-teal-900/20 rounded-2xl border border-white/10 overflow-hidden group">
-          {videoUrl ? (
-            <video 
-              src={videoUrl} 
-              controls 
-              className="w-full h-full object-cover"
-              poster="/api/placeholder/800/450"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <div className="text-center">
-                {isGenerating ? (
-                  <>
-                    <div className="w-20 h-20 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin mb-6 mx-auto" />
-                    <h4 className="text-white font-bold text-xl mb-3">Generating AI Video...</h4>
-                    <p className="text-gray-300 mb-6 max-w-md mx-auto">
-                      Creating your personalized ShadowTwin video using Tavus AI
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <div className="w-20 h-20 bg-gradient-to-br from-violet-500 to-cyan-500 rounded-full flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
-                      <Play className="text-white ml-1" size={32} />
-                    </div>
-                    <h4 className="text-white font-bold text-xl mb-3">AI-Generated Video Message</h4>
-                    <p className="text-gray-300 mb-6 max-w-md mx-auto">
-                      Watch yourself in an alternate reality, speaking about the life you could have lived
-                    </p>
-                  </>
-                )}
-                <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
-                  <div className="flex items-center gap-2">
-                    <Video size={16} className="text-violet-400" />
-                    <span>Tavus AI</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Mic size={16} className="text-blue-400" />
-                    <span>ElevenLabs Voice</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Glowing border effect */}
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/20 via-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </div>
-
-        {/* Voice Messages */}
-        <div className="space-y-4">
-          {voiceMessages.map((message, index) => (
-            <VoiceMessage
-              key={index}
-              message={message}
-              audioUrl={audioUrls[index]}
-              isPlaying={playingVoice && currentAudioIndex === index}
-              onToggle={() => {
-                setPlayingVoice(!playingVoice);
-                setCurrentAudioIndex(index);
-              }}
-              isGenerating={isGenerating && !audioUrls[index]}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const SocialFeed: React.FC<{ posts: SocialPost[] }> = ({ posts }) => {
-  return (
-    <div className="mb-16">
-      <h3 className="text-3xl font-bold text-white mb-8 text-center">
-        Your Shadow
-        <span className="bg-gradient-to-r from-pink-400 to-violet-400 bg-clip-text text-transparent"> Social Life</span>
-      </h3>
-      
-      <div className="grid md:grid-cols-3 gap-6">
-        {posts.map((post, index) => (
-          <div key={index} className="bg-black/30 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden hover:border-violet-400/30 transition-all duration-300 group">
-            <div className="aspect-square bg-gradient-to-br from-violet-500/20 to-pink-500/20 flex items-center justify-center">
-              <div className="text-center text-gray-400">
-                {post.platform === 'instagram' ? <Instagram size={48} /> : <Twitter size={48} />}
-                <p className="mt-2 text-sm">AI-Generated Image</p>
-              </div>
-            </div>
-            
-            <div className="p-4">
-              <div className="flex items-center gap-2 mb-3">
-                {post.platform === 'instagram' ? 
-                  <Instagram size={16} className="text-pink-400" /> : 
-                  <Twitter size={16} className="text-blue-400" />
-                }
-                <span className="text-gray-400 text-sm">{post.time}</span>
-              </div>
-              
-              <p className="text-white mb-3">{post.caption}</p>
-              
-              <div className="flex flex-wrap gap-1 mb-3">
-                {post.hashtags.map((tag, tagIndex) => (
-                  <span key={tagIndex} className="text-violet-400 text-sm">#{tag}</span>
-                ))}
-              </div>
-              
-              <div className="flex items-center gap-2 text-gray-400 text-sm">
-                <Heart size={14} />
-                <span>{post.likes} likes</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const ComparisonTable: React.FC<{ data: ComparisonData[] }> = ({ data }) => {
-  return (
-    <div className="mb-16">
-      <h3 className="text-3xl font-bold text-white mb-8 text-center">
-        Real You vs
-        <span className="bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent"> ShadowTwin</span>
-      </h3>
-      
-      <div className="max-w-6xl mx-auto">
-        <div className="grid gap-6">
-          {data.map((item, index) => (
-            <div key={index} className="bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:border-teal-400/30 transition-all duration-300">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-blue-500 flex items-center justify-center">
-                  {item.icon}
-                </div>
-                <h4 className="text-white font-bold text-lg">{item.category}</h4>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="p-4 bg-black/20 rounded-lg border border-white/5">
-                  <h5 className="text-gray-400 font-medium mb-2">Real You</h5>
-                  <p className="text-white">{item.realYou}</p>
-                </div>
-                <div className="p-4 bg-gradient-to-br from-violet-500/10 to-cyan-500/10 rounded-lg border border-violet-400/20">
-                  <h5 className="text-violet-400 font-medium mb-2">ShadowTwin</h5>
-                  <p className="text-white">{item.shadowTwin}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ReflectionSection: React.FC<{ onTryAgain: () => void }> = ({ onTryAgain }) => {
-  return (
-    <div className="mb-16">
-      <div className="max-w-4xl mx-auto text-center">
-        <div className="p-8 bg-black/30 backdrop-blur-md border border-white/10 rounded-2xl">
-          <h3 className="text-3xl font-bold text-white mb-6">
-            What Would You Do
-            <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Differently Today?</span>
-          </h3>
-          
-          <blockquote className="text-xl text-gray-300 italic mb-8 max-w-2xl mx-auto">
-            "Seeing your ShadowTwin isn't about regret—it's about understanding the infinite possibilities that still exist within you."
-          </blockquote>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={onTryAgain}
-              className="px-8 py-3 bg-gradient-to-r from-violet-500 to-blue-500 rounded-full text-white font-semibold hover:scale-105 transition-all duration-300 flex items-center gap-2 justify-center"
-            >
-              <RotateCcw size={20} />
-              Try Different Choices
-            </button>
-            
-            <button className="px-8 py-3 border border-white/20 rounded-full text-white font-semibold hover:bg-white/5 transition-all duration-300 flex items-center gap-2 justify-center">
-              <Download size={20} />
-              Download Report
-            </button>
-            
-            <button className="px-8 py-3 border border-white/20 rounded-full text-white font-semibold hover:bg-white/5 transition-all duration-300 flex items-center gap-2 justify-center">
-              <Share2 size={20} />
-              Share ShadowTwin
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 interface ShadowTwinProps {
   onBack: () => void;
   user: User | null;
 }
 
-const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
-  const [currentStep, setCurrentStep] = useState('form'); // 'form', 'generating', 'results'
-  const [formData, setFormData] = useState<FormData>({
-    name: user?.name || '',
-    currentBio: '',
-    majorDecisions: '',
-    dreamsNotPursued: ''
-  });
-  const [showAPIConfig, setShowAPIConfig] = useState(false);
-  const [apiConfig, setApiConfig] = useState<{ tavusApiKey: string; elevenLabsApiKey: string }>({
-    tavusApiKey: '9acf3d70659349aab5cb638470978303',
-    elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d'
-  });
-  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
+// Mystical Particle Background Component
+const MysticalParticles: React.FC = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {[...Array(50)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full animate-float opacity-20"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            width: `${Math.random() * 4 + 1}px`,
+            height: `${Math.random() * 4 + 1}px`,
+            background: `linear-gradient(45deg, 
+              ${['#8B5CF6', '#3B82F6', '#06B6D4', '#10B981'][Math.floor(Math.random() * 4)]}, 
+              ${['#A855F7', '#6366F1', '#0EA5E9', '#059669'][Math.floor(Math.random() * 4)]}
+            )`,
+            animationDelay: `${Math.random() * 3}s`,
+            animationDuration: `${Math.random() * 4 + 3}s`,
+            filter: 'blur(0.5px)',
+          }}
+        />
+      ))}
+    </div>
+  );
+};
 
-  const { 
-    isGenerating, 
-    videoUrl, 
-    audioUrls, 
-    error, 
-    generateShadowTwinContent, 
-    generateVoiceResponse 
-  } = useAIServices(apiConfig);
+// Mystical Rune Component
+const MysticalRune: React.FC<{ className?: string }> = ({ className = "" }) => {
+  return (
+    <div className={`relative ${className}`}>
+      <svg viewBox="0 0 100 100" className="w-full h-full opacity-30">
+        <defs>
+          <linearGradient id="runeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#8B5CF6" />
+            <stop offset="50%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#06B6D4" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M50 10 L90 50 L50 90 L10 50 Z M30 30 L70 30 M30 70 L70 70 M50 20 L50 80"
+          stroke="url(#runeGradient)"
+          strokeWidth="2"
+          fill="none"
+          className="animate-pulse"
+        />
+      </svg>
+    </div>
+  );
+};
 
-  const handleSubmit = async () => {
-    setCurrentStep('generating');
+// Shadow Twin Status Display
+const ShadowTwinStatus: React.FC<{ shadowTwin: any }> = ({ shadowTwin }) => {
+  return (
+    <div className="bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-indigo-900/30 backdrop-blur-xl border border-purple-500/20 rounded-2xl p-6 relative overflow-hidden">
+      <MysticalRune className="absolute top-2 right-2 w-8 h-8" />
+      
+      <div className="flex items-center gap-4 mb-4">
+        <div className="relative">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+            <User className="text-white" size={24} />
+          </div>
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-black flex items-center justify-center">
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+          </div>
+        </div>
+        
+        <div>
+          <h3 className="text-white font-bold text-lg">Shadow Twin Active</h3>
+          <p className="text-purple-300 text-sm">Synchronization: 87%</p>
+        </div>
+      </div>
+      
+      <div className="space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-300 text-sm">Shadow Energy</span>
+          <span className="text-purple-400 font-medium">750/1000</span>
+        </div>
+        <div className="w-full bg-gray-700/50 rounded-full h-2">
+          <div className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full w-3/4 relative">
+            <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse" />
+          </div>
+        </div>
+        
+        <div className="flex justify-between items-center">
+          <span className="text-gray-300 text-sm">Manifestation Power</span>
+          <span className="text-blue-400 font-medium">Level 12</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Shadow Abilities Dashboard
+const ShadowAbilitiesPanel: React.FC<{ abilities: ShadowAbility[] }> = ({ abilities }) => {
+  const [selectedAbility, setSelectedAbility] = useState<ShadowAbility | null>(null);
+
+  return (
+    <div className="bg-gradient-to-br from-indigo-900/30 via-purple-900/30 to-blue-900/30 backdrop-blur-xl border border-indigo-500/20 rounded-2xl p-6">
+      <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <Zap className="text-yellow-400" size={24} />
+        Shadow Abilities
+      </h3>
+      
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        {abilities.map((ability) => (
+          <button
+            key={ability.id}
+            onClick={() => setSelectedAbility(ability)}
+            className={`relative p-4 rounded-xl border-2 transition-all duration-300 group ${
+              ability.unlocked 
+                ? 'border-purple-500/30 hover:border-purple-400/50 bg-purple-900/20' 
+                : 'border-gray-600/30 bg-gray-900/20 cursor-not-allowed'
+            }`}
+          >
+            {!ability.unlocked && (
+              <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
+                <Lock className="text-gray-400" size={20} />
+              </div>
+            )}
+            
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 mx-auto ${ability.color} ${
+              ability.unlocked ? 'group-hover:scale-110' : 'grayscale'
+            } transition-transform duration-300`}>
+              {ability.icon}
+            </div>
+            
+            <h4 className={`font-medium text-sm text-center mb-2 ${
+              ability.unlocked ? 'text-white' : 'text-gray-500'
+            }`}>
+              {ability.name}
+            </h4>
+            
+            {ability.unlocked && (
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Lv.{ability.level}</span>
+                  <span className="text-purple-400">{ability.experience}/{ability.maxExperience}</span>
+                </div>
+                <div className="w-full bg-gray-700/50 rounded-full h-1">
+                  <div 
+                    className={`h-1 rounded-full ${ability.color.replace('bg-', 'bg-gradient-to-r from-').replace('/20', '-500 to-').replace('bg-gradient-to-r from-', 'bg-gradient-to-r from-').split(' ')[0]}-600`}
+                    style={{ width: `${(ability.experience / ability.maxExperience) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )}
+          </button>
+        ))}
+      </div>
+      
+      {selectedAbility && (
+        <div className="bg-black/30 rounded-xl p-4 border border-purple-500/20">
+          <div className="flex items-center gap-3 mb-3">
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${selectedAbility.color}`}>
+              {selectedAbility.icon}
+            </div>
+            <div>
+              <h4 className="text-white font-bold">{selectedAbility.name}</h4>
+              <p className="text-purple-300 text-sm">Level {selectedAbility.level}/{selectedAbility.maxLevel}</p>
+            </div>
+          </div>
+          <p className="text-gray-300 text-sm mb-4">{selectedAbility.description}</p>
+          
+          {selectedAbility.unlocked && (
+            <button className="w-full py-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-medium hover:scale-105 transition-transform duration-300">
+              Train Ability
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Achievement System
+const AchievementPanel: React.FC<{ achievements: Achievement[] }> = ({ achievements }) => {
+  const unlockedAchievements = achievements.filter(a => a.unlocked);
+  const lockedAchievements = achievements.filter(a => !a.unlocked);
+
+  const getRarityColor = (rarity: string) => {
+    switch (rarity) {
+      case 'legendary': return 'from-yellow-500 to-orange-500';
+      case 'epic': return 'from-purple-500 to-pink-500';
+      case 'rare': return 'from-blue-500 to-cyan-500';
+      default: return 'from-gray-500 to-gray-600';
+    }
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-emerald-900/30 via-teal-900/30 to-cyan-900/30 backdrop-blur-xl border border-emerald-500/20 rounded-2xl p-6">
+      <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <Award className="text-yellow-400" size={24} />
+        Achievements
+        <span className="text-sm text-gray-400">({unlockedAchievements.length}/{achievements.length})</span>
+      </h3>
+      
+      <div className="space-y-4 max-h-64 overflow-y-auto">
+        {unlockedAchievements.map((achievement) => (
+          <div
+            key={achievement.id}
+            className={`p-4 rounded-xl bg-gradient-to-r ${getRarityColor(achievement.rarity)} bg-opacity-20 border border-white/10 relative overflow-hidden`}
+          >
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${getRarityColor(achievement.rarity)} flex items-center justify-center`}>
+                {achievement.icon}
+              </div>
+              <div className="flex-1">
+                <h4 className="text-white font-bold">{achievement.title}</h4>
+                <p className="text-gray-300 text-sm">{achievement.description}</p>
+                {achievement.unlockedAt && (
+                  <p className="text-gray-400 text-xs mt-1">
+                    Unlocked {achievement.unlockedAt.toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="absolute top-2 right-2">
+              <Star className="text-yellow-400" size={16} />
+            </div>
+          </div>
+        ))}
+        
+        {lockedAchievements.slice(0, 3).map((achievement) => (
+          <div
+            key={achievement.id}
+            className="p-4 rounded-xl bg-gray-900/30 border border-gray-600/20 relative"
+          >
+            <div className="flex items-center gap-3 opacity-50">
+              <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center">
+                <Lock className="text-gray-400" size={20} />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-gray-400 font-bold">???</h4>
+                <p className="text-gray-500 text-sm">Complete more training to unlock</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Training Interface
+const TrainingInterface: React.FC = () => {
+  const [selectedTraining, setSelectedTraining] = useState<string | null>(null);
+  const [isTraining, setIsTraining] = useState(false);
+
+  const trainingModules = [
+    {
+      id: 'shadow-manipulation',
+      name: 'Shadow Manipulation',
+      description: 'Learn to control and shape shadows to your will',
+      duration: '30 min',
+      difficulty: 'Beginner',
+      icon: <Moon className="text-white" size={20} />,
+      color: 'from-purple-600 to-indigo-600'
+    },
+    {
+      id: 'astral-projection',
+      name: 'Astral Projection',
+      description: 'Project your consciousness beyond physical boundaries',
+      duration: '45 min',
+      difficulty: 'Intermediate',
+      icon: <Eye className="text-white" size={20} />,
+      color: 'from-blue-600 to-cyan-600'
+    },
+    {
+      id: 'energy-channeling',
+      name: 'Energy Channeling',
+      description: 'Harness and direct mystical energies',
+      duration: '60 min',
+      difficulty: 'Advanced',
+      icon: <Zap className="text-white" size={20} />,
+      color: 'from-yellow-600 to-orange-600'
+    }
+  ];
+
+  const startTraining = (moduleId: string) => {
+    setSelectedTraining(moduleId);
+    setIsTraining(true);
     
-    try {
-      await generateShadowTwinContent(formData);
-      setTimeout(() => {
-        setCurrentStep('results');
-      }, 2000);
-    } catch (error) {
-      console.error('Error generating ShadowTwin:', error);
-      // Still proceed to results for demo
-      setTimeout(() => {
-        setCurrentStep('results');
-      }, 2000);
-    }
+    // Simulate training completion
+    setTimeout(() => {
+      setIsTraining(false);
+      setSelectedTraining(null);
+    }, 3000);
   };
 
-  const handleTryAgain = () => {
-    setCurrentStep('form');
-    setFormData({
-      name: user?.name || '',
-      currentBio: '',
-      majorDecisions: '',
-      dreamsNotPursued: ''
-    });
-    setGeneratedVideoUrl(null);
-  };
+  return (
+    <div className="bg-gradient-to-br from-violet-900/30 via-purple-900/30 to-indigo-900/30 backdrop-blur-xl border border-violet-500/20 rounded-2xl p-6">
+      <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <Target className="text-red-400" size={24} />
+        Shadow Training
+      </h3>
+      
+      {isTraining ? (
+        <div className="text-center py-12">
+          <div className="w-24 h-24 mx-auto mb-6 relative">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 animate-spin">
+              <div className="absolute inset-2 rounded-full bg-black" />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Zap className="text-purple-400" size={32} />
+            </div>
+          </div>
+          <h4 className="text-white font-bold text-xl mb-2">Training in Progress</h4>
+          <p className="text-gray-300">Channeling shadow energy...</p>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {trainingModules.map((module) => (
+            <div
+              key={module.id}
+              className="p-4 rounded-xl bg-black/30 border border-white/10 hover:border-purple-400/30 transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${module.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                    {module.icon}
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold">{module.name}</h4>
+                    <p className="text-gray-300 text-sm">{module.description}</p>
+                    <div className="flex items-center gap-4 mt-1">
+                      <span className="text-purple-400 text-xs">{module.duration}</span>
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        module.difficulty === 'Beginner' ? 'bg-green-500/20 text-green-400' :
+                        module.difficulty === 'Intermediate' ? 'bg-yellow-500/20 text-yellow-400' :
+                        'bg-red-500/20 text-red-400'
+                      }`}>
+                        {module.difficulty}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={() => startTraining(module.id)}
+                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg text-white font-medium hover:scale-105 transition-transform duration-300"
+                >
+                  Start Training
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
-  const handleAPIConfig = (config: { tavusApiKey: string; elevenLabsApiKey: string }) => {
-    setApiConfig(config);
-  };
-
-  const handleVideoGenerated = (videoUrl: string) => {
-    setGeneratedVideoUrl(videoUrl);
-  };
-
-  // Mock data for the simulation results
-  const timelineEvents: TimelineEvent[] = [
-    {
-      age: 22,
-      year: '2018',
-      title: 'Moved to Barcelona',
-      description: 'Left corporate job to pursue photography in Spain',
-      icon: <MapPin className="text-white" size={16} />
-    },
-    {
-      age: 24,
-      year: '2020',
-      title: 'First Gallery Exhibition',
-      description: 'Solo photography exhibition "Urban Souls" featured in Barcelona Modern Art Gallery',
-      icon: <Camera className="text-white" size={16} />
-    },
-    {
-      age: 26,
-      year: '2022',
-      title: 'Travel Documentary Series',
-      description: 'Created award-winning documentary series about street artists across Europe',
-      icon: <Video className="text-white" size={16} />
-    },
-    {
-      age: 28,
-      year: '2024',
-      title: 'International Recognition',
-      description: 'Photography featured in National Geographic, established creative studio',
-      icon: <Trophy className="text-white" size={16} />
-    }
-  ];
-
-  const socialPosts: SocialPost[] = [
-    {
-      platform: 'instagram',
-      image: '',
-      caption: 'Golden hour in Barcelona never gets old. Every street tells a story. 📸✨',
-      hashtags: ['photography', 'barcelona', 'streetart', 'goldenhour'],
-      likes: 2847,
-      time: '2h ago'
-    },
-    {
-      platform: 'twitter',
-      image: '',
-      caption: 'Just wrapped filming for the new documentary series. The stories these artists shared... incredible.',
-      hashtags: ['documentary', 'streetart', 'storytelling'],
-      likes: 1203,
-      time: '1d ago'
-    },
-    {
-      platform: 'instagram',
-      image: '',
-      caption: 'Studio life. Coffee, creativity, and endless possibilities. What are you creating today?',
-      hashtags: ['studio', 'creativity', 'photography', 'inspiration'],
-      likes: 3156,
-      time: '3d ago'
-    }
-  ];
-
-  const comparisonData: ComparisonData[] = [
-    {
-      category: 'Career',
-      realYou: 'Software Engineer at tech company',
-      shadowTwin: 'Award-winning photographer and documentary filmmaker',
-      icon: <Briefcase className="text-white" size={20} />
-    },
-    {
-      category: 'Location',
-      realYou: 'Living in hometown',
-      shadowTwin: 'Based in Barcelona, travels across Europe',
-      icon: <MapPin className="text-white" size={20} />
-    },
-    {
-      category: 'Key Achievements',
-      realYou: 'Stable income, good work-life balance',
-      shadowTwin: 'National Geographic feature, gallery exhibitions, documentary awards',
-      icon: <Trophy className="text-white" size={20} />
-    },
-    {
-      category: 'Lifestyle',
-      realYou: 'Routine-focused, security-oriented',
-      shadowTwin: 'Adventure-driven, creatively fulfilled, internationally connected',
-      icon: <Heart className="text-white" size={20} />
-    }
+// Progress Tracking Dashboard
+const ProgressDashboard: React.FC = () => {
+  const progressData = [
+    { label: 'Shadow Mastery', value: 75, color: 'purple' },
+    { label: 'Astral Awareness', value: 60, color: 'blue' },
+    { label: 'Energy Control', value: 45, color: 'cyan' },
+    { label: 'Manifestation', value: 30, color: 'green' }
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* API Configuration Modal */}
-      <APIConfigModal
-        isOpen={showAPIConfig}
-        onClose={() => setShowAPIConfig(false)}
-        onSave={handleAPIConfig}
-      />
-
-      {/* Hero Section */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-cyan-900/20" />
+    <div className="bg-gradient-to-br from-slate-900/30 via-gray-900/30 to-zinc-900/30 backdrop-blur-xl border border-slate-500/20 rounded-2xl p-6">
+      <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <BarChart3 className="text-green-400" size={24} />
+        Progress Overview
+      </h3>
+      
+      <div className="space-y-6">
+        {progressData.map((item, index) => (
+          <div key={index}>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-white font-medium">{item.label}</span>
+              <span className={`text-${item.color}-400 font-bold`}>{item.value}%</span>
+            </div>
+            <div className="w-full bg-gray-700/50 rounded-full h-3 relative overflow-hidden">
+              <div 
+                className={`h-3 rounded-full bg-gradient-to-r from-${item.color}-500 to-${item.color}-600 transition-all duration-1000 relative`}
+                style={{ width: `${item.value}%` }}
+              >
+                <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse" />
+              </div>
+            </div>
+          </div>
+        ))}
         
-        {/* Animated background particles */}
-        <div className="absolute inset-0">
-          {[...Array(15)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full bg-gradient-to-r from-violet-400/20 to-cyan-400/20 animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 6 + 3}px`,
-                height: `${Math.random() * 6 + 3}px`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${Math.random() * 4 + 3}s`
-              }}
-            />
-          ))}
+        <div className="mt-8 p-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl border border-purple-500/20">
+          <h4 className="text-white font-bold mb-2">Next Milestone</h4>
+          <p className="text-gray-300 text-sm mb-3">Reach 80% Shadow Mastery to unlock Advanced Techniques</p>
+          <div className="w-full bg-gray-700/50 rounded-full h-2">
+            <div className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full w-3/4" />
+          </div>
         </div>
+      </div>
+    </div>
+  );
+};
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
+// Main Shadow Twin Component
+const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'creation', 'training', 'abilities', 'progress'
+  const [showAPIConfig, setShowAPIConfig] = useState(false);
+
+  // Mock data for shadow abilities
+  const shadowAbilities: ShadowAbility[] = [
+    {
+      id: 'shadow-step',
+      name: 'Shadow Step',
+      description: 'Teleport through shadows instantly',
+      level: 5,
+      maxLevel: 10,
+      icon: <Moon className="text-white" size={20} />,
+      color: 'bg-purple-500/20',
+      unlocked: true,
+      experience: 750,
+      maxExperience: 1000
+    },
+    {
+      id: 'dark-vision',
+      name: 'Dark Vision',
+      description: 'See clearly in complete darkness',
+      level: 3,
+      maxLevel: 8,
+      icon: <Eye className="text-white" size={20} />,
+      color: 'bg-blue-500/20',
+      unlocked: true,
+      experience: 400,
+      maxExperience: 600
+    },
+    {
+      id: 'shadow-bind',
+      name: 'Shadow Bind',
+      description: 'Immobilize targets with shadow tendrils',
+      level: 0,
+      maxLevel: 12,
+      icon: <Shield className="text-white" size={20} />,
+      color: 'bg-indigo-500/20',
+      unlocked: false,
+      experience: 0,
+      maxExperience: 500
+    },
+    {
+      id: 'umbral-form',
+      name: 'Umbral Form',
+      description: 'Become one with the shadows',
+      level: 0,
+      maxLevel: 15,
+      icon: <Sparkles className="text-white" size={20} />,
+      color: 'bg-violet-500/20',
+      unlocked: false,
+      experience: 0,
+      maxExperience: 1200
+    }
+  ];
+
+  // Mock achievements
+  const achievements: Achievement[] = [
+    {
+      id: 'first-step',
+      title: 'First Steps',
+      description: 'Complete your first shadow training session',
+      icon: <Star className="text-white" size={16} />,
+      unlocked: true,
+      unlockedAt: new Date('2024-01-15'),
+      rarity: 'common'
+    },
+    {
+      id: 'shadow-adept',
+      title: 'Shadow Adept',
+      description: 'Reach level 5 in any shadow ability',
+      icon: <Award className="text-white" size={16} />,
+      unlocked: true,
+      unlockedAt: new Date('2024-01-20'),
+      rarity: 'rare'
+    },
+    {
+      id: 'master-manipulator',
+      title: 'Master Manipulator',
+      description: 'Master the art of shadow manipulation',
+      icon: <Trophy className="text-white" size={16} />,
+      unlocked: false,
+      rarity: 'epic'
+    }
+  ];
+
+  const renderNavigation = () => (
+    <div className="flex flex-wrap gap-2 mb-8">
+      {[
+        { id: 'dashboard', label: 'Dashboard', icon: <BarChart3 size={16} /> },
+        { id: 'abilities', label: 'Abilities', icon: <Zap size={16} /> },
+        { id: 'training', label: 'Training', icon: <Target size={16} /> },
+        { id: 'progress', label: 'Progress', icon: <TrendingUp size={16} /> },
+        { id: 'creation', label: 'Creation', icon: <User size={16} /> }
+      ].map((item) => (
+        <button
+          key={item.id}
+          onClick={() => setCurrentView(item.id)}
+          className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
+            currentView === item.id
+              ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
+              : 'bg-black/30 text-gray-300 hover:bg-black/50 hover:text-white border border-white/10'
+          }`}
+        >
+          {item.icon}
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  const renderDashboard = () => (
+    <div className="grid lg:grid-cols-3 gap-8">
+      <div className="lg:col-span-2 space-y-8">
+        <ShadowTwinStatus shadowTwin={{}} />
+        <ShadowAbilitiesPanel abilities={shadowAbilities.slice(0, 4)} />
+      </div>
+      <div className="space-y-8">
+        <AchievementPanel achievements={achievements} />
+        <ProgressDashboard />
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-indigo-900/20 text-white relative overflow-hidden">
+      {/* Mystical Background */}
+      <MysticalParticles />
+      
+      {/* Mystical Runes */}
+      <MysticalRune className="absolute top-20 left-10 w-16 h-16 opacity-10" />
+      <MysticalRune className="absolute bottom-20 right-10 w-20 h-20 opacity-10" />
+      <MysticalRune className="absolute top-1/2 left-1/4 w-12 h-12 opacity-10" />
+
+      {/* Header */}
+      <section className="py-20 relative z-10">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
               <button
                 onClick={onBack}
-                className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+                className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-purple-500/20 text-gray-300 hover:text-white hover:border-purple-400/40 transition-all duration-300 group"
               >
-                <ArrowLeft size={24} />
+                <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform duration-300" />
               </button>
               <div>
-                <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                  Meet Your ShadowTwin
+                <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                  Shadow Twin
                 </h1>
                 <p className="text-xl md:text-2xl text-gray-300 mt-4">
-                  An AI-simulated version of the life you never lived.
+                  Master the mystical arts of shadow manipulation
                 </p>
               </div>
             </div>
             
             <button
               onClick={() => setShowAPIConfig(true)}
-              className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+              className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-purple-500/20 text-gray-300 hover:text-white hover:border-purple-400/40 transition-all duration-300"
               title="Configure AI Services"
             >
               <Settings size={24} />
             </button>
           </div>
 
-          {error && (
-            <div className="mb-8 p-4 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
-              <p className="text-yellow-300 text-sm">{error}</p>
-            </div>
-          )}
+          {renderNavigation()}
         </div>
       </section>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 pb-20">
-        {currentStep === 'form' && (
-          <FormSection
-            formData={formData}
-            setFormData={setFormData}
-            onSubmit={handleSubmit}
-          />
-        )}
-
-        {currentStep === 'generating' && (
+      <div className="max-w-7xl mx-auto px-6 pb-20 relative z-10">
+        {currentView === 'dashboard' && renderDashboard()}
+        {currentView === 'abilities' && <ShadowAbilitiesPanel abilities={shadowAbilities} />}
+        {currentView === 'training' && <TrainingInterface />}
+        {currentView === 'progress' && <ProgressDashboard />}
+        {currentView === 'creation' && (
           <div className="text-center py-20">
-            <div className="max-w-2xl mx-auto">
-              <div className="w-32 h-32 mx-auto mb-8 relative">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin" style={{ animationDuration: '3s' }}>
-                  <div className="absolute inset-2 rounded-full bg-black" />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Sparkles className="text-violet-400" size={48} />
-                </div>
-              </div>
-              
-              <h2 className="text-4xl font-bold text-white mb-6">
-                Generating Your
-                <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> ShadowTwin</span>
-              </h2>
-              
-              <div className="space-y-4 text-gray-300">
-                <p className="flex items-center justify-center gap-2">
-                  <Clock size={16} className="text-violet-400" />
-                  Analyzing your life choices...
-                </p>
-                <p className="flex items-center justify-center gap-2">
-                  <Video size={16} className="text-blue-400" />
-                  Creating alternate timeline...
-                </p>
-                <p className="flex items-center justify-center gap-2">
-                  <Mic size={16} className="text-cyan-400" />
-                  Generating AI persona...
-                </p>
-              </div>
-            </div>
+            <h2 className="text-3xl font-bold text-white mb-4">Shadow Twin Creation</h2>
+            <p className="text-gray-300 mb-8">Create and customize your mystical shadow companion</p>
+            <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full text-white font-bold hover:scale-105 transition-transform duration-300">
+              Begin Creation Ritual
+            </button>
           </div>
         )}
+      </div>
 
-        {currentStep === 'results' && (
-          <div>
-            <TimelineSection events={timelineEvents} />
-            
-            {/* Video Generation Panel */}
-            <VideoGenerationPanel
-              formData={formData}
-              onVideoGenerated={handleVideoGenerated}
-              tavusApiKey={apiConfig.tavusApiKey}
-            />
-            
-            <VideoMessage 
-              videoUrl={generatedVideoUrl || videoUrl} 
-              audioUrls={audioUrls}
-              isGenerating={isGenerating}
-            />
-            <SocialFeed posts={socialPosts} />
-            <ComparisonTable data={comparisonData} />
-            <ChatInterface 
-              formData={formData}
-              generateVoiceResponse={generateVoiceResponse}
-            />
-            <ReflectionSection onTryAgain={handleTryAgain} />
-          </div>
-        )}
+      {/* Mystical Glow Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
       </div>
     </div>
   );
