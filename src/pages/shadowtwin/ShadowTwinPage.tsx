@@ -85,6 +85,18 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
     setApiConfig(config);
   };
 
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+    // Close profile dropdown when opening mobile menu
+    if (!isMobileMenuOpen) {
+      setShowProfileDropdown(false);
+    }
+  };
+
+  const handleMobileMenuClose = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   const renderMainContent = () => {
     // If we're in the middle of generating or showing results, show that instead of navigation sections
     if (currentStep === 'generating') {
@@ -155,8 +167,8 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
           <div className="flex items-center gap-3 lg:gap-4">
             {/* Mobile Menu Button */}
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 lg:p-3 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+              onClick={handleMobileMenuToggle}
+              className="mobile-menu-button lg:hidden p-2 lg:p-3 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
             >
               <Menu size={18} className="lg:w-5 lg:h-5" />
             </button>
@@ -173,7 +185,13 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
           {/* Right Section - Profile */}
           <div className="relative">
             <button
-              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              onClick={() => {
+                setShowProfileDropdown(!showProfileDropdown);
+                // Close mobile menu when opening profile dropdown
+                if (!showProfileDropdown) {
+                  setIsMobileMenuOpen(false);
+                }
+              }}
               className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
             >
               <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
@@ -241,7 +259,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
         user={user}
         onLogout={() => console.log('Logout')}
         isMobileMenuOpen={isMobileMenuOpen}
-        onMobileMenuClose={() => setIsMobileMenuOpen(false)}
+        onMobileMenuClose={handleMobileMenuClose}
         onNavigateToMain={onBack}
       />
 

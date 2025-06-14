@@ -46,10 +46,20 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
     onMobileMenuClose();
   };
 
+  // Close user dropdown when mobile menu closes
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      setShowUserDropdown(false);
+    }
+  }, [isMobileMenuOpen]);
+
   // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isMobileMenuOpen && !(event.target as Element).closest('.mobile-nav-panel')) {
+      const target = event.target as Element;
+      if (isMobileMenuOpen && 
+          !target.closest('.mobile-nav-panel') && 
+          !target.closest('.mobile-menu-button')) {
         onMobileMenuClose();
       }
     };
@@ -97,23 +107,27 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
       `}>
         {/* Header with ShadowTwin Logo */}
         <div className="p-4 border-b border-white/10 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="text-white" size={20} />
-            </div>
-            {(!isCollapsed || isMobileMenuOpen) && (
-              <div className="flex-1 min-w-0">
-                <h2 className="text-white font-bold text-lg truncate">ShadowTwin</h2>
-                <p className="text-gray-400 text-xs truncate">Explore alternate realities</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="text-white" size={20} />
               </div>
-            )}
+              {(!isCollapsed || isMobileMenuOpen) && (
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-white font-bold text-lg truncate">ShadowTwin</h2>
+                  <p className="text-gray-400 text-xs truncate">Explore alternate realities</p>
+                </div>
+              )}
+            </div>
             {/* Mobile Close Button */}
-            <button
-              onClick={onMobileMenuClose}
-              className="lg:hidden p-2 text-gray-400 hover:text-white transition-colors duration-200"
-            >
-              <X size={18} />
-            </button>
+            {isMobileMenuOpen && (
+              <button
+                onClick={onMobileMenuClose}
+                className="lg:hidden p-2 text-gray-400 hover:text-white transition-colors duration-200 rounded-lg hover:bg-white/10"
+              >
+                <X size={20} />
+              </button>
+            )}
           </div>
         </div>
 
