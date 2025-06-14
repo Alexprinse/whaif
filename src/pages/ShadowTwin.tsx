@@ -48,15 +48,16 @@ interface ChatMessage {
 const APIConfigModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-  onSave: (config: { tavusApiKey: string; elevenLabsApiKey: string }) => void;
+  onSave: (config: { tavusApiKey: string; elevenLabsApiKey: string; geminiApiKey: string }) => void;
 }> = ({ isOpen, onClose, onSave }) => {
   const [tavusApiKey, setTavusApiKey] = useState('9acf3d70659349aab5cb638470978303');
   const [elevenLabsApiKey, setElevenLabsApiKey] = useState('sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d');
+  const [geminiApiKey, setGeminiApiKey] = useState('');
 
   if (!isOpen) return null;
 
   const handleSave = () => {
-    onSave({ tavusApiKey, elevenLabsApiKey });
+    onSave({ tavusApiKey, elevenLabsApiKey, geminiApiKey });
     onClose();
   };
 
@@ -69,6 +70,20 @@ const APIConfigModal: React.FC<{
         </h3>
         
         <div className="space-y-6">
+          <div>
+            <label className="block text-white font-medium mb-2">
+              Google Gemini API Key
+            </label>
+            <input
+              type="password"
+              value={geminiApiKey}
+              onChange={(e) => setGeminiApiKey(e.target.value)}
+              placeholder="Enter your Gemini API key"
+              className="w-full p-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-green-400/50 focus:outline-none"
+            />
+            <p className="text-gray-400 text-sm mt-1">For AI content generation and chat</p>
+          </div>
+
           <div>
             <label className="block text-white font-medium mb-2">
               Tavus API Key
@@ -97,9 +112,12 @@ const APIConfigModal: React.FC<{
             <p className="text-gray-400 text-sm mt-1">For AI voice generation</p>
           </div>
 
-          <div className="bg-green-500/10 border border-green-400/20 rounded-lg p-4">
-            <p className="text-green-300 text-sm">
-              <strong>✅ API Keys Configured:</strong> Your Tavus and ElevenLabs keys are pre-loaded and ready to use!
+          <div className="bg-blue-500/10 border border-blue-400/20 rounded-lg p-4">
+            <p className="text-blue-300 text-sm">
+              <strong>🚀 Get Free API Keys:</strong>
+              <br />• <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Google Gemini API</a> (Free tier available)
+              <br />• <a href="https://elevenlabs.io/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">ElevenLabs</a> (Free tier: 10k characters/month)
+              <br />• <a href="https://tavus.io/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Tavus</a> (Free trial available)
             </p>
           </div>
         </div>
@@ -209,13 +227,13 @@ const VoiceMessage: React.FC<{
 // Chat Interface Component
 const ChatInterface: React.FC<{ 
   formData: FormData;
-  generateVoiceResponse: (message: string, formData: FormData) => Promise<string | null>;
-}> = ({ formData, generateVoiceResponse }) => {
+  generateChatResponse: (message: string, formData: FormData, history: string[]) => Promise<{ text: string; audioUrl?: string }>;
+}> = ({ formData, generateChatResponse }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
       sender: 'shadowtwin',
-      message: `Hello ${formData.name}! I'm your ShadowTwin - the version of you that chose the creative path. I'm living in Barcelona as a photographer. What would you like to know about this life?`,
+      message: `Hello ${formData.name}! I'm your ShadowTwin - the version of you that chose to pursue ${formData.dreamsNotPursued || 'those dreams you set aside'}. What would you like to know about this alternate life?`,
       timestamp: new Date()
     }
   ]);
@@ -235,47 +253,44 @@ const ChatInterface: React.FC<{
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentMessage = newMessage;
     setNewMessage('');
     setIsTyping(true);
 
-    // Simulate ShadowTwin response
-    setTimeout(async () => {
-      const responses = [
-        "The creative life has been incredible! Every day I wake up excited about the stories I'll capture through my lens.",
-        "Barcelona changed everything for me. The art scene here is so vibrant, and I've connected with amazing artists from around the world.",
-        "Sometimes I wonder about the stability I gave up, but the fulfillment I get from my work makes it all worth it.",
-        "My latest documentary series has opened doors I never imagined. National Geographic wants to feature my work!",
-        "The freedom to travel and document different cultures has been the greatest gift of this path."
-      ];
+    try {
+      // Build conversation history
+      const history = messages.slice(-6).map(msg => 
+        `${msg.sender === 'user' ? 'User' : 'ShadowTwin'}: ${msg.message}`
+      );
 
-      const responseText = responses[Math.floor(Math.random() * responses.length)];
+      // Generate AI response
+      const response = await generateChatResponse(currentMessage, formData, history);
+      
       const messageId = (Date.now() + 1).toString();
-
       const shadowResponse: ChatMessage = {
         id: messageId,
         sender: 'shadowtwin',
-        message: responseText,
-        timestamp: new Date()
+        message: response.text,
+        timestamp: new Date(),
+        audioUrl: response.audioUrl
       };
 
       setMessages(prev => [...prev, shadowResponse]);
+    } catch (error) {
+      console.error('Error generating response:', error);
+      
+      // Fallback response
+      const fallbackResponse: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        sender: 'shadowtwin',
+        message: "I'm having trouble connecting right now, but I'd love to continue our conversation. The path I chose has been quite a journey!",
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, fallbackResponse]);
+    } finally {
       setIsTyping(false);
-
-      // Generate voice for the response
-      setGeneratingVoice(messageId);
-      try {
-        const audioUrl = await generateVoiceResponse(responseText, formData);
-        if (audioUrl) {
-          setMessages(prev => prev.map(msg => 
-            msg.id === messageId ? { ...msg, audioUrl } : msg
-          ));
-        }
-      } catch (error) {
-        console.error('Error generating voice:', error);
-      } finally {
-        setGeneratingVoice(null);
-      }
-    }, 2000);
+    }
   };
 
   const toggleVoicePlayback = (messageId: string) => {
@@ -293,6 +308,7 @@ const ChatInterface: React.FC<{
       <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
         <MessageSquare className="text-violet-400" size={24} />
         Chat with Your ShadowTwin
+        <span className="text-sm text-green-400 bg-green-500/10 px-2 py-1 rounded-full">AI-Powered</span>
       </h3>
 
       <div className="h-96 overflow-y-auto mb-4 space-y-4 scrollbar-thin scrollbar-thumb-violet-500/20">
@@ -336,7 +352,7 @@ const ChatInterface: React.FC<{
                 <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
                 <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
                 <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                <span className="text-gray-400 text-sm ml-2">ShadowTwin is typing...</span>
+                <span className="text-gray-400 text-sm ml-2">ShadowTwin is thinking...</span>
               </div>
             </div>
           </div>
@@ -354,7 +370,7 @@ const ChatInterface: React.FC<{
         />
         <button
           onClick={handleSendMessage}
-          disabled={!newMessage.trim()}
+          disabled={!newMessage.trim() || isTyping}
           className="px-6 py-3 bg-gradient-to-r from-violet-500 to-blue-500 rounded-xl text-white font-medium hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
         >
           <Send size={16} />
@@ -371,6 +387,7 @@ const TimelineSection: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
       <h3 className="text-3xl font-bold text-white mb-8 text-center">
         Your Alternate
         <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Timeline</span>
+        <span className="text-sm text-green-400 bg-green-500/10 px-2 py-1 rounded-full ml-3">AI-Generated</span>
       </h3>
       
       <div className="relative">
@@ -505,6 +522,7 @@ const SocialFeed: React.FC<{ posts: SocialPost[] }> = ({ posts }) => {
       <h3 className="text-3xl font-bold text-white mb-8 text-center">
         Your Shadow
         <span className="bg-gradient-to-r from-pink-400 to-violet-400 bg-clip-text text-transparent"> Social Life</span>
+        <span className="text-sm text-green-400 bg-green-500/10 px-2 py-1 rounded-full ml-3">AI-Generated</span>
       </h3>
       
       <div className="grid md:grid-cols-3 gap-6">
@@ -513,7 +531,7 @@ const SocialFeed: React.FC<{ posts: SocialPost[] }> = ({ posts }) => {
             <div className="aspect-square bg-gradient-to-br from-violet-500/20 to-pink-500/20 flex items-center justify-center">
               <div className="text-center text-gray-400">
                 {post.platform === 'instagram' ? <Instagram size={48} /> : <Twitter size={48} />}
-                <p className="mt-2 text-sm">AI-Generated Image</p>
+                <p className="mt-2 text-sm">AI-Generated Content</p>
               </div>
             </div>
             
@@ -552,6 +570,7 @@ const ComparisonTable: React.FC<{ data: ComparisonData[] }> = ({ data }) => {
       <h3 className="text-3xl font-bold text-white mb-8 text-center">
         Real You vs
         <span className="bg-gradient-to-r from-teal-400 to-blue-400 bg-clip-text text-transparent"> ShadowTwin</span>
+        <span className="text-sm text-green-400 bg-green-500/10 px-2 py-1 rounded-full ml-3">AI-Generated</span>
       </h3>
       
       <div className="max-w-6xl mx-auto">
@@ -632,9 +651,14 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   });
   const [showInputModal, setShowInputModal] = useState(false);
   const [showAPIConfig, setShowAPIConfig] = useState(false);
-  const [apiConfig, setApiConfig] = useState<{ tavusApiKey: string; elevenLabsApiKey: string }>({
+  const [apiConfig, setApiConfig] = useState<{ 
+    tavusApiKey: string; 
+    elevenLabsApiKey: string; 
+    geminiApiKey: string;
+  }>({
     tavusApiKey: '9acf3d70659349aab5cb638470978303',
-    elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d'
+    elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d',
+    geminiApiKey: ''
   });
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
 
@@ -642,8 +666,12 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     isGenerating, 
     videoUrl, 
     audioUrls, 
+    timelineEvents,
+    socialPosts,
+    comparisonData,
     error, 
     generateShadowTwinContent, 
+    generateChatResponse,
     generateVoiceResponse 
   } = useAIServices(apiConfig);
 
@@ -676,7 +704,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     setGeneratedVideoUrl(null);
   };
 
-  const handleAPIConfig = (config: { tavusApiKey: string; elevenLabsApiKey: string }) => {
+  const handleAPIConfig = (config: { tavusApiKey: string; elevenLabsApiKey: string; geminiApiKey: string }) => {
     setApiConfig(config);
   };
 
@@ -684,91 +712,31 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     setGeneratedVideoUrl(videoUrl);
   };
 
-  // Mock data for the simulation results
-  const timelineEvents: TimelineEvent[] = [
-    {
-      age: 22,
-      year: '2018',
-      title: 'Moved to Barcelona',
-      description: 'Left corporate job to pursue photography in Spain',
-      icon: <MapPin className="text-white" size={16} />
-    },
-    {
-      age: 24,
-      year: '2020',
-      title: 'First Gallery Exhibition',
-      description: 'Solo photography exhibition "Urban Souls" featured in Barcelona Modern Art Gallery',
-      icon: <Camera className="text-white" size={16} />
-    },
-    {
-      age: 26,
-      year: '2022',
-      title: 'Travel Documentary Series',
-      description: 'Created award-winning documentary series about street artists across Europe',
-      icon: <Video className="text-white" size={16} />
-    },
-    {
-      age: 28,
-      year: '2024',
-      title: 'International Recognition',
-      description: 'Photography featured in National Geographic, established creative studio',
-      icon: <Trophy className="text-white" size={16} />
-    }
-  ];
+  // Add icons to AI-generated data
+  const timelineEventsWithIcons: TimelineEvent[] = timelineEvents.map((event, index) => ({
+    ...event,
+    icon: [
+      <MapPin className="text-white" size={16} />,
+      <Camera className="text-white" size={16} />,
+      <Video className="text-white" size={16} />,
+      <Trophy className="text-white" size={16} />
+    ][index] || <Sparkles className="text-white" size={16} />
+  }));
 
-  const socialPosts: SocialPost[] = [
-    {
-      platform: 'instagram',
-      image: '',
-      caption: 'Golden hour in Barcelona never gets old. Every street tells a story. 📸✨',
-      hashtags: ['photography', 'barcelona', 'streetart', 'goldenhour'],
-      likes: 2847,
-      time: '2h ago'
-    },
-    {
-      platform: 'twitter',
-      image: '',
-      caption: 'Just wrapped filming for the new documentary series. The stories these artists shared... incredible.',
-      hashtags: ['documentary', 'streetart', 'storytelling'],
-      likes: 1203,
-      time: '1d ago'
-    },
-    {
-      platform: 'instagram',
-      image: '',
-      caption: 'Studio life. Coffee, creativity, and endless possibilities. What are you creating today?',
-      hashtags: ['studio', 'creativity', 'photography', 'inspiration'],
-      likes: 3156,
-      time: '3d ago'
-    }
-  ];
+  const socialPostsWithImages: SocialPost[] = socialPosts.map(post => ({
+    ...post,
+    image: '' // Placeholder for AI-generated images
+  }));
 
-  const comparisonData: ComparisonData[] = [
-    {
-      category: 'Career',
-      realYou: 'Software Engineer at tech company',
-      shadowTwin: 'Award-winning photographer and documentary filmmaker',
-      icon: <Briefcase className="text-white" size={20} />
-    },
-    {
-      category: 'Location',
-      realYou: 'Living in hometown',
-      shadowTwin: 'Based in Barcelona, travels across Europe',
-      icon: <MapPin className="text-white" size={20} />
-    },
-    {
-      category: 'Key Achievements',
-      realYou: 'Stable income, good work-life balance',
-      shadowTwin: 'National Geographic feature, gallery exhibitions, documentary awards',
-      icon: <Trophy className="text-white" size={20} />
-    },
-    {
-      category: 'Lifestyle',
-      realYou: 'Routine-focused, security-oriented',
-      shadowTwin: 'Adventure-driven, creatively fulfilled, internationally connected',
-      icon: <Heart className="text-white" size={20} />
-    }
-  ];
+  const comparisonDataWithIcons: ComparisonData[] = comparisonData.map((item, index) => ({
+    ...item,
+    icon: [
+      <Briefcase className="text-white" size={20} />,
+      <MapPin className="text-white" size={20} />,
+      <Trophy className="text-white" size={20} />,
+      <Heart className="text-white" size={20} />
+    ][index] || <Sparkles className="text-white" size={20} />
+  }));
 
   const renderIntro = () => (
     <div className="max-w-4xl mx-auto text-center">
@@ -785,20 +753,26 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
       <div className="grid md:grid-cols-3 gap-8 mb-12">
         <div className="p-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl hover:border-violet-400/30 transition-all duration-300">
-          <Video className="text-violet-400 mx-auto mb-4" size={32} />
-          <h3 className="text-white font-bold mb-2">AI Video Generation</h3>
-          <p className="text-gray-400 text-sm">Watch yourself speak about the alternate life path</p>
+          <Sparkles className="text-violet-400 mx-auto mb-4" size={32} />
+          <h3 className="text-white font-bold mb-2">AI Content Generation</h3>
+          <p className="text-gray-400 text-sm">Personalized timeline, social posts, and insights</p>
         </div>
         <div className="p-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl hover:border-blue-400/30 transition-all duration-300">
           <MessageSquare className="text-blue-400 mx-auto mb-4" size={32} />
-          <h3 className="text-white font-bold mb-2">Interactive Conversations</h3>
-          <p className="text-gray-400 text-sm">Chat with your ShadowTwin about their experiences</p>
+          <h3 className="text-white font-bold mb-2">Intelligent Conversations</h3>
+          <p className="text-gray-400 text-sm">Chat with your AI ShadowTwin about their experiences</p>
         </div>
         <div className="p-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl hover:border-cyan-400/30 transition-all duration-300">
-          <Sparkles className="text-cyan-400 mx-auto mb-4" size={32} />
-          <h3 className="text-white font-bold mb-2">Personalized Insights</h3>
-          <p className="text-gray-400 text-sm">Discover new perspectives about your potential</p>
+          <Video className="text-cyan-400 mx-auto mb-4" size={32} />
+          <h3 className="text-white font-bold mb-2">Video & Voice Generation</h3>
+          <p className="text-gray-400 text-sm">See and hear yourself in alternate reality</p>
         </div>
+      </div>
+
+      <div className="mb-8 p-4 bg-green-500/10 border border-green-400/20 rounded-lg max-w-2xl mx-auto">
+        <p className="text-green-300 text-sm">
+          <strong>🤖 Powered by AI:</strong> Uses Google Gemini for content generation, ElevenLabs for voice, and Tavus for video.
+        </p>
       </div>
 
       <button
@@ -911,16 +885,16 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               
               <div className="space-y-4 text-gray-300">
                 <p className="flex items-center justify-center gap-2">
-                  <Clock size={16} className="text-violet-400" />
-                  Analyzing your life choices...
+                  <Sparkles size={16} className="text-violet-400" />
+                  Analyzing your life choices with AI...
                 </p>
                 <p className="flex items-center justify-center gap-2">
-                  <Video size={16} className="text-blue-400" />
-                  Creating alternate timeline...
+                  <MessageSquare size={16} className="text-blue-400" />
+                  Creating alternate timeline and content...
                 </p>
                 <p className="flex items-center justify-center gap-2">
                   <Mic size={16} className="text-cyan-400" />
-                  Generating AI persona...
+                  Generating AI persona and voice...
                 </p>
               </div>
             </div>
@@ -929,7 +903,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
         {currentStep === 'results' && (
           <div>
-            <TimelineSection events={timelineEvents} />
+            <TimelineSection events={timelineEventsWithIcons} />
             
             {/* Video Generation Panel */}
             <VideoGenerationPanel
@@ -943,11 +917,11 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               audioUrls={audioUrls}
               isGenerating={isGenerating}
             />
-            <SocialFeed posts={socialPosts} />
-            <ComparisonTable data={comparisonData} />
+            <SocialFeed posts={socialPostsWithImages} />
+            <ComparisonTable data={comparisonDataWithIcons} />
             <ChatInterface 
               formData={formData}
-              generateVoiceResponse={generateVoiceResponse}
+              generateChatResponse={generateChatResponse}
             />
             <ReflectionSection onTryAgain={handleTryAgain} />
           </div>
