@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Mic, Video, Clock, User, LogOut, ChevronLeft, Sparkles, Zap } from 'lucide-react';
+import { Home, Video, Clock, User, LogOut, ChevronLeft, Sparkles, Zap } from 'lucide-react';
 
 interface ShadowTwinNavigationProps {
   activeSection: string;
@@ -31,7 +31,6 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
 
   const navigationItems = [
     { id: 'home', label: 'Home', icon: <Home size={24} /> },
-    { id: 'voice', label: 'Voice', icon: <Mic size={24} /> },
     { id: 'video', label: 'Video', icon: <Video size={24} /> },
     { id: 'activities', label: 'Past Activities', icon: <Clock size={24} /> }
   ];

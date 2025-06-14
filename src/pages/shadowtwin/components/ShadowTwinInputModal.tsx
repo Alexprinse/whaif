@@ -101,7 +101,7 @@ const ShadowTwinInputModal: React.FC<ShadowTwinInputModalProps> = ({
           <div className="space-y-6">
             <div className="text-center mb-8">
               <div className="w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center">
-                <User className="text-white" size={20} className="lg:w-6 lg:h-6" />
+                <User className="text-white lg:w-6 lg:h-6" size={20} />
               </div>
               <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">What's your name?</h3>
               <p className="text-gray-400 text-sm lg:text-base">Let's start with the basics</p>
@@ -125,7 +125,7 @@ const ShadowTwinInputModal: React.FC<ShadowTwinInputModalProps> = ({
           <div className="space-y-6">
             <div className="text-center mb-8">
               <div className="w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                <MessageSquare className="text-white" size={20} className="lg:w-6 lg:h-6" />
+                <MessageSquare className="text-white lg:w-6 lg:h-6" size={20} />
               </div>
               <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">Tell us about your current life</h3>
               <p className="text-gray-400 text-sm lg:text-base">Your background, career, relationships, and current situation</p>
@@ -149,7 +149,7 @@ const ShadowTwinInputModal: React.FC<ShadowTwinInputModalProps> = ({
           <div className="space-y-6">
             <div className="text-center mb-8">
               <div className="w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-teal-500 to-green-500 flex items-center justify-center">
-                <Briefcase className="text-white" size={20} className="lg:w-6 lg:h-6" />
+                <Briefcase className="text-white lg:w-6 lg:h-6" size={20} />
               </div>
               <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">What major life decisions did you make?</h3>
               <p className="text-gray-400 text-sm lg:text-base">Career choices, relationships, education, financial decisions</p>
@@ -173,7 +173,7 @@ const ShadowTwinInputModal: React.FC<ShadowTwinInputModalProps> = ({
           <div className="space-y-6">
             <div className="text-center mb-8">
               <div className="w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-pink-500 to-violet-500 flex items-center justify-center">
-                <Sparkles className="text-white" size={20} className="lg:w-6 lg:h-6" />
+                <Sparkles className="text-white lg:w-6 lg:h-6" size={20} />
               </div>
               <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">What dreams did you not pursue?</h3>
               <p className="text-gray-400 text-sm lg:text-base">Creative pursuits, travel dreams, alternative careers</p>
@@ -197,7 +197,7 @@ const ShadowTwinInputModal: React.FC<ShadowTwinInputModalProps> = ({
           <div className="space-y-6">
             <div className="text-center mb-8">
               <div className="w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
-                <Camera className="text-white" size={20} className="lg:w-6 lg:h-6" />
+                <Camera className="text-white lg:w-6 lg:h-6" size={20} />
               </div>
               <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">Upload a photo (optional)</h3>
               <p className="text-gray-400 text-sm lg:text-base">This helps create a more personalized simulation</p>
