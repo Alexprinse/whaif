@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Search, User as UserIcon, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
+import { Menu, X, User as UserIcon, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
 import { User } from '../types';
 
 interface NavigationProps {
@@ -38,6 +38,19 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Disable body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -169,11 +182,6 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
 
           {/* Right side actions */}
           <div className="hidden lg:flex items-center space-x-4">
-            {/* Search */}
-            <button className="p-2 text-gray-300 hover:text-white transition-colors duration-200">
-              <Search size={20} />
-            </button>
-
             {/* User account or auth buttons */}
             {user ? (
               <div 
@@ -239,112 +247,116 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
 
             {/* Beautiful Mobile Dropdown Menu */}
             {isMobileMenuOpen && (
-              <div className="absolute top-full right-0 mt-2 w-80 bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden animate-fadeInDown">
-                {/* Header */}
-                <div className="p-4 bg-gradient-to-r from-blue-500/10 to-violet-500/10 border-b border-white/10">
-                  <h3 className="text-white font-bold text-lg">Navigation</h3>
-                  <p className="text-gray-400 text-sm">Explore alternate realities</p>
-                </div>
-
-                {/* Search */}
-                <div className="p-4 border-b border-white/10">
-                  <div className="relative">
-                    <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="w-full pl-10 pr-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Navigation Items */}
-                <div className="p-2">
-                  {/* Products Section */}
-                  <div className="mb-4">
-                    <div className="px-3 py-2 text-gray-400 text-xs font-semibold uppercase tracking-wider">Products</div>
-                    {productDropdownItems.map((item, index) => (
-                      <button
-                        key={index}
-                        onClick={item.action}
-                        className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-all duration-200 group"
-                      >
-                        <div className="text-white font-medium group-hover:text-blue-400 transition-colors duration-200">
-                          {item.name}
-                        </div>
-                        <div className="text-gray-400 text-sm mt-1">
-                          {item.description}
-                        </div>
-                      </button>
-                    ))}
+              <>
+                {/* Backdrop */}
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
+                
+                {/* Dropdown Menu */}
+                <div className="absolute top-full right-0 mt-2 w-screen max-w-sm bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden animate-fadeInDown z-50 max-h-[calc(100vh-100px)]">
+                  {/* Header */}
+                  <div className="p-4 bg-gradient-to-r from-blue-500/10 to-violet-500/10 border-b border-white/10">
+                    <h3 className="text-white font-bold text-lg">Navigation</h3>
+                    <p className="text-gray-400 text-sm">Explore alternate realities</p>
                   </div>
 
-                  {/* Other Links */}
-                  <div className="space-y-1">
-                    <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 text-white font-medium">
-                      Resources
-                    </button>
-                    <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 text-white font-medium">
-                      Pricing
-                    </button>
-                    <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 text-white font-medium">
-                      About
-                    </button>
-                  </div>
-                </div>
-
-                {/* Auth Section */}
-                <div className="p-4 bg-black/20 border-t border-white/10">
-                  {user ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 px-3 py-2">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
-                          {user.avatar ? (
-                            <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
-                          ) : (
-                            <span className="text-white font-medium">
-                              {user.name.charAt(0).toUpperCase()}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <div className="text-white font-medium">{user.name}</div>
-                          <div className="text-gray-400 text-sm">{user.email}</div>
-                        </div>
+                  {/* Scrollable Content */}
+                  <div className="overflow-y-auto max-h-[calc(100vh-200px)]">
+                    {/* Navigation Items */}
+                    <div className="p-2">
+                      {/* Products Section */}
+                      <div className="mb-4">
+                        <div className="px-3 py-2 text-gray-400 text-xs font-semibold uppercase tracking-wider">Products</div>
+                        {productDropdownItems.map((item, index) => (
+                          <button
+                            key={index}
+                            onClick={item.action}
+                            className="w-full text-left p-3 rounded-lg hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-violet-500/10 transition-all duration-200 group border border-transparent hover:border-blue-400/20"
+                          >
+                            <div className="text-white font-medium group-hover:text-blue-400 transition-colors duration-200">
+                              {item.name}
+                            </div>
+                            <div className="text-gray-400 text-sm mt-1">
+                              {item.description}
+                            </div>
+                          </button>
+                        ))}
                       </div>
-                      <button 
-                        onClick={onLogout}
-                        className="w-full px-4 py-3 text-left text-red-400 hover:bg-red-500/10 rounded-lg transition-colors duration-200 flex items-center gap-2"
-                      >
-                        <LogOut size={16} />
-                        Sign Out
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <button 
-                        onClick={() => onAuthClick('signin')}
-                        className="w-full px-6 py-3 border border-white/20 rounded-lg text-white font-medium hover:bg-white/5 transition-all duration-300"
-                      >
-                        Sign In
-                      </button>
-                      <button 
-                        onClick={() => onAuthClick('signup')}
-                        className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300"
-                      >
-                        Get Started
-                      </button>
-                    </div>
-                  )}
-                </div>
 
-                {/* Footer */}
-                <div className="p-3 bg-black/30 border-t border-white/10">
-                  <div className="text-xs text-gray-500 text-center">
-                    WHATIF v1.0 • Explore Your Alternate Reality
+                      {/* Other Links */}
+                      <div className="space-y-1 mb-4">
+                        <div className="px-3 py-2 text-gray-400 text-xs font-semibold uppercase tracking-wider">More</div>
+                        <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 text-white font-medium">
+                          Resources
+                        </button>
+                        <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 text-white font-medium">
+                          Pricing
+                        </button>
+                        <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 text-white font-medium">
+                          About
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Auth Section */}
+                  <div className="p-4 bg-black/20 border-t border-white/10">
+                    {user ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 px-3 py-2 bg-gradient-to-r from-blue-500/10 to-violet-500/10 rounded-lg border border-blue-400/20">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
+                            {user.avatar ? (
+                              <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                            ) : (
+                              <span className="text-white font-medium">
+                                {user.name.charAt(0).toUpperCase()}
+                              </span>
+                            )}
+                          </div>
+                          <div>
+                            <div className="text-white font-medium">{user.name}</div>
+                            <div className="text-gray-400 text-sm">{user.email}</div>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={onLogout}
+                          className="w-full px-4 py-3 text-left text-red-400 hover:bg-red-500/10 rounded-lg transition-colors duration-200 flex items-center gap-2 border border-red-400/20"
+                        >
+                          <LogOut size={16} />
+                          Sign Out
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <button 
+                          onClick={() => {
+                            onAuthClick('signin');
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="w-full px-6 py-3 border border-white/20 rounded-lg text-white font-medium hover:bg-white/5 transition-all duration-300"
+                        >
+                          Sign In
+                        </button>
+                        <button 
+                          onClick={() => {
+                            onAuthClick('signup');
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300"
+                        >
+                          Get Started
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="p-3 bg-black/30 border-t border-white/10">
+                    <div className="text-xs text-gray-500 text-center">
+                      WHATIF v1.0 • Explore Your Alternate Reality
+                    </div>
                   </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
         </div>
