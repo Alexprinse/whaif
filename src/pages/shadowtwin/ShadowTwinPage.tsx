@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, User, Settings, Menu } from 'lucide-react';
+import { User, Settings, Menu } from 'lucide-react';
 import { useAIServices } from './hooks/useAIServices';
 import { ShadowTwinFormData, AIServicesConfig } from './types';
 import APIConfigModal from './components/APIConfigModal';
@@ -151,7 +151,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
       {/* Sticky Top Bar */}
       <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-white/10">
         <div className="flex items-center justify-between px-4 lg:px-6 py-3 lg:py-4">
-          {/* Left Section - Menu & Back */}
+          {/* Left Section - Menu & Title */}
           <div className="flex items-center gap-3 lg:gap-4">
             {/* Mobile Menu Button */}
             <button
@@ -159,14 +159,6 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
               className="lg:hidden p-2 lg:p-3 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
             >
               <Menu size={18} className="lg:w-5 lg:h-5" />
-            </button>
-
-            {/* Back Button */}
-            <button
-              onClick={onBack}
-              className="p-2 lg:p-3 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
-            >
-              <ArrowLeft size={18} className="lg:w-5 lg:h-5" />
             </button>
 
             {/* Title - Hidden on small mobile */}
@@ -250,6 +242,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
         onLogout={() => console.log('Logout')}
         isMobileMenuOpen={isMobileMenuOpen}
         onMobileMenuClose={() => setIsMobileMenuOpen(false)}
+        onNavigateToMain={onBack}
       />
 
       {/* Main Content */}

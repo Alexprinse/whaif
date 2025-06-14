@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Mic, Video, Clock, User, LogOut, ChevronLeft, ChevronRight, Sparkles, X } from 'lucide-react';
+import { Home, Mic, Video, Clock, User, LogOut, ChevronLeft, ChevronRight, Sparkles, X, Zap } from 'lucide-react';
 
 interface ShadowTwinNavigationProps {
   activeSection: string;
@@ -12,6 +12,7 @@ interface ShadowTwinNavigationProps {
   onLogout?: () => void;
   isMobileMenuOpen: boolean;
   onMobileMenuClose: () => void;
+  onNavigateToMain?: () => void;
 }
 
 const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
@@ -20,7 +21,8 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
   user,
   onLogout,
   isMobileMenuOpen,
-  onMobileMenuClose
+  onMobileMenuClose,
+  onNavigateToMain
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -35,6 +37,13 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
   const handleSectionChange = (section: string) => {
     onSectionChange(section);
     onMobileMenuClose(); // Close mobile menu when navigating
+  };
+
+  const handleWhatIfClick = () => {
+    if (onNavigateToMain) {
+      onNavigateToMain();
+    }
+    onMobileMenuClose();
   };
 
   // Close mobile menu when clicking outside
@@ -121,6 +130,23 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
         {/* Navigation Items */}
         <div className="p-4 flex-1 overflow-y-auto">
           <nav className="space-y-2">
+            {/* What If Button */}
+            <button
+              onClick={handleWhatIfClick}
+              className="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group text-gray-400 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-violet-500/20 hover:border hover:border-blue-400/30"
+              title={isCollapsed && !isMobileMenuOpen ? 'What If' : undefined}
+            >
+              <div className="flex-shrink-0 text-blue-400">
+                <Zap size={20} />
+              </div>
+              {(!isCollapsed || isMobileMenuOpen) && (
+                <span className="font-medium truncate">What If</span>
+              )}
+            </button>
+
+            {/* Divider */}
+            <div className="my-4 border-t border-white/10" />
+
             {navigationItems.map((item) => (
               <button
                 key={item.id}
