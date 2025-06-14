@@ -28,6 +28,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
   const [showInputModal, setShowInputModal] = useState(false);
   const [showAPIConfig, setShowAPIConfig] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [apiConfig, setApiConfig] = useState<AIServicesConfig>({
     tavusApiKey: '9acf3d70659349aab5cb638470978303',
     elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d',
@@ -156,7 +157,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
       />
 
       {/* Main Content */}
-      <div className="flex-1 ml-64">
+      <div className="flex-1 transition-all duration-300" style={{ marginLeft: isNavCollapsed ? '64px' : '256px' }}>
         {/* Top Bar */}
         <div className="sticky top-0 z-30 bg-black/80 backdrop-blur-xl border-b border-white/10 px-8 py-4">
           <div className="flex items-center justify-between">
