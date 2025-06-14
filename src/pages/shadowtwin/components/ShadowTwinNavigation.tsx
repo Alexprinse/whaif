@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Mic, Video, Clock, User, Settings, LogOut, ChevronDown } from 'lucide-react';
+import { Home, Mic, Video, Clock, User, LogOut, ChevronDown } from 'lucide-react';
 
 interface ShadowTwinNavigationProps {
   activeSection: string;
@@ -58,8 +58,8 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
             <div className="absolute top-full left-0 right-0 mt-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl">
               <div className="p-2">
                 <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-3 text-gray-300 hover:text-white">
-                  <Settings size={16} />
-                  Settings
+                  <User size={16} />
+                  Profile
                 </button>
                 {onLogout && (
                   <button 

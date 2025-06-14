@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Settings } from 'lucide-react';
+import { ArrowLeft, User } from 'lucide-react';
 import { useAIServices } from './hooks/useAIServices';
 import { ShadowTwinFormData, AIServicesConfig } from './types';
 import APIConfigModal from './components/APIConfigModal';
@@ -27,6 +27,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
   });
   const [showInputModal, setShowInputModal] = useState(false);
   const [showAPIConfig, setShowAPIConfig] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [apiConfig, setApiConfig] = useState<AIServicesConfig>({
     tavusApiKey: '9acf3d70659349aab5cb638470978303',
     elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d',
@@ -174,13 +175,45 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
               </div>
             </div>
             
-            <button
-              onClick={() => setShowAPIConfig(true)}
-              className="p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
-              title="Configure AI Services"
-            >
-              <Settings size={20} />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                className="p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+                title="Profile"
+              >
+                <User size={20} />
+              </button>
+
+              {/* Profile Dropdown */}
+              {showProfileDropdown && (
+                <div className="absolute top-full right-0 mt-2 w-64 bg-black/90 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl">
+                  <div className="p-4 border-b border-white/10">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
+                        <User className="text-white" size={20} />
+                      </div>
+                      <div>
+                        <div className="text-white font-medium">{user.name}</div>
+                        <div className="text-gray-400 text-sm">{user.email}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-2">
+                    <button 
+                      onClick={() => setShowAPIConfig(true)}
+                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-3 text-gray-300 hover:text-white"
+                    >
+                      <User size={16} />
+                      API Configuration
+                    </button>
+                    <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-3 text-gray-300 hover:text-white">
+                      <User size={16} />
+                      Profile Settings
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {error && (
