@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Home, Mic, Video, Clock, User, LogOut, ChevronLeft, ChevronRight, Sparkles, Menu, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Home, Mic, Video, Clock, User, LogOut, ChevronLeft, ChevronRight, Sparkles, X } from 'lucide-react';
 
 interface ShadowTwinNavigationProps {
   activeSection: string;
@@ -10,16 +10,19 @@ interface ShadowTwinNavigationProps {
     avatar?: string;
   };
   onLogout?: () => void;
+  isMobileMenuOpen: boolean;
+  onMobileMenuClose: () => void;
 }
 
 const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
   activeSection,
   onSectionChange,
   user,
-  onLogout
+  onLogout,
+  isMobileMenuOpen,
+  onMobileMenuClose
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   const navigationItems = [
@@ -31,32 +34,55 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
 
   const handleSectionChange = (section: string) => {
     onSectionChange(section);
-    setIsMobileOpen(false); // Close mobile menu when navigating
+    onMobileMenuClose(); // Close mobile menu when navigating
   };
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobileMenuOpen && !(event.target as Element).closest('.mobile-nav-panel')) {
+        onMobileMenuClose();
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileMenuOpen, onMobileMenuClose]);
+
+  // Disable body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="fixed top-4 left-4 z-50 lg:hidden p-3 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl text-white hover:border-white/20 transition-all duration-300"
-      >
-        {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
-      </button>
-
       {/* Mobile Overlay */}
-      {isMobileOpen && (
+      {isMobileMenuOpen && (
         <div 
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsMobileOpen(false)}
+          onClick={onMobileMenuClose}
         />
       )}
 
       {/* Navigation Panel */}
       <div className={`
+        mobile-nav-panel
         fixed left-0 top-0 h-full bg-black/90 backdrop-blur-xl border-r border-white/10 z-40 
         transition-all duration-300 flex flex-col
-        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         ${isCollapsed ? 'lg:w-16' : 'lg:w-64'}
         w-64
       `}>
@@ -66,12 +92,19 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
               <Sparkles className="text-white" size={20} />
             </div>
-            {(!isCollapsed || isMobileOpen) && (
+            {(!isCollapsed || isMobileMenuOpen) && (
               <div className="flex-1 min-w-0">
                 <h2 className="text-white font-bold text-lg truncate">ShadowTwin</h2>
                 <p className="text-gray-400 text-xs truncate">Explore alternate realities</p>
               </div>
             )}
+            {/* Mobile Close Button */}
+            <button
+              onClick={onMobileMenuClose}
+              className="lg:hidden p-2 text-gray-400 hover:text-white transition-colors duration-200"
+            >
+              <X size={18} />
+            </button>
           </div>
         </div>
 
@@ -97,12 +130,12 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
                     ? 'bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-400/30 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
-                title={isCollapsed && !isMobileOpen ? item.label : undefined}
+                title={isCollapsed && !isMobileMenuOpen ? item.label : undefined}
               >
                 <div className={`flex-shrink-0 ${activeSection === item.id ? 'text-violet-400' : ''}`}>
                   {item.icon}
                 </div>
-                {(!isCollapsed || isMobileOpen) && (
+                {(!isCollapsed || isMobileMenuOpen) && (
                   <span className="font-medium truncate">{item.label}</span>
                 )}
               </button>
@@ -116,7 +149,7 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
             <button
               onClick={() => setShowUserDropdown(!showUserDropdown)}
               className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-white/5 transition-colors duration-200"
-              title={isCollapsed && !isMobileOpen ? user?.name : undefined}
+              title={isCollapsed && !isMobileMenuOpen ? user?.name : undefined}
             >
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center flex-shrink-0">
                 {user?.avatar ? (
@@ -125,7 +158,7 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
                   <User className="text-white" size={16} />
                 )}
               </div>
-              {(!isCollapsed || isMobileOpen) && (
+              {(!isCollapsed || isMobileMenuOpen) && (
                 <div className="flex-1 text-left min-w-0">
                   <div className="text-white font-medium text-sm truncate">{user?.name || 'Guest User'}</div>
                   <div className="text-gray-400 text-xs truncate">{user?.email || 'guest@example.com'}</div>
@@ -134,7 +167,7 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
             </button>
 
             {/* User Dropdown */}
-            {showUserDropdown && (!isCollapsed || isMobileOpen) && (
+            {showUserDropdown && (!isCollapsed || isMobileMenuOpen) && (
               <div className="absolute bottom-full left-0 right-0 mb-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl">
                 <div className="p-2">
                   <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-3 text-gray-300 hover:text-white">
@@ -155,7 +188,7 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
             )}
 
             {/* Collapsed User Dropdown */}
-            {showUserDropdown && isCollapsed && !isMobileOpen && (
+            {showUserDropdown && isCollapsed && !isMobileMenuOpen && (
               <div className="absolute bottom-0 left-full ml-2 w-48 bg-black/90 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl">
                 <div className="p-3 border-b border-white/10">
                   <div className="text-white font-medium text-sm">{user?.name || 'Guest User'}</div>
