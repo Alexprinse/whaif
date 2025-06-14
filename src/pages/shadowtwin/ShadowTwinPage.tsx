@@ -181,9 +181,12 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
       <div className={`relative min-h-screen transition-all duration-300 ${
         isNavCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       }`}>
-        {/* Compact Top Bar */}
-        <div className="fixed top-0 right-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10 transition-all duration-300"
-             style={{ left: isNavCollapsed ? '64px' : '256px' }}>
+        {/* Compact Top Bar - Full width on mobile, positioned after nav on desktop */}
+        <div className="fixed top-0 left-0 right-0 lg:left-auto z-30 bg-black/90 backdrop-blur-xl border-b border-white/10 transition-all duration-300"
+             style={{ 
+               // On large screens, start after the navigation width
+               left: window.innerWidth >= 1024 ? (isNavCollapsed ? '64px' : '256px') : '0'
+             }}>
           <div className="flex items-center justify-between h-[73px] px-4">
             {/* Left Section - Mobile Menu Only */}
             <div className="flex items-center">
@@ -196,7 +199,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
             </div>
             
             {/* Right Section - Profile */}
-            <div className="relative">
+            <div className="relative ml-auto">
               <button
                 onClick={() => {
                   setShowProfileDropdown(!showProfileDropdown);
