@@ -1,14 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Send, Pause, Settings, Star, Users, Award, CheckCircle, ArrowRight } from 'lucide-react';
+import { Upload, Play, Calendar, MessageSquare, Briefcase, Heart, ArrowLeft, Sparkles, Video, Mic, User, Camera, Download, Share2, RotateCcw, Instagram, Twitter, MapPin, Trophy, Clock, Send, Pause, Settings } from 'lucide-react';
 import { useAIServices } from '../hooks/useAIServices';
 import VideoGenerationPanel from '../components/VideoGenerationPanel';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-}
+import ShadowTwinInputModal from '../components/ShadowTwinInputModal';
 
 interface FormData {
   name: string;
@@ -371,141 +365,6 @@ const ChatInterface: React.FC<{
   );
 };
 
-const FormSection: React.FC<{
-  formData: FormData;
-  setFormData: (data: FormData) => void;
-  onSubmit: () => void;
-}> = ({ formData, setFormData, onSubmit }) => {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, selfie: file });
-    }
-  };
-
-  return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-          Tell Us About
-          <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Your Story</span>
-        </h2>
-        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-          Share your journey, decisions, and dreams. Our AI will create a parallel universe where you made different choices.
-        </p>
-      </div>
-
-      <div className="grid gap-8">
-        {/* Name Input */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <User size={20} className="text-violet-400" />
-            What's your name?
-          </label>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Enter your full name"
-            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-violet-400/50 focus:outline-none focus:ring-2 focus:ring-violet-400/20 transition-all duration-300"
-          />
-        </div>
-
-        {/* Current Bio */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <MessageSquare size={20} className="text-blue-400" />
-            Tell us about your current life
-          </label>
-          <textarea
-            value={formData.currentBio}
-            onChange={(e) => setFormData({ ...formData, currentBio: e.target.value })}
-            placeholder="Describe your background, education, career, relationships, and current situation..."
-            rows={4}
-            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-300 resize-none"
-          />
-        </div>
-
-        {/* Major Decisions */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <Briefcase size={20} className="text-teal-400" />
-            What major life decisions did you make?
-          </label>
-          <textarea
-            value={formData.majorDecisions}
-            onChange={(e) => setFormData({ ...formData, majorDecisions: e.target.value })}
-            placeholder="Career choices, where you moved, relationships, education paths, financial decisions..."
-            rows={4}
-            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-teal-400/50 focus:outline-none focus:ring-2 focus:ring-teal-400/20 transition-all duration-300 resize-none"
-          />
-        </div>
-
-        {/* Dreams Not Pursued */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <Sparkles size={20} className="text-pink-400" />
-            What dreams did you not pursue?
-          </label>
-          <textarea
-            value={formData.dreamsNotPursued}
-            onChange={(e) => setFormData({ ...formData, dreamsNotPursued: e.target.value })}
-            placeholder="Creative pursuits, travel dreams, business ideas, alternative careers, relationships..."
-            rows={4}
-            className="w-full p-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-pink-400/50 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 resize-none"
-          />
-        </div>
-
-        {/* Selfie Upload */}
-        <div className="group">
-          <label className="block text-white font-medium mb-3 flex items-center gap-2">
-            <Camera size={20} className="text-cyan-400" />
-            Upload a photo (optional)
-          </label>
-          <div className="relative">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-              id="selfie-upload"
-            />
-            <label
-              htmlFor="selfie-upload"
-              className="flex items-center justify-center w-full p-8 bg-black/30 backdrop-blur-md border-2 border-dashed border-white/20 rounded-xl text-gray-400 hover:border-cyan-400/50 hover:text-cyan-400 transition-all duration-300 cursor-pointer group"
-            >
-              <div className="text-center">
-                <Upload size={32} className="mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
-                <p className="font-medium">
-                  {formData.selfie ? formData.selfie.name : 'Click to upload your photo'}
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  This helps create a more personalized simulation
-                </p>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <div className="text-center pt-8">
-          <button
-            onClick={onSubmit}
-            disabled={!formData.name || !formData.currentBio || !formData.majorDecisions || !formData.dreamsNotPursued}
-            className="group relative px-12 py-4 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-600 rounded-full text-white font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-          >
-            <span className="relative z-10 flex items-center gap-3">
-              <Sparkles size={24} />
-              Simulate My ShadowTwin
-            </span>
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 via-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const TimelineSection: React.FC<{ events: TimelineEvent[] }> = ({ events }) => {
   return (
     <div className="mb-16">
@@ -763,233 +622,21 @@ const ReflectionSection: React.FC<{ onTryAgain: () => void }> = ({ onTryAgain })
   );
 };
 
-// Hero Section with Introduction
-const HeroSection: React.FC<{ onStartJourney: () => void }> = ({ onStartJourney }) => {
-  return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Professional gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-cyan-900/20" />
-      
-      {/* Animated background particles */}
-      <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-gradient-to-r from-violet-400/20 to-cyan-400/20 animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 6 + 3}px`,
-              height: `${Math.random() * 6 + 3}px`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${Math.random() * 4 + 3}s`
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="text-center z-10 max-w-6xl mx-auto px-6 py-20">
-        {/* App Introduction */}
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500/10 border border-violet-400/20 rounded-full text-violet-400 text-sm font-medium mb-6">
-            <Sparkles size={16} />
-            AI-Powered Life Simulation
-          </div>
-          
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent mb-6">
-            ShadowTwin
-          </h1>
-          
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-12">
-            Advanced AI simulation platform that creates an alternate version of yourself, exploring the paths not taken and decisions unmade.
-          </p>
-        </div>
-
-        {/* Ready to Meet Your ShadowTwin */}
-        <div className="mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to Meet Your 
-            <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> ShadowTwin?</span>
-          </h2>
-          
-          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-            Embark on a journey of self-discovery and explore the infinite possibilities that exist within you.
-          </p>
-
-          {/* Begin Your Journey Button */}
-          <button
-            onClick={onStartJourney}
-            className="group relative px-8 md:px-12 py-4 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-600 rounded-full text-white font-bold text-lg md:text-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-violet-500/25 mb-8"
-          >
-            <span className="relative z-10 flex items-center gap-3">
-              <Sparkles size={24} />
-              Begin Your Journey
-              <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform duration-300" />
-            </span>
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 via-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
-          </button>
-
-          {/* Trust indicators */}
-          <div className="flex items-center justify-center gap-6 text-sm text-gray-400 mb-12">
-            <div className="flex items-center gap-1">
-              <Sparkles size={14} className="text-green-400" />
-              <span>Free to start</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <CheckCircle size={14} className="text-blue-400" />
-              <span>Privacy protected</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock size={14} className="text-violet-400" />
-              <span>Results in minutes</span>
-            </div>
-          </div>
-        </div>
-
-        {/* How It Works */}
-        <div className="mb-16">
-          <h3 className="text-2xl md:text-3xl font-bold text-white mb-8">How It Works</h3>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center mx-auto mb-4">
-                <User className="text-white" size={24} />
-              </div>
-              <h4 className="text-white font-bold mb-2">Share Your Story</h4>
-              <p className="text-gray-400 text-sm">Tell us about your life, decisions, and dreams you didn't pursue</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="text-white" size={24} />
-              </div>
-              <h4 className="text-white font-bold mb-2">AI Creates Your Twin</h4>
-              <p className="text-gray-400 text-sm">Advanced AI generates an alternate version living a different life</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-violet-500 flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="text-white" size={24} />
-              </div>
-              <h4 className="text-white font-bold mb-2">Explore & Discover</h4>
-              <p className="text-gray-400 text-sm">Chat with your ShadowTwin and explore alternate possibilities</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Testimonials */}
-        <div className="mb-16">
-          <h3 className="text-2xl md:text-3xl font-bold text-white mb-8">What People Are Saying</h3>
-          
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div className="bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-6">
-              <div className="flex items-center gap-1 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="text-yellow-400 fill-current" size={14} />
-                ))}
-              </div>
-              <p className="text-gray-300 text-sm mb-4 italic">
-                "ShadowTwin helped me understand the creative path I never took. It gave me the confidence to start my side business."
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
-                  <User className="text-white" size={14} />
-                </div>
-                <div>
-                  <p className="text-white text-sm font-medium">Sarah Chen</p>
-                  <p className="text-gray-400 text-xs">Product Manager</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-6">
-              <div className="flex items-center gap-1 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="text-yellow-400 fill-current" size={14} />
-                ))}
-              </div>
-              <p className="text-gray-300 text-sm mb-4 italic">
-                "Incredible experience! Seeing my alternate life gave me clarity on what I really want to pursue."
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center">
-                  <User className="text-white" size={14} />
-                </div>
-                <div>
-                  <p className="text-white text-sm font-medium">Marcus Rodriguez</p>
-                  <p className="text-gray-400 text-xs">Software Engineer</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-black/30 backdrop-blur-md border border-white/10 rounded-xl p-6">
-              <div className="flex items-center gap-1 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="text-yellow-400 fill-current" size={14} />
-                ))}
-              </div>
-              <p className="text-gray-300 text-sm mb-4 italic">
-                "The AI video of my ShadowTwin was mind-blowing. It felt like talking to an actual alternate version of myself."
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center">
-                  <User className="text-white" size={14} />
-                </div>
-                <div>
-                  <p className="text-white text-sm font-medium">Dr. Emily Watson</p>
-                  <p className="text-gray-400 text-xs">Research Scientist</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-violet-400 mb-1">10K+</div>
-            <div className="text-gray-400 text-sm">ShadowTwins Created</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-blue-400 mb-1">4.9/5</div>
-            <div className="text-gray-400 text-sm">User Rating</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-cyan-400 mb-1">95%</div>
-            <div className="text-gray-400 text-sm">Would Recommend</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-green-400 mb-1">24/7</div>
-            <div className="text-gray-400 text-sm">AI Available</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Seamless transition to next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-black pointer-events-none" />
-    </section>
-  );
-};
-
-interface ShadowTwinProps {
-  onBack: () => void;
-  user: User | null;
-}
-
-const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
-  const [currentStep, setCurrentStep] = useState('hero'); // 'hero', 'form', 'generating', 'results'
+const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+  const [currentStep, setCurrentStep] = useState('intro'); // 'intro', 'generating', 'results'
   const [formData, setFormData] = useState<FormData>({
-    name: user?.name || '',
+    name: '',
     currentBio: '',
     majorDecisions: '',
     dreamsNotPursued: ''
   });
+  const [showInputModal, setShowInputModal] = useState(false);
   const [showAPIConfig, setShowAPIConfig] = useState(false);
   const [apiConfig, setApiConfig] = useState<{ tavusApiKey: string; elevenLabsApiKey: string }>({
     tavusApiKey: '9acf3d70659349aab5cb638470978303',
     elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d'
   });
-  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | undefined>(undefined);
+  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
 
   const { 
     isGenerating, 
@@ -1000,15 +647,12 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
     generateVoiceResponse 
   } = useAIServices(apiConfig);
 
-  const handleStartJourney = () => {
-    setCurrentStep('form');
-  };
-
-  const handleSubmit = async () => {
+  const handleInputSubmit = async (inputData: FormData) => {
+    setFormData(inputData);
     setCurrentStep('generating');
     
     try {
-      await generateShadowTwinContent(formData);
+      await generateShadowTwinContent(inputData);
       setTimeout(() => {
         setCurrentStep('results');
       }, 2000);
@@ -1022,14 +666,14 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
   };
 
   const handleTryAgain = () => {
-    setCurrentStep('hero');
+    setCurrentStep('intro');
     setFormData({
-      name: user?.name || '',
+      name: '',
       currentBio: '',
       majorDecisions: '',
       dreamsNotPursued: ''
     });
-    setGeneratedVideoUrl(undefined);
+    setGeneratedVideoUrl(null);
   };
 
   const handleAPIConfig = (config: { tavusApiKey: string; elevenLabsApiKey: string }) => {
@@ -1126,8 +770,59 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
     }
   ];
 
+  const renderIntro = () => (
+    <div className="max-w-4xl mx-auto text-center">
+      <div className="mb-12">
+        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          Meet Your
+          <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> ShadowTwin</span>
+        </h2>
+        <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+          An AI-powered alternate version of yourself that explores the paths not taken and decisions unmade. 
+          Discover who you could have become through immersive alternate life experiences.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="p-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl hover:border-violet-400/30 transition-all duration-300">
+          <Video className="text-violet-400 mx-auto mb-4" size={32} />
+          <h3 className="text-white font-bold mb-2">AI Video Generation</h3>
+          <p className="text-gray-400 text-sm">Watch yourself speak about the alternate life path</p>
+        </div>
+        <div className="p-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl hover:border-blue-400/30 transition-all duration-300">
+          <MessageSquare className="text-blue-400 mx-auto mb-4" size={32} />
+          <h3 className="text-white font-bold mb-2">Interactive Conversations</h3>
+          <p className="text-gray-400 text-sm">Chat with your ShadowTwin about their experiences</p>
+        </div>
+        <div className="p-6 bg-black/30 backdrop-blur-md border border-white/10 rounded-xl hover:border-cyan-400/30 transition-all duration-300">
+          <Sparkles className="text-cyan-400 mx-auto mb-4" size={32} />
+          <h3 className="text-white font-bold mb-2">Personalized Insights</h3>
+          <p className="text-gray-400 text-sm">Discover new perspectives about your potential</p>
+        </div>
+      </div>
+
+      <button
+        onClick={() => setShowInputModal(true)}
+        className="group relative px-12 py-4 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-600 rounded-full text-white font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-violet-500/25"
+      >
+        <span className="relative z-10 flex items-center gap-3">
+          <Sparkles size={24} />
+          Begin Your Journey
+        </span>
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 via-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
+      </button>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Input Modal */}
+      <ShadowTwinInputModal
+        isOpen={showInputModal}
+        onClose={() => setShowInputModal(false)}
+        onSubmit={handleInputSubmit}
+      />
+
       {/* API Configuration Modal */}
       <APIConfigModal
         isOpen={showAPIConfig}
@@ -1135,119 +830,105 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
         onSave={handleAPIConfig}
       />
 
-      {/* Navigation Header */}
-      {currentStep !== 'hero' && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={currentStep === 'form' ? () => setCurrentStep('hero') : onBack}
-                  className="p-2 rounded-lg bg-black/30 border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
-                >
-                  <ArrowLeft size={20} />
-                </button>
-                <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                    ShadowTwin
-                  </h1>
-                </div>
-              </div>
-              
-              <button
-                onClick={() => setShowAPIConfig(true)}
-                className="p-2 rounded-lg bg-black/30 border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
-                title="Configure AI Services"
-              >
-                <Settings size={20} />
-              </button>
-            </div>
-
-            {error && (
-              <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
-                <p className="text-yellow-300 text-sm">{error}</p>
-              </div>
-            )}
-          </div>
+      {/* Hero Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-blue-900/20 to-cyan-900/20" />
+        
+        {/* Animated background particles */}
+        <div className="absolute inset-0">
+          {[...Array(15)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full bg-gradient-to-r from-violet-400/20 to-cyan-400/20 animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${Math.random() * 6 + 3}px`,
+                height: `${Math.random() * 6 + 3}px`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${Math.random() * 4 + 3}s`
+              }}
+            />
+          ))}
         </div>
-      )}
 
-      {/* Main Content */}
-      <div className={currentStep !== 'hero' ? 'pt-20' : ''}>
-        {currentStep === 'hero' && (
-          <>
-            {/* Back button for hero */}
-            <div className="fixed top-6 left-6 z-50">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
               <button
                 onClick={onBack}
                 className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
               >
                 <ArrowLeft size={24} />
               </button>
+              <div>
+                <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                  ShadowTwin
+                </h1>
+                <p className="text-xl md:text-2xl text-gray-300 mt-4">
+                  Explore the life you never lived.
+                </p>
+              </div>
             </div>
-            <HeroSection onStartJourney={handleStartJourney} />
-          </>
-        )}
-
-        {currentStep === 'form' && (
-          <div className="max-w-7xl mx-auto px-6 py-20">
-            <FormSection
-              formData={formData}
-              setFormData={setFormData}
-              onSubmit={handleSubmit}
-            />
+            
+            <button
+              onClick={() => setShowAPIConfig(true)}
+              className="p-3 rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+              title="Configure AI Services"
+            >
+              <Settings size={24} />
+            </button>
           </div>
-        )}
+
+          {error && (
+            <div className="mb-8 p-4 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
+              <p className="text-yellow-300 text-sm">{error}</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 pb-20">
+        {currentStep === 'intro' && renderIntro()}
 
         {currentStep === 'generating' && (
-          <div className="max-w-7xl mx-auto px-6 py-20">
-            <div className="text-center py-20">
-              <div className="max-w-2xl mx-auto">
-                <div className="w-32 h-32 mx-auto mb-8 relative">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin" style={{ animationDuration: '3s' }}>
-                    <div className="absolute inset-2 rounded-full bg-black" />
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Sparkles className="text-violet-400" size={48} />
-                  </div>
+          <div className="text-center py-20">
+            <div className="max-w-2xl mx-auto">
+              <div className="w-32 h-32 mx-auto mb-8 relative">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin" style={{ animationDuration: '3s' }}>
+                  <div className="absolute inset-2 rounded-full bg-black" />
                 </div>
-                
-                <h2 className="text-4xl font-bold text-white mb-6">
-                  Generating Your
-                  <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> ShadowTwin</span>
-                </h2>
-                
-                <div className="space-y-4 text-gray-300">
-                  <p className="flex items-center justify-center gap-2">
-                    <Clock size={16} className="text-violet-400" />
-                    Analyzing your life choices...
-                  </p>
-                  <p className="flex items-center justify-center gap-2">
-                    <Video size={16} className="text-blue-400" />
-                    Creating alternate timeline...
-                  </p>
-                  <p className="flex items-center justify-center gap-2">
-                    <Mic size={16} className="text-cyan-400" />
-                    Generating AI persona...
-                  </p>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Sparkles className="text-violet-400" size={48} />
                 </div>
+              </div>
+              
+              <h2 className="text-4xl font-bold text-white mb-6">
+                Generating Your
+                <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> ShadowTwin</span>
+              </h2>
+              
+              <div className="space-y-4 text-gray-300">
+                <p className="flex items-center justify-center gap-2">
+                  <Clock size={16} className="text-violet-400" />
+                  Analyzing your life choices...
+                </p>
+                <p className="flex items-center justify-center gap-2">
+                  <Video size={16} className="text-blue-400" />
+                  Creating alternate timeline...
+                </p>
+                <p className="flex items-center justify-center gap-2">
+                  <Mic size={16} className="text-cyan-400" />
+                  Generating AI persona...
+                </p>
               </div>
             </div>
           </div>
         )}
 
         {currentStep === 'results' && (
-          <div className="max-w-7xl mx-auto px-6 pb-20">
-            <div className="text-center mb-16 pt-10">
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                Meet Your
-                <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> ShadowTwin</span>
-              </h2>
-              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                An AI-simulated version of the life you never lived.
-              </p>
-            </div>
-
+          <div>
             <TimelineSection events={timelineEvents} />
             
             {/* Video Generation Panel */}
@@ -1257,6 +938,11 @@ const ShadowTwin: React.FC<ShadowTwinProps> = ({ onBack, user }) => {
               tavusApiKey={apiConfig.tavusApiKey}
             />
             
+            <VideoMessage 
+              videoUrl={generatedVideoUrl || videoUrl} 
+              audioUrls={audioUrls}
+              isGenerating={isGenerating}
+            />
             <SocialFeed posts={socialPosts} />
             <ComparisonTable data={comparisonData} />
             <ChatInterface 
