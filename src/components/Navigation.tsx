@@ -255,37 +255,37 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
         <>
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
             onClick={handleBackdropClick}
           />
           
-          {/* Right Sidebar */}
-          <div className={`mobile-sidebar fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 shadow-2xl z-50 lg:hidden transform transition-transform duration-300 ease-out ${
+          {/* Right Sidebar - Enhanced with solid background */}
+          <div className={`mobile-sidebar fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black border-l border-white/20 shadow-2xl z-50 lg:hidden transform transition-transform duration-300 ease-out ${
             isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}>
-            {/* Sidebar Header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/10 bg-gradient-to-r from-blue-500/10 to-violet-500/10">
+            {/* Sidebar Header - Enhanced with solid background */}
+            <div className="flex items-center justify-between p-6 border-b border-white/20 bg-gradient-to-r from-blue-600/20 to-violet-600/20 backdrop-blur-xl">
               <div>
                 <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
                   WHATIF
                 </h2>
-                <p className="text-gray-400 text-sm">Explore alternate realities</p>
+                <p className="text-gray-300 text-sm">Explore alternate realities</p>
               </div>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors duration-200"
+                className="p-2 rounded-lg hover:bg-white/10 text-gray-300 hover:text-white transition-colors duration-200"
               >
                 <X size={20} />
               </button>
             </div>
 
-            {/* Auth Section for Non-logged Users - Moved to top for better visibility */}
+            {/* Auth Section for Non-logged Users - Enhanced visibility */}
             {!user && (
-              <div className="p-6 border-b border-white/10 bg-gradient-to-r from-blue-500/5 to-violet-500/5">
+              <div className="p-6 border-b border-white/20 bg-gradient-to-r from-blue-600/10 to-violet-600/10 backdrop-blur-xl">
                 <div className="space-y-4">
                   <div className="text-center mb-4">
                     <h3 className="text-white font-semibold text-lg mb-1">Welcome to WHATIF</h3>
-                    <p className="text-gray-400 text-sm">Sign in to explore your alternate realities</p>
+                    <p className="text-gray-300 text-sm">Sign in to explore your alternate realities</p>
                   </div>
                   
                   <button 
@@ -293,7 +293,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
                       onAuthClick('signin');
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full px-6 py-4 bg-white/10 backdrop-blur-md border-2 border-white/20 rounded-xl text-white font-semibold hover:bg-white/15 hover:border-white/30 transition-all duration-300 hover:scale-105 shadow-lg"
+                    className="w-full px-6 py-4 bg-white/15 backdrop-blur-md border-2 border-white/30 rounded-xl text-white font-semibold hover:bg-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 shadow-lg"
                   >
                     Sign In
                   </button>
@@ -311,12 +311,12 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
               </div>
             )}
 
-            {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto" style={{ height: user ? 'calc(100vh - 140px)' : 'calc(100vh - 280px)' }}>
+            {/* Scrollable Content - Enhanced with solid background */}
+            <div className="flex-1 overflow-y-auto bg-black/95 backdrop-blur-xl" style={{ height: user ? 'calc(100vh - 140px)' : 'calc(100vh - 280px)' }}>
               {/* User Section */}
               {user && (
-                <div className="p-4 border-b border-white/10">
-                  <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-500/10 to-violet-500/10 rounded-xl border border-blue-400/20">
+                <div className="p-4 border-b border-white/20">
+                  <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-600/15 to-violet-600/15 rounded-xl border border-blue-400/30 backdrop-blur-xl">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
                       {user.avatar ? (
                         <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
@@ -328,7 +328,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-white font-semibold truncate">{user.name}</h3>
-                      <p className="text-gray-400 text-sm truncate">{user.email}</p>
+                      <p className="text-gray-300 text-sm truncate">{user.email}</p>
                     </div>
                   </div>
                 </div>
@@ -338,7 +338,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
               <div className="p-4">
                 {/* Products Section */}
                 <div className="mb-6">
-                  <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3 px-2">
+                  <h3 className="text-gray-300 text-xs font-semibold uppercase tracking-wider mb-3 px-2">
                     Products
                   </h3>
                   <div className="space-y-2">
@@ -346,12 +346,12 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
                       <button
                         key={index}
                         onClick={item.action}
-                        className="w-full text-left p-4 rounded-xl hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-violet-500/10 transition-all duration-200 group border border-transparent hover:border-blue-400/20"
+                        className="w-full text-left p-4 rounded-xl hover:bg-gradient-to-r hover:from-blue-600/15 hover:to-violet-600/15 transition-all duration-200 group border border-transparent hover:border-blue-400/30 backdrop-blur-xl"
                       >
                         <div className="text-white font-semibold group-hover:text-blue-400 transition-colors duration-200 mb-1">
                           {item.name}
                         </div>
-                        <div className="text-gray-400 text-sm">
+                        <div className="text-gray-300 text-sm">
                           {item.description}
                         </div>
                       </button>
@@ -361,17 +361,17 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
 
                 {/* Other Links */}
                 <div className="mb-6">
-                  <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3 px-2">
+                  <h3 className="text-gray-300 text-xs font-semibold uppercase tracking-wider mb-3 px-2">
                     More
                   </h3>
                   <div className="space-y-2">
-                    <button className="w-full text-left p-4 rounded-xl hover:bg-white/5 transition-all duration-200 text-white font-medium border border-transparent hover:border-white/10">
+                    <button className="w-full text-left p-4 rounded-xl hover:bg-white/10 transition-all duration-200 text-white font-medium border border-transparent hover:border-white/20 backdrop-blur-xl">
                       Resources
                     </button>
-                    <button className="w-full text-left p-4 rounded-xl hover:bg-white/5 transition-all duration-200 text-white font-medium border border-transparent hover:border-white/10">
+                    <button className="w-full text-left p-4 rounded-xl hover:bg-white/10 transition-all duration-200 text-white font-medium border border-transparent hover:border-white/20 backdrop-blur-xl">
                       Pricing
                     </button>
-                    <button className="w-full text-left p-4 rounded-xl hover:bg-white/5 transition-all duration-200 text-white font-medium border border-transparent hover:border-white/10">
+                    <button className="w-full text-left p-4 rounded-xl hover:bg-white/10 transition-all duration-200 text-white font-medium border border-transparent hover:border-white/20 backdrop-blur-xl">
                       About
                     </button>
                   </div>
@@ -380,21 +380,21 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
                 {/* User Actions */}
                 {user && (
                   <div className="mb-6">
-                    <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3 px-2">
+                    <h3 className="text-gray-300 text-xs font-semibold uppercase tracking-wider mb-3 px-2">
                       Account
                     </h3>
                     <div className="space-y-2">
-                      <button className="w-full text-left p-4 rounded-xl hover:bg-white/5 transition-all duration-200 flex items-center gap-3 text-gray-300 hover:text-white border border-transparent hover:border-white/10">
+                      <button className="w-full text-left p-4 rounded-xl hover:bg-white/10 transition-all duration-200 flex items-center gap-3 text-gray-300 hover:text-white border border-transparent hover:border-white/20 backdrop-blur-xl">
                         <UserCircle size={18} />
                         <span className="font-medium">Profile</span>
                       </button>
-                      <button className="w-full text-left p-4 rounded-xl hover:bg-white/5 transition-all duration-200 flex items-center gap-3 text-gray-300 hover:text-white border border-transparent hover:border-white/10">
+                      <button className="w-full text-left p-4 rounded-xl hover:bg-white/10 transition-all duration-200 flex items-center gap-3 text-gray-300 hover:text-white border border-transparent hover:border-white/20 backdrop-blur-xl">
                         <Settings size={18} />
                         <span className="font-medium">Settings</span>
                       </button>
                       <button 
                         onClick={onLogout}
-                        className="w-full text-left p-4 rounded-xl hover:bg-red-500/10 transition-all duration-200 flex items-center gap-3 text-red-400 hover:text-red-300 border border-transparent hover:border-red-400/20"
+                        className="w-full text-left p-4 rounded-xl hover:bg-red-500/15 transition-all duration-200 flex items-center gap-3 text-red-400 hover:text-red-300 border border-transparent hover:border-red-400/30 backdrop-blur-xl"
                       >
                         <LogOut size={18} />
                         <span className="font-medium">Sign Out</span>
@@ -405,9 +405,9 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="p-4 border-t border-white/10 bg-black/30">
-              <div className="text-xs text-gray-500 text-center">
+            {/* Footer - Enhanced with solid background */}
+            <div className="p-4 border-t border-white/20 bg-black/95 backdrop-blur-xl">
+              <div className="text-xs text-gray-400 text-center">
                 WHATIF v1.0 • Explore Your Alternate Reality
               </div>
             </div>
