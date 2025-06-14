@@ -39,7 +39,7 @@ const ShadowTwinHome: React.FC<ShadowTwinHomeProps> = ({ onStartJourney, onNavig
   ];
 
   return (
-    <div className="space-y-6 lg:space-y-8">
+    <div className="flex flex-col space-y-6 lg:space-y-8 pt-4">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-violet-500/10 via-blue-500/10 to-cyan-500/10 border border-violet-400/20 rounded-2xl p-6 lg:p-8">
         <h1 className="text-2xl lg:text-4xl font-bold text-white mb-4">
@@ -77,7 +77,7 @@ const ShadowTwinHome: React.FC<ShadowTwinHomeProps> = ({ onStartJourney, onNavig
       {/* Quick Actions */}
       <div>
         <h2 className="text-xl lg:text-2xl font-bold text-white mb-4 lg:mb-6 flex items-center gap-3">
-          <TrendingUp className="text-violet-400" size={20} className="lg:w-6 lg:h-6" />
+          <TrendingUp className="text-violet-400 lg:w-6 lg:h-6" size={20} />
           Quick Actions
         </h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
@@ -102,7 +102,7 @@ const ShadowTwinHome: React.FC<ShadowTwinHomeProps> = ({ onStartJourney, onNavig
       {/* Recent Activity */}
       <div>
         <h2 className="text-xl lg:text-2xl font-bold text-white mb-4 lg:mb-6 flex items-center gap-3">
-          <Clock className="text-blue-400" size={20} className="lg:w-6 lg:h-6" />
+          <Clock className="text-blue-400 lg:w-6 lg:h-6" size={20} />
           Recent Activity
         </h2>
         <div className="space-y-3 lg:space-y-4">
@@ -113,9 +113,9 @@ const ShadowTwinHome: React.FC<ShadowTwinHomeProps> = ({ onStartJourney, onNavig
           ].map((activity, index) => (
             <div key={index} className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-black/20 backdrop-blur-md border border-white/10 rounded-lg hover:border-white/20 transition-all duration-300">
               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
-                {activity.type === 'voice' && <Mic className="text-white" size={14} className="lg:w-4 lg:h-4" />}
-                {activity.type === 'chat' && <MessageSquare className="text-white" size={14} className="lg:w-4 lg:h-4" />}
-                {activity.type === 'video' && <Video className="text-white" size={14} className="lg:w-4 lg:h-4" />}
+                {activity.type === 'voice' && <Mic className="text-white lg:w-4 lg:h-4" size={14} />}
+                {activity.type === 'chat' && <MessageSquare className="text-white lg:w-4 lg:h-4" size={14} />}
+                {activity.type === 'video' && <Video className="text-white lg:w-4 lg:h-4" size={14} />}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white font-medium text-sm lg:text-base truncate">{activity.title}</p>

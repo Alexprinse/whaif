@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Mic, Video, Clock, User, LogOut, ChevronLeft, ChevronRight, Sparkles, X, Zap } from 'lucide-react';
+import { Home, Mic, Video, Clock, User, LogOut, ChevronLeft, Sparkles, Zap } from 'lucide-react';
 
 interface ShadowTwinNavigationProps {
   activeSection: string;
@@ -109,17 +109,22 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
       {/* Navigation Panel */}
       <div className={`
         mobile-nav-panel
-        fixed lg:relative left-0 top-0 h-full bg-black/95 lg:bg-black/90 backdrop-blur-xl border-r border-white/10 z-40 lg:z-10
+        fixed left-0 top-0 h-screen lg:h-full bg-black/95 lg:bg-black/90 backdrop-blur-xl border-r border-white/10 z-40 lg:z-50
         transition-all duration-300 flex flex-col
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         ${isCollapsed ? 'lg:w-16' : 'lg:w-64'}
-        w-64
+        w-64 overflow-hidden
       `}>
         {/* Header with ShadowTwin Logo */}
         <div className="p-4 border-b border-white/10 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+              <div 
+                onClick={isCollapsed ? handleCollapseToggle : undefined}
+                className={`w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center flex-shrink-0 ${
+                  isCollapsed ? 'cursor-pointer hover:scale-105 transition-transform' : ''
+                }`}
+              >
                 <Sparkles className="text-white" size={20} />
               </div>
               {(!isCollapsed || isMobileMenuOpen) && (
@@ -129,39 +134,32 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
                 </div>
               )}
             </div>
-            {/* Mobile Close Button */}
-            {isMobileMenuOpen && (
+            
+            {/* Desktop Collapse Button - Only show when not collapsed */}
+            {!isCollapsed && (
               <button
-                onClick={onMobileMenuClose}
-                className="lg:hidden p-2 text-gray-400 hover:text-white transition-colors duration-200 rounded-lg hover:bg-white/10"
+                onClick={handleCollapseToggle}
+                className="hidden lg:flex items-center justify-center w-8 h-8 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors duration-200"
               >
-                <X size={20} />
+                <ChevronLeft size={18} />
               </button>
             )}
           </div>
         </div>
 
-        {/* Desktop Collapse/Expand Button */}
-        <div className="absolute -right-4 top-20 z-50 hidden lg:block">
-          <button
-            onClick={handleCollapseToggle}
-            className="w-8 h-8 bg-black/90 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:border-white/20 transition-all duration-300 shadow-lg"
-          >
-            {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-          </button>
-        </div>
-
         {/* Navigation Items */}
-        <div className="p-4 flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-800 hover:scrollbar-thumb-gray-700">
           <nav className="space-y-2">
             {/* What If Button */}
             <button
               onClick={handleWhatIfClick}
-              className="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group text-gray-400 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-violet-500/20 hover:border hover:border-blue-400/30"
+              className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 group text-gray-400 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-violet-500/20 hover:border hover:border-blue-400/30 ${
+                isCollapsed && !isMobileMenuOpen ? 'justify-center' : ''
+              }`}
               title={isCollapsed && !isMobileMenuOpen ? 'What If' : undefined}
             >
-              <div className="flex-shrink-0 text-blue-400 flex items-center justify-center">
-                <Zap size={24} />
+              <div className="flex-shrink-0 text-blue-400 flex items-center justify-center w-8 h-8">
+                <Zap size={22} />
               </div>
               {(!isCollapsed || isMobileMenuOpen) && (
                 <span className="font-medium truncate">What If</span>
@@ -175,17 +173,17 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleSectionChange(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
+                className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 group ${
                   activeSection === item.id
                     ? 'bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-400/30 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
+                } ${isCollapsed && !isMobileMenuOpen ? 'justify-center' : ''}`}
                 title={isCollapsed && !isMobileMenuOpen ? item.label : undefined}
               >
-                <div className={`flex-shrink-0 flex items-center justify-center ${
+                <div className={`flex-shrink-0 flex items-center justify-center w-8 h-8 ${
                   activeSection === item.id ? 'text-violet-400' : ''
-                } ${isCollapsed ? 'w-6 h-6' : ''}`}>
-                  {item.icon}
+                }`}>
+                  {React.cloneElement(item.icon as React.ReactElement, { size: 22 })}
                 </div>
                 {(!isCollapsed || isMobileMenuOpen) && (
                   <span className="font-medium truncate">{item.label}</span>
@@ -196,7 +194,7 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
         </div>
 
         {/* User Section at Bottom */}
-        <div className="p-4 border-t border-white/10 flex-shrink-0">
+        <div className="p-4 border-t border-white/10 flex-shrink-0 mt-auto">
           <div className="relative">
             <button
               onClick={() => setShowUserDropdown(!showUserDropdown)}

@@ -38,7 +38,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
 
   const { 
     isGenerating, 
-    videoUrl, 
+    // videoUrl, 
     audioUrls, 
     timelineEvents,
     socialPosts,
@@ -112,7 +112,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
       return (
         <ShadowTwinResults
           formData={formData}
-          videoUrl={videoUrl}
+          // videoUrl={videoUrl}
           audioUrls={audioUrls}
           timelineEvents={timelineEvents}
           socialPosts={socialPosts}
@@ -178,28 +178,21 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
       />
 
       {/* Main Content Area - Properly positioned relative to navigation */}
-      <div className={`transition-all duration-300 ${
+      <div className={`relative min-h-screen transition-all duration-300 ${
         isNavCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       }`}>
-        {/* Ultra Compact Top Bar */}
-        <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10">
-          <div className="flex items-center justify-between px-4 lg:px-6 py-2">
-            {/* Left Section - Menu & Title */}
-            <div className="flex items-center gap-3">
-              {/* Mobile Menu Button */}
+        {/* Compact Top Bar */}
+        <div className="fixed top-0 right-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10 transition-all duration-300"
+             style={{ left: isNavCollapsed ? '64px' : '256px' }}>
+          <div className="flex items-center justify-between h-[73px] px-4">
+            {/* Left Section - Mobile Menu Only */}
+            <div className="flex items-center">
               <button
                 onClick={handleMobileMenuToggle}
-                className="mobile-menu-button lg:hidden p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+                className="lg:hidden p-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-white transition-colors"
               >
-                <Menu size={18} />
+                <Menu size={20} />
               </button>
-
-              {/* Title - Hidden on small mobile */}
-              <div className="hidden sm:block">
-                <h1 className="text-lg lg:text-xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                  ShadowTwin
-                </h1>
-              </div>
             </div>
             
             {/* Right Section - Profile */}
@@ -207,52 +200,34 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
               <button
                 onClick={() => {
                   setShowProfileDropdown(!showProfileDropdown);
-                  // Close mobile menu when opening profile dropdown
-                  if (!showProfileDropdown) {
-                    setIsMobileMenuOpen(false);
-                  }
+                  setIsMobileMenuOpen(false);
                 }}
-                className="flex items-center gap-2 p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
-                title="Profile"
+                className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-all duration-200"
               >
-                <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
                   {user.avatar ? (
                     <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
                   ) : (
-                    <User className="text-white" size={14} />
+                    <User className="text-white" size={16} />
                   )}
                 </div>
-                <div className="hidden sm:block text-left">
-                  <div className="text-white font-medium text-sm">{user.name}</div>
-                </div>
+                <span className="hidden sm:block text-sm font-medium">{user.name}</span>
               </button>
 
-              {/* Profile Dropdown */}
               {showProfileDropdown && (
-                <div className="absolute top-full right-0 mt-2 w-56 lg:w-64 bg-black/90 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl">
-                  <div className="p-3 lg:p-4 border-b border-white/10">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
-                        <User className="text-white" size={16} />
-                      </div>
-                      <div>
-                        <div className="text-white font-medium text-sm lg:text-base">{user.name}</div>
-                        <div className="text-gray-400 text-xs lg:text-sm">{user.email}</div>
-                      </div>
-                    </div>
-                  </div>
+                <div className="absolute top-full right-0 mt-1 w-56 bg-black/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl">
                   <div className="p-2">
                     <button 
                       onClick={() => {
                         setShowAPIConfig(true);
                         setShowProfileDropdown(false);
                       }}
-                      className="w-full text-left p-2 lg:p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-3 text-gray-300 hover:text-white text-sm lg:text-base"
+                      className="w-full text-left p-2 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-2 text-gray-300 hover:text-white text-sm"
                     >
                       <Settings size={14} />
                       API Configuration
                     </button>
-                    <button className="w-full text-left p-2 lg:p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-3 text-gray-300 hover:text-white text-sm lg:text-base">
+                    <button className="w-full text-left p-2 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-2 text-gray-300 hover:text-white text-sm">
                       <User size={14} />
                       Profile Settings
                     </button>
@@ -262,18 +237,15 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
             </div>
           </div>
 
-          {/* Error Message - Ultra Compact */}
           {error && (
-            <div className="px-4 lg:px-6 pb-2">
-              <div className="p-2 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
-                <p className="text-yellow-300 text-xs">{error}</p>
-              </div>
+            <div className="px-4 py-2 bg-red-500/10 border-t border-red-400/20">
+              <p className="text-red-400 text-xs">{error}</p>
             </div>
           )}
         </div>
 
-        {/* Page Content - Minimal top padding */}
-        <div className="p-4 lg:p-6">
+        {/* Page Content - Update top padding to match new header height */}
+        <div className="pt-[73px] p-4 lg:p-6">
           {renderMainContent()}
         </div>
       </div>
