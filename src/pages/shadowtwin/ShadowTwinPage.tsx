@@ -181,9 +181,9 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
       <div className={`transition-all duration-300 ${
         isNavCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       }`}>
-        {/* Compact Top Bar */}
+        {/* Ultra Compact Top Bar */}
         <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10">
-          <div className="flex items-center justify-between px-4 lg:px-6 py-3">
+          <div className="flex items-center justify-between px-4 lg:px-6 py-2">
             {/* Left Section - Menu & Title */}
             <div className="flex items-center gap-3">
               {/* Mobile Menu Button */}
@@ -191,7 +191,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
                 onClick={handleMobileMenuToggle}
                 className="mobile-menu-button lg:hidden p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
               >
-                <Menu size={20} />
+                <Menu size={18} />
               </button>
 
               {/* Title - Hidden on small mobile */}
@@ -199,7 +199,6 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
                 <h1 className="text-lg lg:text-xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
                   ShadowTwin
                 </h1>
-                <p className="text-gray-400 text-xs hidden md:block">Explore alternate realities</p>
               </div>
             </div>
             
@@ -213,19 +212,18 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
                     setIsMobileMenuOpen(false);
                   }
                 }}
-                className="flex items-center gap-2 lg:gap-3 p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+                className="flex items-center gap-2 p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
                 title="Profile"
               >
-                <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
+                <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
                   {user.avatar ? (
                     <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
                   ) : (
-                    <User className="text-white" size={16} />
+                    <User className="text-white" size={14} />
                   )}
                 </div>
                 <div className="hidden sm:block text-left">
                   <div className="text-white font-medium text-sm">{user.name}</div>
-                  <div className="text-gray-400 text-xs hidden lg:block">{user.email}</div>
                 </div>
               </button>
 
@@ -235,7 +233,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
                   <div className="p-3 lg:p-4 border-b border-white/10">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
-                        <User className="text-white" size={16} className="lg:w-5 lg:h-5" />
+                        <User className="text-white" size={16} />
                       </div>
                       <div>
                         <div className="text-white font-medium text-sm lg:text-base">{user.name}</div>
@@ -251,11 +249,11 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
                       }}
                       className="w-full text-left p-2 lg:p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-3 text-gray-300 hover:text-white text-sm lg:text-base"
                     >
-                      <Settings size={14} className="lg:w-4 lg:h-4" />
+                      <Settings size={14} />
                       API Configuration
                     </button>
                     <button className="w-full text-left p-2 lg:p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-3 text-gray-300 hover:text-white text-sm lg:text-base">
-                      <User size={14} className="lg:w-4 lg:h-4" />
+                      <User size={14} />
                       Profile Settings
                     </button>
                   </div>
@@ -264,17 +262,17 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
             </div>
           </div>
 
-          {/* Error Message - Compact */}
+          {/* Error Message - Ultra Compact */}
           {error && (
-            <div className="px-4 lg:px-6 pb-3">
-              <div className="p-3 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
-                <p className="text-yellow-300 text-sm">{error}</p>
+            <div className="px-4 lg:px-6 pb-2">
+              <div className="p-2 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
+                <p className="text-yellow-300 text-xs">{error}</p>
               </div>
             </div>
           )}
         </div>
 
-        {/* Page Content - Reduced top padding */}
+        {/* Page Content - Minimal top padding */}
         <div className="p-4 lg:p-6">
           {renderMainContent()}
         </div>
