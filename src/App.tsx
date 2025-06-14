@@ -4,7 +4,7 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
-import ShadowTwin from './pages/ShadowTwin';
+import ShadowTwinPage from './pages/shadowtwin/ShadowTwinPage';
 import MicroDeath from './pages/MicroDeath';
 import YouInc from './pages/YouInc';
 import AuthModal from './components/AuthModal';
@@ -40,7 +40,7 @@ function App() {
   const renderView = () => {
     switch (currentView) {
       case 'shadowtwin':
-        return <ShadowTwin onBack={() => setCurrentView('home')} user={user} />;
+        return <ShadowTwinPage onBack={() => setCurrentView('home')} />;
       case 'microdeath':
         return <MicroDeath onBack={() => setCurrentView('home')} user={user} />;
       case 'youinc':

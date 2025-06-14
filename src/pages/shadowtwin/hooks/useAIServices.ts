@@ -2,13 +2,7 @@ import { useState, useCallback } from 'react';
 import { TavusService } from '../services/tavusApi';
 import { ElevenLabsService } from '../services/elevenLabsApi';
 import { GeminiService } from '../services/geminiApi';
-import { FormData } from '../types';
-
-interface AIServicesConfig {
-  tavusApiKey?: string;
-  elevenLabsApiKey?: string;
-  geminiApiKey?: string;
-}
+import { FormData, AIServicesConfig } from '../types';
 
 export const useAIServices = (config: AIServicesConfig) => {
   const [isGenerating, setIsGenerating] = useState(false);

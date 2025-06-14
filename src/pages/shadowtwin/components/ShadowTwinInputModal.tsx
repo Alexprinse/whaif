@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { X, User, MessageSquare, Briefcase, Sparkles, Camera, Upload, ArrowRight, ArrowLeft } from 'lucide-react';
-
-interface FormData {
-  name: string;
-  currentBio: string;
-  majorDecisions: string;
-  dreamsNotPursued: string;
-  selfie?: File;
-}
+import { FormData } from '../types';
 
 interface ShadowTwinInputModalProps {
   isOpen: boolean;

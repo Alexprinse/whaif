@@ -4,11 +4,3 @@ export interface User {
   email: string;
   avatar?: string;
 }
-
-export interface FormData {
-  name: string;
-  currentBio: string;
-  majorDecisions: string;
-  dreamsNotPursued: string;
-  selfie?: File;
-}

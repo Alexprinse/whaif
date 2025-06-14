@@ -1,4 +1,6 @@
 // Google Gemini API Integration for AI Content Generation
+import { FormData, TimelineEvent, SocialPost, ComparisonData } from '../types';
+
 export interface GeminiRequest {
   contents: {
     parts: {
@@ -22,27 +24,6 @@ export interface GeminiResponse {
     };
     finishReason: string;
   }[];
-}
-
-export interface TimelineEvent {
-  age: number;
-  title: string;
-  description: string;
-  year: string;
-}
-
-export interface SocialPost {
-  platform: 'instagram' | 'twitter';
-  caption: string;
-  hashtags: string[];
-  likes: number;
-  time: string;
-}
-
-export interface ComparisonData {
-  category: string;
-  realYou: string;
-  shadowTwin: string;
 }
 
 export class GeminiService {
@@ -116,9 +97,9 @@ export class GeminiService {
     }
   }
 
-  async generateTimelineEvents(formData: any): Promise<TimelineEvent[]> {
+  async generateTimelineEvents(formData: FormData): Promise<Omit<TimelineEvent, 'icon'>[]> {
     const currentYear = new Date().getFullYear();
-    const currentAge = parseInt(formData.age) || 25; // Default age if not provided
+    const currentAge = 25; // Default age
     
     const prompt = `
 Based on this person's information:
@@ -163,7 +144,7 @@ Return ONLY a valid JSON array, no other text:
     }
   }
 
-  async generateSocialPosts(formData: any): Promise<SocialPost[]> {
+  async generateSocialPosts(formData: FormData): Promise<Omit<SocialPost, 'image'>[]> {
     const prompt = `
 Based on this person's alternate life where they pursued their dreams:
 - Name: ${formData.name}
@@ -199,7 +180,7 @@ Return ONLY a valid JSON array, no other text:
     }
   }
 
-  async generateComparisonData(formData: any): Promise<ComparisonData[]> {
+  async generateComparisonData(formData: FormData): Promise<Omit<ComparisonData, 'icon'>[]> {
     const prompt = `
 Compare the real person vs their alternate ShadowTwin version:
 
@@ -241,7 +222,7 @@ Return ONLY a valid JSON array, no other text:
     }
   }
 
-  async generateChatResponse(userMessage: string, formData: any, conversationHistory: string[] = []): Promise<string> {
+  async generateChatResponse(userMessage: string, formData: FormData, conversationHistory: string[] = []): Promise<string> {
     const context = conversationHistory.slice(-6).join('\n'); // Last 3 exchanges
     
     const prompt = `
@@ -282,7 +263,7 @@ Keep response under 150 words. Speak directly to them as "you":
   }
 
   // Fallback methods for when API fails
-  private getFallbackTimelineEvents(formData: any): TimelineEvent[] {
+  private getFallbackTimelineEvents(formData: FormData): Omit<TimelineEvent, 'icon'>[] {
     const currentYear = new Date().getFullYear();
     const dreams = formData.dreamsNotPursued?.toLowerCase() || 'creative pursuits';
     
@@ -343,7 +324,7 @@ Keep response under 150 words. Speak directly to them as "you":
     ];
   }
 
-  private getFallbackSocialPosts(formData: any): SocialPost[] {
+  private getFallbackSocialPosts(formData: FormData): Omit<SocialPost, 'image'>[] {
     return [
       {
         platform: 'instagram',
@@ -369,7 +350,7 @@ Keep response under 150 words. Speak directly to them as "you":
     ];
   }
 
-  private getFallbackComparisonData(formData: any): ComparisonData[] {
+  private getFallbackComparisonData(formData: FormData): Omit<ComparisonData, 'icon'>[] {
     return [
       {
         category: 'Career',
@@ -394,7 +375,7 @@ Keep response under 150 words. Speak directly to them as "you":
     ];
   }
 
-  private getFallbackChatResponse(userMessage: string, formData: any): string {
+  private getFallbackChatResponse(userMessage: string, formData: FormData): string {
     const responses = [
       `You know, ${formData.name}, that's such an interesting question. Living this alternate path has taught me so much about following your instincts.`,
       `I think about you often, wondering how different our perspectives are. The path I chose has been wild and uncertain, but deeply fulfilling.`,

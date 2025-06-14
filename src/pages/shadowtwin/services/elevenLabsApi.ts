@@ -1,4 +1,6 @@
 // ElevenLabs API Integration for AI Voice Generation
+import { FormData } from '../types';
+
 export interface ElevenLabsVoiceRequest {
   text: string;
   voice_id: string;
@@ -107,7 +109,7 @@ export class ElevenLabsService {
   }
 
   // Generate contextual messages for ShadowTwin
-  generateShadowTwinMessages(formData: any): string[] {
+  generateShadowTwinMessages(formData: FormData): string[] {
     const messages = [
       `Hey ${formData.name}! It's surreal talking to you like this. I'm the version of you that took the leap into ${formData.dreamsNotPursued || 'that creative path'}. Every morning I wake up grateful for the choice to follow our dreams.`,
       
@@ -124,7 +126,7 @@ export class ElevenLabsService {
   }
 
   // Get appropriate voice based on user characteristics
-  getRecommendedVoice(formData: any): string {
+  getRecommendedVoice(formData: FormData): string {
     // Default voices for different personas
     const voices = {
       creative: 'EXAVITQu4vr4xnSDxMaL', // Bella - warm, inspiring
