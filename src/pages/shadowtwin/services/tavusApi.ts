@@ -1,5 +1,5 @@
 // Tavus API Integration for AI Video Generation
-import { FormData } from '../types';
+import { ShadowTwinFormData } from '../types';
 
 export interface TavusVideoRequest {
   replica_id: string;
@@ -103,7 +103,7 @@ export class TavusService {
   }
 
   // Generate script for ShadowTwin based on user data
-  generateShadowTwinScript(formData: FormData): string {
+  generateShadowTwinScript(formData: ShadowTwinFormData): string {
     const scripts = [
       `Hey there! It's incredible to see you. I'm ${formData.name}, but the version of you that chose the creative path. ${formData.dreamsNotPursued ? `Remember when you dreamed about ${formData.dreamsNotPursued}? Well, I actually did it.` : ''} Every day here feels like I'm living the life we always imagined.`,
       

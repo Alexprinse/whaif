@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { X, User, MessageSquare, Briefcase, Sparkles, Camera, Upload, ArrowRight, ArrowLeft } from 'lucide-react';
-import { FormData } from '../types';
+import { ShadowTwinFormData } from '../types';
 
 interface ShadowTwinInputModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: ShadowTwinFormData) => void;
 }
 
 const ShadowTwinInputModal: React.FC<ShadowTwinInputModalProps> = ({ 
@@ -14,7 +14,7 @@ const ShadowTwinInputModal: React.FC<ShadowTwinInputModalProps> = ({
   onSubmit 
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<ShadowTwinFormData>({
     name: '',
     currentBio: '',
     majorDecisions: '',

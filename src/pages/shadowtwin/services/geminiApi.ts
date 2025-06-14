@@ -1,5 +1,5 @@
 // Google Gemini API Integration for AI Content Generation
-import { FormData, TimelineEvent, SocialPost, ComparisonData } from '../types';
+import { ShadowTwinFormData, TimelineEvent, SocialPost, ComparisonData } from '../types';
 
 export interface GeminiRequest {
   contents: {
@@ -97,7 +97,7 @@ export class GeminiService {
     }
   }
 
-  async generateTimelineEvents(formData: FormData): Promise<Omit<TimelineEvent, 'icon'>[]> {
+  async generateTimelineEvents(formData: ShadowTwinFormData): Promise<Omit<TimelineEvent, 'icon'>[]> {
     const currentYear = new Date().getFullYear();
     const currentAge = 25; // Default age
     
@@ -144,7 +144,7 @@ Return ONLY a valid JSON array, no other text:
     }
   }
 
-  async generateSocialPosts(formData: FormData): Promise<Omit<SocialPost, 'image'>[]> {
+  async generateSocialPosts(formData: ShadowTwinFormData): Promise<Omit<SocialPost, 'image'>[]> {
     const prompt = `
 Based on this person's alternate life where they pursued their dreams:
 - Name: ${formData.name}
@@ -180,7 +180,7 @@ Return ONLY a valid JSON array, no other text:
     }
   }
 
-  async generateComparisonData(formData: FormData): Promise<Omit<ComparisonData, 'icon'>[]> {
+  async generateComparisonData(formData: ShadowTwinFormData): Promise<Omit<ComparisonData, 'icon'>[]> {
     const prompt = `
 Compare the real person vs their alternate ShadowTwin version:
 
@@ -222,7 +222,7 @@ Return ONLY a valid JSON array, no other text:
     }
   }
 
-  async generateChatResponse(userMessage: string, formData: FormData, conversationHistory: string[] = []): Promise<string> {
+  async generateChatResponse(userMessage: string, formData: ShadowTwinFormData, conversationHistory: string[] = []): Promise<string> {
     const context = conversationHistory.slice(-6).join('\n'); // Last 3 exchanges
     
     const prompt = `
@@ -263,7 +263,7 @@ Keep response under 150 words. Speak directly to them as "you":
   }
 
   // Fallback methods for when API fails
-  private getFallbackTimelineEvents(formData: FormData): Omit<TimelineEvent, 'icon'>[] {
+  private getFallbackTimelineEvents(formData: ShadowTwinFormData): Omit<TimelineEvent, 'icon'>[] {
     const currentYear = new Date().getFullYear();
     const dreams = formData.dreamsNotPursued?.toLowerCase() || 'creative pursuits';
     
@@ -324,7 +324,7 @@ Keep response under 150 words. Speak directly to them as "you":
     ];
   }
 
-  private getFallbackSocialPosts(formData: FormData): Omit<SocialPost, 'image'>[] {
+  private getFallbackSocialPosts(formData: ShadowTwinFormData): Omit<SocialPost, 'image'>[] {
     return [
       {
         platform: 'instagram',
@@ -350,7 +350,7 @@ Keep response under 150 words. Speak directly to them as "you":
     ];
   }
 
-  private getFallbackComparisonData(formData: FormData): Omit<ComparisonData, 'icon'>[] {
+  private getFallbackComparisonData(formData: ShadowTwinFormData): Omit<ComparisonData, 'icon'>[] {
     return [
       {
         category: 'Career',
@@ -375,7 +375,7 @@ Keep response under 150 words. Speak directly to them as "you":
     ];
   }
 
-  private getFallbackChatResponse(userMessage: string, formData: FormData): string {
+  private getFallbackChatResponse(userMessage: string, formData: ShadowTwinFormData): string {
     const responses = [
       `You know, ${formData.name}, that's such an interesting question. Living this alternate path has taught me so much about following your instincts.`,
       `I think about you often, wondering how different our perspectives are. The path I chose has been wild and uncertain, but deeply fulfilling.`,

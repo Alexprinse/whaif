@@ -5,7 +5,7 @@ export interface User {
   avatar?: string;
 }
 
-export interface FormData {
+export interface ShadowTwinFormData {
   name: string;
   currentBio: string;
   majorDecisions: string;

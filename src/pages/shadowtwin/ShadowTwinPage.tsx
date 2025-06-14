@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Settings } from 'lucide-react';
 import { useAIServices } from './hooks/useAIServices';
-import { FormData, AIServicesConfig } from './types';
+import { ShadowTwinFormData, AIServicesConfig } from './types';
 import APIConfigModal from './components/APIConfigModal';
 import ShadowTwinInputModal from './components/ShadowTwinInputModal';
 import ShadowTwinIntro from './components/ShadowTwinIntro';
@@ -15,7 +15,7 @@ interface ShadowTwinPageProps {
 
 const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
   const [currentStep, setCurrentStep] = useState('intro'); // 'intro', 'generating', 'results'
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<ShadowTwinFormData>({
     name: '',
     currentBio: '',
     majorDecisions: '',
@@ -43,7 +43,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
     generateVoiceResponse 
   } = useAIServices(apiConfig);
 
-  const handleInputSubmit = async (inputData: FormData) => {
+  const handleInputSubmit = async (inputData: ShadowTwinFormData) => {
     setFormData(inputData);
     setCurrentStep('generating');
     

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { MessageSquare, Send, Play, Pause } from 'lucide-react';
-import { FormData, ChatMessage } from '../types';
+import { ShadowTwinFormData, ChatMessage } from '../types';
 
 interface ChatInterfaceProps {
-  formData: FormData;
-  generateChatResponse: (message: string, formData: FormData, history: string[]) => Promise<{ text: string; audioUrl?: string }>;
+  formData: ShadowTwinFormData;
+  generateChatResponse: (message: string, formData: ShadowTwinFormData, history: string[]) => Promise<{ text: string; audioUrl?: string }>;
 }
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ formData, generateChatResponse }) => {

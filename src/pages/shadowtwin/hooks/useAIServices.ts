@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { TavusService } from '../services/tavusApi';
 import { ElevenLabsService } from '../services/elevenLabsApi';
 import { GeminiService } from '../services/geminiApi';
-import { FormData, AIServicesConfig } from '../types';
+import { ShadowTwinFormData, AIServicesConfig } from '../types';
 
 export const useAIServices = (config: AIServicesConfig) => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -17,7 +17,7 @@ export const useAIServices = (config: AIServicesConfig) => {
   const elevenLabsService = config.elevenLabsApiKey ? new ElevenLabsService(config.elevenLabsApiKey) : null;
   const geminiService = config.geminiApiKey ? new GeminiService(config.geminiApiKey) : null;
 
-  const generateShadowTwinContent = useCallback(async (formData: FormData) => {
+  const generateShadowTwinContent = useCallback(async (formData: ShadowTwinFormData) => {
     setIsGenerating(true);
     setError(null);
 
@@ -99,7 +99,7 @@ export const useAIServices = (config: AIServicesConfig) => {
 
   const generateChatResponse = useCallback(async (
     userMessage: string, 
-    formData: FormData, 
+    formData: ShadowTwinFormData, 
     conversationHistory: string[] = []
   ): Promise<{ text: string; audioUrl?: string }> => {
     if (!geminiService) {
@@ -145,7 +145,7 @@ export const useAIServices = (config: AIServicesConfig) => {
     }
   }, [geminiService, elevenLabsService]);
 
-  const generateVoiceResponse = useCallback(async (message: string, formData: FormData) => {
+  const generateVoiceResponse = useCallback(async (message: string, formData: ShadowTwinFormData) => {
     if (!elevenLabsService) {
       return null;
     }

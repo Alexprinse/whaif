@@ -6,17 +6,17 @@ import SocialFeed from './SocialFeed';
 import ComparisonTable from './ComparisonTable';
 import ChatInterface from './ChatInterface';
 import ReflectionSection from './ReflectionSection';
-import { FormData, TimelineEvent, SocialPost, ComparisonData } from '../types';
+import { ShadowTwinFormData, TimelineEvent, SocialPost, ComparisonData } from '../types';
 
 interface ShadowTwinResultsProps {
-  formData: FormData;
+  formData: ShadowTwinFormData;
   videoUrl?: string;
   audioUrls: string[];
   timelineEvents: any[];
   socialPosts: any[];
   comparisonData: any[];
   isGenerating: boolean;
-  generateChatResponse: (message: string, formData: FormData, history: string[]) => Promise<{ text: string; audioUrl?: string }>;
+  generateChatResponse: (message: string, formData: ShadowTwinFormData, history: string[]) => Promise<{ text: string; audioUrl?: string }>;
   onTryAgain: () => void;
 }
 

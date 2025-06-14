@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Video, Upload, Clock, CheckCircle, AlertCircle, Play, Download, Share2, Loader2 } from 'lucide-react';
-import type { FormData } from '../types';
+import type { ShadowTwinFormData } from '../pages/shadowtwin/types';
 
 interface VideoGenerationPanelProps {
-  formData: FormData;
+  formData: ShadowTwinFormData;
   onVideoGenerated: (videoUrl: string) => void;
   tavusApiKey: string;
 }
