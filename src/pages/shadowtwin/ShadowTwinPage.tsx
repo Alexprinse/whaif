@@ -150,7 +150,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-black text-white">
       {/* Input Modal */}
       <ShadowTwinInputModal
         isOpen={showInputModal}
@@ -177,12 +177,12 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
         onNavCollapse={handleNavCollapse}
       />
 
-      {/* Main Content Area */}
-      <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
+      {/* Main Content Area - Properly positioned relative to navigation */}
+      <div className={`transition-all duration-300 ${
         isNavCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       }`}>
-        {/* Sticky Top Bar - Reduced padding */}
-        <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10 flex-shrink-0">
+        {/* Sticky Top Bar */}
+        <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10">
           <div className="flex items-center justify-between px-4 lg:px-6 py-2 lg:py-3">
             {/* Left Section - Menu & Title */}
             <div className="flex items-center gap-3 lg:gap-4">
@@ -263,7 +263,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
             </div>
           </div>
 
-          {/* Error Message - Reduced padding */}
+          {/* Error Message */}
           {error && (
             <div className="px-4 lg:px-6 pb-2 lg:pb-3">
               <div className="p-3 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
@@ -273,11 +273,9 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
           )}
         </div>
 
-        {/* Page Content - Scrollable with reduced padding */}
-        <div className="flex-1 overflow-auto">
-          <div className="p-4 lg:p-6">
-            {renderMainContent()}
-          </div>
+        {/* Page Content - Scrollable */}
+        <div className="p-4 lg:p-6">
+          {renderMainContent()}
         </div>
       </div>
     </div>
