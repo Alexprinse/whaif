@@ -279,8 +279,40 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
               </button>
             </div>
 
+            {/* Auth Section for Non-logged Users - Moved to top for better visibility */}
+            {!user && (
+              <div className="p-6 border-b border-white/10 bg-gradient-to-r from-blue-500/5 to-violet-500/5">
+                <div className="space-y-4">
+                  <div className="text-center mb-4">
+                    <h3 className="text-white font-semibold text-lg mb-1">Welcome to WHATIF</h3>
+                    <p className="text-gray-400 text-sm">Sign in to explore your alternate realities</p>
+                  </div>
+                  
+                  <button 
+                    onClick={() => {
+                      onAuthClick('signin');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full px-6 py-4 bg-white/10 backdrop-blur-md border-2 border-white/20 rounded-xl text-white font-semibold hover:bg-white/15 hover:border-white/30 transition-all duration-300 hover:scale-105 shadow-lg"
+                  >
+                    Sign In
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      onAuthClick('signup');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-violet-600 rounded-xl text-white font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25"
+                  >
+                    Get Started Free
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto h-[calc(100vh-140px)]">
+            <div className="flex-1 overflow-y-auto" style={{ height: user ? 'calc(100vh - 140px)' : 'calc(100vh - 280px)' }}>
               {/* User Section */}
               {user && (
                 <div className="p-4 border-b border-white/10">
@@ -372,32 +404,6 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
                 )}
               </div>
             </div>
-
-            {/* Auth Section for Non-logged Users */}
-            {!user && (
-              <div className="p-4 border-t border-white/10 bg-black/20">
-                <div className="space-y-3">
-                  <button 
-                    onClick={() => {
-                      onAuthClick('signin');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full px-6 py-3 border border-white/20 rounded-xl text-white font-medium hover:bg-white/5 transition-all duration-300"
-                  >
-                    Sign In
-                  </button>
-                  <button 
-                    onClick={() => {
-                      onAuthClick('signup');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 rounded-xl text-white font-medium hover:scale-105 transition-all duration-300"
-                  >
-                    Get Started
-                  </button>
-                </div>
-              </div>
-            )}
 
             {/* Footer */}
             <div className="p-4 border-t border-white/10 bg-black/30">
