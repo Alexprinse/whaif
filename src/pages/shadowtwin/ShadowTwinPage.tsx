@@ -28,7 +28,6 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
   const [showInputModal, setShowInputModal] = useState(false);
   const [showAPIConfig, setShowAPIConfig] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [apiConfig, setApiConfig] = useState<AIServicesConfig>({
     tavusApiKey: '9acf3d70659349aab5cb638470978303',
     elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d',
@@ -133,7 +132,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-black text-white">
       {/* Input Modal */}
       <ShadowTwinInputModal
         isOpen={showInputModal}
@@ -157,9 +156,9 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
       />
 
       {/* Main Content */}
-      <div className="flex-1 transition-all duration-300" style={{ marginLeft: isNavCollapsed ? '64px' : '256px' }}>
+      <div className="lg:ml-64 transition-all duration-300">
         {/* Top Bar */}
-        <div className="sticky top-0 z-30 bg-black/80 backdrop-blur-xl border-b border-white/10 px-8 py-4">
+        <div className="sticky top-0 z-30 bg-black/80 backdrop-blur-xl border-b border-white/10 px-4 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
@@ -168,11 +167,11 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
               >
                 <ArrowLeft size={20} />
               </button>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <div className="hidden sm:block">
+                <h1 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
                   ShadowTwin
                 </h1>
-                <p className="text-gray-400 text-sm">Explore alternate realities</p>
+                <p className="text-gray-400 text-xs lg:text-sm">Explore alternate realities</p>
               </div>
             </div>
             
@@ -225,7 +224,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
         </div>
 
         {/* Page Content */}
-        <div className="p-8">
+        <div className="p-4 lg:p-8">
           {renderMainContent()}
         </div>
       </div>
