@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Search, User as UserIcon, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
-import { User } from '../types';
+import { Menu, X, Search, User, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
 
 interface NavigationProps {
   onNavigate: (view: string) => void;

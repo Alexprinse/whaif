@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Video, Upload, Clock, CheckCircle, AlertCircle, Play, Download, Share2, Loader2 } from 'lucide-react';
-import type { FormData } from '../types';
 
 interface VideoGenerationPanelProps {
-  formData: FormData;
+  formData: {
+    name: string;
+    currentBio: string;
+    majorDecisions: string;
+    dreamsNotPursued: string;
+    selfie?: File;
+  };
   onVideoGenerated: (videoUrl: string) => void;
   tavusApiKey: string;
 }
@@ -353,14 +358,6 @@ const VideoGenerationPanel: React.FC<VideoGenerationPanelProps> = ({
           Create a personalized AI video where your ShadowTwin speaks directly to you about the alternate life path.
         </p>
       </div>
-
-      {!generatedVideoUrl && (
-        <div className="text-center mb-8">
-          <p className="text-gray-300 max-w-2xl mx-auto">
-            Create a personalized AI video where your ShadowTwin speaks directly to you about the alternate life path.
-          </p>
-        </div>
-      )}
 
       {!generatedVideoUrl && !isGenerating && (
         <div className="text-center mb-8">

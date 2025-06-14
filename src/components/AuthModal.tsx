@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Eye, EyeOff, Github, Chrome } from 'lucide-react';
-import { User as UserType } from '../types';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   mode: 'signin' | 'signup';
-  onLogin: (user: UserType) => void;
+  onLogin: (user: User) => void;
   onSwitchMode: (mode: 'signin' | 'signup') => void;
 }
 
@@ -65,7 +71,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
 
     // Simulate API call
     setTimeout(() => {
-      const user: UserType = {
+      const user: User = {
         id: Math.random().toString(36).substr(2, 9),
         name: mode === 'signup' ? formData.name : 'John Doe',
         email: formData.email,
@@ -84,7 +90,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
     
     // Simulate social auth
     setTimeout(() => {
-      const user: UserType = {
+      const user: User = {
         id: Math.random().toString(36).substr(2, 9),
         name: provider === 'google' ? 'Google User' : 'GitHub User',
         email: `user@${provider}.com`,
