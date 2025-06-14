@@ -13,6 +13,7 @@ interface ShadowTwinNavigationProps {
   isMobileMenuOpen: boolean;
   onMobileMenuClose: () => void;
   onNavigateToMain?: () => void;
+  onNavCollapse?: (collapsed: boolean) => void;
 }
 
 const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
@@ -22,7 +23,8 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
   onLogout,
   isMobileMenuOpen,
   onMobileMenuClose,
-  onNavigateToMain
+  onNavigateToMain,
+  onNavCollapse
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -44,6 +46,14 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
       onNavigateToMain();
     }
     onMobileMenuClose();
+  };
+
+  const handleCollapseToggle = () => {
+    const newCollapsed = !isCollapsed;
+    setIsCollapsed(newCollapsed);
+    if (onNavCollapse) {
+      onNavCollapse(newCollapsed);
+    }
   };
 
   // Close user dropdown when mobile menu closes
@@ -99,7 +109,7 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
       {/* Navigation Panel */}
       <div className={`
         mobile-nav-panel
-        fixed left-0 top-0 h-full bg-black/90 backdrop-blur-xl border-r border-white/10 z-40 
+        fixed lg:relative left-0 top-0 h-full bg-black/95 lg:bg-black/90 backdrop-blur-xl border-r border-white/10 z-40 lg:z-10
         transition-all duration-300 flex flex-col
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         ${isCollapsed ? 'lg:w-16' : 'lg:w-64'}
@@ -134,7 +144,7 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
         {/* Desktop Collapse/Expand Button */}
         <div className="absolute -right-4 top-20 z-50 hidden lg:block">
           <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={handleCollapseToggle}
             className="w-8 h-8 bg-black/90 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:border-white/20 transition-all duration-300 shadow-lg"
           >
             {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
