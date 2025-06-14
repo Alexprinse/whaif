@@ -102,6 +102,24 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
     setIsNavCollapsed(collapsed);
   };
 
+  // Close dropdowns when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.profile-dropdown-container')) {
+        setShowProfileDropdown(false);
+      }
+    };
+
+    if (showProfileDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showProfileDropdown]);
+
   const renderMainContent = () => {
     // If we're in the middle of generating or showing results, show that instead of navigation sections
     if (currentStep === 'generating') {
@@ -185,7 +203,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
         <div className="fixed top-0 left-0 right-0 lg:left-auto z-30 bg-black/90 backdrop-blur-xl border-b border-white/10 transition-all duration-300"
              style={{ 
                // On large screens, start after the navigation width
-               left: window.innerWidth >= 1024 ? (isNavCollapsed ? '64px' : '256px') : '0'
+               left: typeof window !== 'undefined' && window.innerWidth >= 1024 ? (isNavCollapsed ? '64px' : '256px') : '0'
              }}>
           <div className="flex items-center justify-between h-[73px] px-4">
             {/* Left Section - Mobile Menu Only */}
@@ -199,7 +217,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
             </div>
             
             {/* Right Section - Profile */}
-            <div className="relative ml-auto">
+            <div className="relative ml-auto profile-dropdown-container">
               <button
                 onClick={() => {
                   setShowProfileDropdown(!showProfileDropdown);
@@ -217,23 +235,75 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
                 <span className="hidden sm:block text-sm font-medium">{user.name}</span>
               </button>
 
+              {/* Beautiful Profile Dropdown */}
               {showProfileDropdown && (
-                <div className="absolute top-full right-0 mt-1 w-56 bg-black/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl">
+                <div className="absolute top-full right-0 mt-2 w-72 bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden animate-fadeInDown">
+                  {/* User Info Header */}
+                  <div className="p-4 bg-gradient-to-r from-violet-500/10 to-cyan-500/10 border-b border-white/10">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
+                        {user.avatar ? (
+                          <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                        ) : (
+                          <User className="text-white" size={20} />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-white font-semibold truncate">{user.name}</h3>
+                        <p className="text-gray-400 text-sm truncate">{user.email}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
                   <div className="p-2">
                     <button 
                       onClick={() => {
                         setShowAPIConfig(true);
                         setShowProfileDropdown(false);
                       }}
-                      className="w-full text-left p-2 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-2 text-gray-300 hover:text-white text-sm"
+                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-all duration-200 flex items-center gap-3 text-gray-300 hover:text-white group"
                     >
-                      <Settings size={14} />
-                      API Configuration
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                        <Settings size={16} className="text-blue-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium">API Configuration</div>
+                        <div className="text-xs text-gray-500">Manage AI service keys</div>
+                      </div>
                     </button>
-                    <button className="w-full text-left p-2 rounded-lg hover:bg-white/5 transition-colors duration-200 flex items-center gap-2 text-gray-300 hover:text-white text-sm">
-                      <User size={14} />
-                      Profile Settings
+                    
+                    <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-all duration-200 flex items-center gap-3 text-gray-300 hover:text-white group">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                        <User size={16} className="text-violet-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium">Profile Settings</div>
+                        <div className="text-xs text-gray-500">Update your information</div>
+                      </div>
                     </button>
+
+                    {/* Divider */}
+                    <div className="my-2 border-t border-white/10" />
+
+                    <button className="w-full text-left p-3 rounded-lg hover:bg-red-500/10 transition-all duration-200 flex items-center gap-3 text-gray-300 hover:text-red-300 group">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                        <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium">Sign Out</div>
+                        <div className="text-xs text-gray-500">End your session</div>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="p-3 bg-black/20 border-t border-white/10">
+                    <div className="text-xs text-gray-500 text-center">
+                      ShadowTwin v1.0 • AI-Powered
+                    </div>
                   </div>
                 </div>
               )}
