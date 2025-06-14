@@ -52,7 +52,7 @@ const APIConfigModal: React.FC<{
 }> = ({ isOpen, onClose, onSave }) => {
   const [tavusApiKey, setTavusApiKey] = useState('9acf3d70659349aab5cb638470978303');
   const [elevenLabsApiKey, setElevenLabsApiKey] = useState('sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d');
-  const [geminiApiKey, setGeminiApiKey] = useState('');
+  const [geminiApiKey, setGeminiApiKey] = useState('AIzaSyA6QBBNKfsbQb2Xq5iQQ57krHfSsxFywxc');
 
   if (!isOpen) return null;
 
@@ -112,12 +112,9 @@ const APIConfigModal: React.FC<{
             <p className="text-gray-400 text-sm mt-1">For AI voice generation</p>
           </div>
 
-          <div className="bg-blue-500/10 border border-blue-400/20 rounded-lg p-4">
-            <p className="text-blue-300 text-sm">
-              <strong>🚀 Get Free API Keys:</strong>
-              <br />• <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Google Gemini API</a> (Free tier available)
-              <br />• <a href="https://elevenlabs.io/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">ElevenLabs</a> (Free tier: 10k characters/month)
-              <br />• <a href="https://tavus.io/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Tavus</a> (Free trial available)
+          <div className="bg-green-500/10 border border-green-400/20 rounded-lg p-4">
+            <p className="text-green-300 text-sm">
+              <strong>✅ Gemini API Configured:</strong> Your Google Gemini API key is pre-loaded and ready to generate personalized content!
             </p>
           </div>
         </div>
@@ -658,7 +655,7 @@ const ShadowTwin: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   }>({
     tavusApiKey: '9acf3d70659349aab5cb638470978303',
     elevenLabsApiKey: 'sk_eb8dd9b50e9d3335512544c90ef9beca3921352697964b9d',
-    geminiApiKey: ''
+    geminiApiKey: 'AIzaSyA6QBBNKfsbQb2Xq5iQQ57krHfSsxFywxc'
   });
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
 
