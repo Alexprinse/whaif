@@ -23,19 +23,21 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Disable body scroll when mobile menu is open
+  // Close dropdowns when clicking outside
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = 'unset';
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.dropdown-container') && !target.closest('.mobile-menu-container')) {
+        setActiveDropdown(null);
+        setIsMobileMenuOpen(false);
+      }
     };
-  }, [isMobileMenuOpen]);
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -96,7 +98,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
           <div className="hidden lg:flex items-center space-x-8">
             {/* Products Dropdown */}
             <div 
-              className="relative"
+              className="relative dropdown-container"
               onMouseEnter={() => setActiveDropdown('products')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
@@ -106,7 +108,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
               </button>
               
               {activeDropdown === 'products' && (
-                <div className="absolute top-full left-0 mt-2 w-80 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4">
+                <div className="absolute top-full left-0 mt-2 w-80 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4 animate-fadeInDown">
                   {productDropdownItems.map((item, index) => (
                     <button
                       key={index}
@@ -127,7 +129,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
 
             {/* Resources Dropdown */}
             <div 
-              className="relative"
+              className="relative dropdown-container"
               onMouseEnter={() => setActiveDropdown('resources')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
@@ -137,7 +139,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
               </button>
               
               {activeDropdown === 'resources' && (
-                <div className="absolute top-full left-0 mt-2 w-80 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4">
+                <div className="absolute top-full left-0 mt-2 w-80 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4 animate-fadeInDown">
                   {resourcesDropdownItems.map((item, index) => (
                     <button
                       key={index}
@@ -175,7 +177,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
             {/* User account or auth buttons */}
             {user ? (
               <div 
-                className="relative"
+                className="relative dropdown-container"
                 onMouseEnter={() => setActiveDropdown('user')}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
@@ -194,7 +196,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
                 </button>
 
                 {activeDropdown === 'user' && (
-                  <div className="absolute top-full right-0 mt-2 w-48 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2">
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2 animate-fadeInDown">
                     {userDropdownItems.map((item, index) => (
                       <button
                         key={index}
@@ -227,105 +229,125 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden text-white p-2"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+          <div className="lg:hidden relative mobile-menu-container">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-white p-2 hover:bg-white/5 rounded-lg transition-colors duration-200"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden fixed top-20 left-0 right-0 bottom-0 bg-black/95 backdrop-blur-xl border-b border-white/10 overflow-y-auto">
-            <div className="px-6 py-6 space-y-4 h-full">
-              {/* Mobile search */}
-              <div className="relative">
-                <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none"
-                />
-              </div>
+            {/* Beautiful Mobile Dropdown Menu */}
+            {isMobileMenuOpen && (
+              <div className="absolute top-full right-0 mt-2 w-80 bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden animate-fadeInDown">
+                {/* Header */}
+                <div className="p-4 bg-gradient-to-r from-blue-500/10 to-violet-500/10 border-b border-white/10">
+                  <h3 className="text-white font-bold text-lg">Navigation</h3>
+                  <p className="text-gray-400 text-sm">Explore alternate realities</p>
+                </div>
 
-              {/* Mobile navigation links */}
-              <div className="space-y-2">
-                <button 
-                  onClick={() => handleNavigation('shadowtwin')}
-                  className="block w-full text-left px-4 py-3 text-white hover:bg-white/5 rounded-lg transition-colors duration-200"
-                >
-                  ShadowTwin
-                </button>
-                <button 
-                  onClick={() => handleNavigation('microdeath')}
-                  className="block w-full text-left px-4 py-3 text-white hover:bg-white/5 rounded-lg transition-colors duration-200"
-                >
-                  MicroDeath
-                </button>
-                <button 
-                  onClick={() => handleNavigation('youinc')}
-                  className="block w-full text-left px-4 py-3 text-white hover:bg-white/5 rounded-lg transition-colors duration-200"
-                >
-                  YouInc
-                </button>
-                <button className="block w-full text-left px-4 py-3 text-white hover:bg-white/5 rounded-lg transition-colors duration-200">
-                  Resources
-                </button>
-                <button className="block w-full text-left px-4 py-3 text-white hover:bg-white/5 rounded-lg transition-colors duration-200">
-                  Pricing
-                </button>
-                <button className="block w-full text-left px-4 py-3 text-white hover:bg-white/5 rounded-lg transition-colors duration-200">
-                  About
-                </button>
-              </div>
+                {/* Search */}
+                <div className="p-4 border-b border-white/10">
+                  <div className="relative">
+                    <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      className="w-full pl-10 pr-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-400/50 focus:outline-none"
+                    />
+                  </div>
+                </div>
 
-              {/* Mobile auth */}
-              <div className="pt-4 border-t border-white/10">
-                {user ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 px-4 py-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
-                        {user.avatar ? (
-                          <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
-                        ) : (
-                          <span className="text-white font-medium">
-                            {user.name.charAt(0).toUpperCase()}
-                          </span>
-                        )}
+                {/* Navigation Items */}
+                <div className="p-2">
+                  {/* Products Section */}
+                  <div className="mb-4">
+                    <div className="px-3 py-2 text-gray-400 text-xs font-semibold uppercase tracking-wider">Products</div>
+                    {productDropdownItems.map((item, index) => (
+                      <button
+                        key={index}
+                        onClick={item.action}
+                        className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-all duration-200 group"
+                      >
+                        <div className="text-white font-medium group-hover:text-blue-400 transition-colors duration-200">
+                          {item.name}
+                        </div>
+                        <div className="text-gray-400 text-sm mt-1">
+                          {item.description}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Other Links */}
+                  <div className="space-y-1">
+                    <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 text-white font-medium">
+                      Resources
+                    </button>
+                    <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 text-white font-medium">
+                      Pricing
+                    </button>
+                    <button className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200 text-white font-medium">
+                      About
+                    </button>
+                  </div>
+                </div>
+
+                {/* Auth Section */}
+                <div className="p-4 bg-black/20 border-t border-white/10">
+                  {user ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 px-3 py-2">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
+                          {user.avatar ? (
+                            <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                          ) : (
+                            <span className="text-white font-medium">
+                              {user.name.charAt(0).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <div className="text-white font-medium">{user.name}</div>
+                          <div className="text-gray-400 text-sm">{user.email}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-white font-medium">{user.name}</div>
-                        <div className="text-gray-400 text-sm">{user.email}</div>
-                      </div>
+                      <button 
+                        onClick={onLogout}
+                        className="w-full px-4 py-3 text-left text-red-400 hover:bg-red-500/10 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                      >
+                        <LogOut size={16} />
+                        Sign Out
+                      </button>
                     </div>
-                    <button 
-                      onClick={onLogout}
-                      className="w-full px-4 py-3 text-left text-red-400 hover:bg-red-500/10 rounded-lg transition-colors duration-200"
-                    >
-                      Sign Out
-                    </button>
+                  ) : (
+                    <div className="space-y-3">
+                      <button 
+                        onClick={() => onAuthClick('signin')}
+                        className="w-full px-6 py-3 border border-white/20 rounded-lg text-white font-medium hover:bg-white/5 transition-all duration-300"
+                      >
+                        Sign In
+                      </button>
+                      <button 
+                        onClick={() => onAuthClick('signup')}
+                        className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300"
+                      >
+                        Get Started
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="p-3 bg-black/30 border-t border-white/10">
+                  <div className="text-xs text-gray-500 text-center">
+                    WHATIF v1.0 • Explore Your Alternate Reality
                   </div>
-                ) : (
-                  <div className="space-y-3">
-                    <button 
-                      onClick={() => onAuthClick('signin')}
-                      className="w-full px-6 py-3 border border-white/20 rounded-lg text-white font-medium hover:bg-white/5 transition-all duration-300"
-                    >
-                      Sign In
-                    </button>
-                    <button 
-                      onClick={() => onAuthClick('signup')}
-                      className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300"
-                    >
-                      Get Started
-                    </button>
-                  </div>
-                )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );
