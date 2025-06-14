@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, MessageSquare, Video, Mic, Filter, Search, Calendar } from 'lucide-react';
+import { Clock, MessageSquare, Video, Mic, Filter, Search } from 'lucide-react';
 
 const ShadowTwinActivities: React.FC = () => {
   const [filterType, setFilterType] = useState('all');
@@ -79,7 +79,7 @@ const ShadowTwinActivities: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pt-16">
       {/* Header */}
       <div>
         <h1 className="text-4xl font-bold text-white mb-2">

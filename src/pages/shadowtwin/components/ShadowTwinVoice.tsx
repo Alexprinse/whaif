@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Mic, Play, Pause, Download, Share2, Volume2, Settings } from 'lucide-react';
 
 const ShadowTwinVoice: React.FC = () => {
-  const [isRecording, setIsRecording] = useState(false);
+  const [] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
 
@@ -49,7 +49,7 @@ const ShadowTwinVoice: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pt-16">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

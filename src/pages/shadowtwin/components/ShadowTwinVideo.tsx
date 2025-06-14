@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Video, Play, Upload, Download, Share2, Settings, Camera } from 'lucide-react';
+import { Video, Play, Download, Share2, Settings, Camera } from 'lucide-react';
 
 const ShadowTwinVideo: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -48,7 +48,7 @@ const ShadowTwinVideo: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pt-16">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

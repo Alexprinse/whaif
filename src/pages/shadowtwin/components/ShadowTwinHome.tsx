@@ -39,7 +39,7 @@ const ShadowTwinHome: React.FC<ShadowTwinHomeProps> = ({ onStartJourney, onNavig
   ];
 
   return (
-    <div className="flex flex-col space-y-6 lg:space-y-8 pt-4">
+    <div className="flex flex-col space-y-6 lg:space-y-8 pt-16">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-violet-500/10 via-blue-500/10 to-cyan-500/10 border border-violet-400/20 rounded-2xl p-6 lg:p-8">
         <h1 className="text-2xl lg:text-4xl font-bold text-white mb-4">
