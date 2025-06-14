@@ -42,18 +42,12 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
     } else {
       document.body.style.overflow = 'unset';
-      document.body.style.position = 'unset';
-      document.body.style.width = 'unset';
     }
 
     return () => {
       document.body.style.overflow = 'unset';
-      document.body.style.position = 'unset';
-      document.body.style.width = 'unset';
     };
   }, [isMobileMenuOpen]);
 
@@ -265,23 +259,19 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
             onClick={handleBackdropClick}
           />
           
-          {/* Right Sidebar - FIXED POSITIONING WITH PROPER ANCHORING */}
+          {/* Right Sidebar - COMPLETELY SOLID WITH RGB VALUES */}
           <div 
-            className={`mobile-sidebar fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] border-l-4 border-white/40 shadow-2xl z-50 lg:hidden transform transition-transform duration-300 ease-out overflow-hidden ${
+            className={`mobile-sidebar fixed top-0 right-0 h-full w-80 max-w-[85vw] border-l-4 border-white/40 shadow-2xl z-50 lg:hidden transform transition-transform duration-300 ease-out ${
               isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
             }`}
             style={{
               backgroundColor: 'rgb(0, 0, 0)', // Pure black - no transparency
-              backgroundImage: 'linear-gradient(135deg, rgb(15, 15, 15) 0%, rgb(0, 0, 0) 100%)',
-              height: '100vh', // Full viewport height
-              position: 'fixed', // Ensure it's fixed
-              right: '0', // Anchor to right
-              top: '0' // Anchor to top
+              backgroundImage: 'linear-gradient(135deg, rgb(15, 15, 15) 0%, rgb(0, 0, 0) 100%)'
             }}
           >
             {/* Sidebar Header - SOLID RGB */}
             <div 
-              className="flex items-center justify-between p-6 border-b-4 border-white/40 flex-shrink-0"
+              className="flex items-center justify-between p-6 border-b-4 border-white/40"
               style={{
                 backgroundColor: 'rgb(30, 30, 30)', // Dark gray - completely solid
                 backgroundImage: 'linear-gradient(135deg, rgb(45, 45, 45) 0%, rgb(20, 20, 20) 100%)'
@@ -305,7 +295,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
             {/* Auth Section for Non-logged Users - SOLID RGB */}
             {!user && (
               <div 
-                className="p-6 border-b-4 border-white/40 flex-shrink-0"
+                className="p-6 border-b-4 border-white/40"
                 style={{
                   backgroundColor: 'rgb(25, 25, 25)', // Solid dark gray
                   backgroundImage: 'linear-gradient(135deg, rgb(35, 35, 35) 0%, rgb(15, 15, 15) 100%)'
@@ -348,6 +338,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
             <div 
               className="flex-1 overflow-y-auto" 
               style={{ 
+                height: user ? 'calc(100vh - 140px)' : 'calc(100vh - 280px)',
                 backgroundColor: 'rgb(0, 0, 0)', // Pure black
                 backgroundImage: 'linear-gradient(180deg, rgb(10, 10, 10) 0%, rgb(0, 0, 0) 100%)'
               }}
@@ -475,7 +466,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
 
             {/* Footer - SOLID RGB */}
             <div 
-              className="p-4 border-t-4 border-white/40 flex-shrink-0"
+              className="p-4 border-t-4 border-white/40"
               style={{
                 backgroundColor: 'rgb(15, 15, 15)',
                 backgroundImage: 'linear-gradient(135deg, rgb(25, 25, 25) 0%, rgb(10, 10, 10) 100%)'
