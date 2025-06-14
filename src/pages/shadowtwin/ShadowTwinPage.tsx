@@ -181,11 +181,11 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
       <div className={`transition-all duration-300 ${
         isNavCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       }`}>
-        {/* Sticky Top Bar */}
+        {/* Compact Top Bar */}
         <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10">
-          <div className="flex items-center justify-between px-4 lg:px-6 py-2 lg:py-3">
+          <div className="flex items-center justify-between px-4 lg:px-6 py-3">
             {/* Left Section - Menu & Title */}
-            <div className="flex items-center gap-3 lg:gap-4">
+            <div className="flex items-center gap-3">
               {/* Mobile Menu Button */}
               <button
                 onClick={handleMobileMenuToggle}
@@ -214,6 +214,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
                   }
                 }}
                 className="flex items-center gap-2 lg:gap-3 p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+                title="Profile"
               >
                 <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
                   {user.avatar ? (
@@ -263,9 +264,9 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
             </div>
           </div>
 
-          {/* Error Message */}
+          {/* Error Message - Compact */}
           {error && (
-            <div className="px-4 lg:px-6 pb-2 lg:pb-3">
+            <div className="px-4 lg:px-6 pb-3">
               <div className="p-3 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
                 <p className="text-yellow-300 text-sm">{error}</p>
               </div>
@@ -273,7 +274,7 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
           )}
         </div>
 
-        {/* Page Content - Scrollable */}
+        {/* Page Content - Reduced top padding */}
         <div className="p-4 lg:p-6">
           {renderMainContent()}
         </div>
