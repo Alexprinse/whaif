@@ -47,7 +47,7 @@ export interface ComparisonData {
 
 export class GeminiService {
   private apiKey: string;
-  private baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+  private baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
@@ -83,7 +83,24 @@ export class GeminiService {
       });
 
       if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.status}`);
+        const errorText = await response.text();
+        let errorMessage = `Gemini API error: ${response.status}`;
+        
+        if (response.status === 404) {
+          errorMessage = 'Gemini API not found (404). Please ensure the Generative Language API is enabled in your Google Cloud Project and your API key is valid.';
+        } else if (response.status === 403) {
+          errorMessage = 'Gemini API access forbidden (403). Please check your API key permissions and billing settings.';
+        } else if (response.status === 400) {
+          errorMessage = 'Invalid request to Gemini API (400). Please check the request format.';
+        }
+        
+        console.error('Gemini API Error Details:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorText: errorText
+        });
+        
+        throw new Error(errorMessage);
       }
 
       const data: GeminiResponse = await response.json();
