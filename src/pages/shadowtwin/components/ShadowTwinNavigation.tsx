@@ -30,10 +30,10 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   const navigationItems = [
-    { id: 'home', label: 'Home', icon: <Home size={20} /> },
-    { id: 'voice', label: 'Voice', icon: <Mic size={20} /> },
-    { id: 'video', label: 'Video', icon: <Video size={20} /> },
-    { id: 'activities', label: 'Past Activities', icon: <Clock size={20} /> }
+    { id: 'home', label: 'Home', icon: <Home size={24} /> },
+    { id: 'voice', label: 'Voice', icon: <Mic size={24} /> },
+    { id: 'video', label: 'Video', icon: <Video size={24} /> },
+    { id: 'activities', label: 'Past Activities', icon: <Clock size={24} /> }
   ];
 
   const handleSectionChange = (section: string) => {
@@ -160,8 +160,8 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
               className="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group text-gray-400 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-violet-500/20 hover:border hover:border-blue-400/30"
               title={isCollapsed && !isMobileMenuOpen ? 'What If' : undefined}
             >
-              <div className="flex-shrink-0 text-blue-400">
-                <Zap size={20} />
+              <div className="flex-shrink-0 text-blue-400 flex items-center justify-center">
+                <Zap size={24} />
               </div>
               {(!isCollapsed || isMobileMenuOpen) && (
                 <span className="font-medium truncate">What If</span>
@@ -182,7 +182,9 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
                 }`}
                 title={isCollapsed && !isMobileMenuOpen ? item.label : undefined}
               >
-                <div className={`flex-shrink-0 ${activeSection === item.id ? 'text-violet-400' : ''}`}>
+                <div className={`flex-shrink-0 flex items-center justify-center ${
+                  activeSection === item.id ? 'text-violet-400' : ''
+                } ${isCollapsed ? 'w-6 h-6' : ''}`}>
                   {item.icon}
                 </div>
                 {(!isCollapsed || isMobileMenuOpen) && (
@@ -201,11 +203,13 @@ const ShadowTwinNavigation: React.FC<ShadowTwinNavigationProps> = ({
               className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-white/5 transition-colors duration-200"
               title={isCollapsed && !isMobileMenuOpen ? user?.name : undefined}
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center flex-shrink-0">
+              <div className={`rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center flex-shrink-0 ${
+                isCollapsed ? 'w-8 h-8' : 'w-8 h-8'
+              }`}>
                 {user?.avatar ? (
                   <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
                 ) : (
-                  <User className="text-white" size={16} />
+                  <User className="text-white" size={isCollapsed ? 18 : 16} />
                 )}
               </div>
               {(!isCollapsed || isMobileMenuOpen) && (

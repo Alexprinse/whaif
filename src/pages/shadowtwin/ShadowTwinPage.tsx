@@ -181,25 +181,25 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
       <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
         isNavCollapsed ? 'lg:ml-16' : 'lg:ml-64'
       }`}>
-        {/* Sticky Top Bar */}
+        {/* Sticky Top Bar - Reduced padding */}
         <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10 flex-shrink-0">
-          <div className="flex items-center justify-between px-4 lg:px-6 py-3 lg:py-4">
+          <div className="flex items-center justify-between px-4 lg:px-6 py-2 lg:py-3">
             {/* Left Section - Menu & Title */}
             <div className="flex items-center gap-3 lg:gap-4">
               {/* Mobile Menu Button */}
               <button
                 onClick={handleMobileMenuToggle}
-                className="mobile-menu-button lg:hidden p-2 lg:p-3 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+                className="mobile-menu-button lg:hidden p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
               >
-                <Menu size={18} className="lg:w-5 lg:h-5" />
+                <Menu size={20} />
               </button>
 
               {/* Title - Hidden on small mobile */}
               <div className="hidden sm:block">
-                <h1 className="text-lg lg:text-2xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                <h1 className="text-lg lg:text-xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
                   ShadowTwin
                 </h1>
-                <p className="text-gray-400 text-xs lg:text-sm hidden md:block">Explore alternate realities</p>
+                <p className="text-gray-400 text-xs hidden md:block">Explore alternate realities</p>
               </div>
             </div>
             
@@ -213,18 +213,18 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
                     setIsMobileMenuOpen(false);
                   }
                 }}
-                className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
+                className="flex items-center gap-2 lg:gap-3 p-2 rounded-lg bg-black/30 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all duration-300"
               >
-                <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
+                <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
                   {user.avatar ? (
                     <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
                   ) : (
-                    <User className="text-white" size={14} className="lg:w-4 lg:h-4" />
+                    <User className="text-white" size={16} />
                   )}
                 </div>
                 <div className="hidden sm:block text-left">
-                  <div className="text-white font-medium text-sm lg:text-base">{user.name}</div>
-                  <div className="text-gray-400 text-xs lg:text-sm hidden lg:block">{user.email}</div>
+                  <div className="text-white font-medium text-sm">{user.name}</div>
+                  <div className="text-gray-400 text-xs hidden lg:block">{user.email}</div>
                 </div>
               </button>
 
@@ -263,9 +263,9 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
             </div>
           </div>
 
-          {/* Error Message */}
+          {/* Error Message - Reduced padding */}
           {error && (
-            <div className="px-4 lg:px-6 pb-3 lg:pb-4">
+            <div className="px-4 lg:px-6 pb-2 lg:pb-3">
               <div className="p-3 bg-yellow-500/10 border border-yellow-400/20 rounded-lg">
                 <p className="text-yellow-300 text-sm">{error}</p>
               </div>
@@ -273,9 +273,9 @@ const ShadowTwinPage: React.FC<ShadowTwinPageProps> = ({ onBack }) => {
           )}
         </div>
 
-        {/* Page Content - Scrollable */}
+        {/* Page Content - Scrollable with reduced padding */}
         <div className="flex-1 overflow-auto">
-          <div className="p-4 lg:p-8">
+          <div className="p-4 lg:p-6">
             {renderMainContent()}
           </div>
         </div>
