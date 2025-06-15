@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, User as UserIcon, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
-import { User } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 interface NavigationProps {
   onNavigate: (view: string) => void;
-  user: User | null;
+  user?: any; // Legacy prop for compatibility
   onAuthClick: (mode: 'signin' | 'signup') => void;
   onLogout: () => void;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, onLogout }) => {
+const Navigation: React.FC<NavigationProps> = ({ onNavigate, onAuthClick, onLogout }) => {
+  const { user, profile, signOut } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -65,12 +66,18 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
   };
 
   const handleNavigation = (view: string) => {
-    if (['shadowtwin', 'microdeath', 'youinc'].includes(view)) {
+    if (['shadowtwin', 'microdeath', 'youinc', 'profile'].includes(view)) {
       onNavigate(view);
     } else {
       scrollToSection(view);
     }
     setIsMobileMenuOpen(false);
+    setActiveDropdown(null);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    onLogout();
     setActiveDropdown(null);
   };
 
@@ -88,9 +95,9 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
   ];
 
   const userDropdownItems = [
-    { name: 'Profile', icon: <UserCircle size={16} />, action: () => {} },
+    { name: 'Profile', icon: <UserCircle size={16} />, action: () => handleNavigation('profile') },
     { name: 'Settings', icon: <Settings size={16} />, action: () => {} },
-    { name: 'Sign Out', icon: <LogOut size={16} />, action: onLogout }
+    { name: 'Sign Out', icon: <LogOut size={16} />, action: handleSignOut }
   ];
 
   return (
@@ -195,15 +202,15 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
               >
                 <button className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors duration-200">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
-                    {user.avatar ? (
-                      <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} alt={profile?.full_name || 'User'} className="w-full h-full rounded-full object-cover" />
                     ) : (
                       <span className="text-white text-sm font-medium">
-                        {user.name.charAt(0).toUpperCase()}
+                        {(profile?.full_name || user.email)?.charAt(0).toUpperCase()}
                       </span>
                     )}
                   </div>
-                  <span className="text-white text-sm font-medium">{user.name}</span>
+                  <span className="text-white text-sm font-medium">{profile?.full_name || user.email}</span>
                   <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${activeDropdown === 'user' ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -354,16 +361,16 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
                     }}
                   >
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
-                      {user.avatar ? (
-                        <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                      {profile?.avatar_url ? (
+                        <img src={profile.avatar_url} alt={profile?.full_name || 'User'} className="w-full h-full rounded-full object-cover" />
                       ) : (
                         <span className="text-white font-bold text-lg">
-                          {user.name.charAt(0).toUpperCase()}
+                          {(profile?.full_name || user.email)?.charAt(0).toUpperCase()}
                         </span>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-bold truncate">{user.name}</h3>
+                      <h3 className="text-white font-bold truncate">{profile?.full_name || user.email}</h3>
                       <p className="text-white text-sm truncate font-medium">{user.email}</p>
                     </div>
                   </div>
@@ -428,6 +435,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
                     </h3>
                     <div className="space-y-3">
                       <button 
+                        onClick={() => handleNavigation('profile')}
                         className="w-full text-left p-4 rounded-xl transition-all duration-200 flex items-center gap-3 text-white hover:text-blue-300 border-4 border-white/20 hover:border-white/40 hover:scale-105"
                         style={{
                           backgroundColor: 'rgb(25, 25, 25)',
@@ -448,7 +456,7 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, user, onAuthClick, 
                         <span className="font-bold">Settings</span>
                       </button>
                       <button 
-                        onClick={onLogout}
+                        onClick={handleSignOut}
                         className="w-full text-left p-4 rounded-xl transition-all duration-200 flex items-center gap-3 text-red-300 hover:text-red-200 border-4 border-red-400/30 hover:border-red-400/50 hover:scale-105"
                         style={{
                           backgroundColor: 'rgb(40, 20, 20)',

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Eye, EyeOff, Github, Chrome } from 'lucide-react';
-import { User as UserType } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   mode: 'signin' | 'signup';
-  onLogin: (user: UserType) => void;
+  onLogin: (user: any) => void; // Legacy prop for compatibility
   onSwitchMode: (mode: 'signin' | 'signup') => void;
 }
 
@@ -14,9 +14,10 @@ const AuthModal: React.FC<AuthModalProps> = ({
   isOpen, 
   onClose, 
   mode, 
-  onLogin, 
+  onLogin,
   onSwitchMode 
 }) => {
+  const { signIn, signUp } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -62,29 +63,41 @@ const AuthModal: React.FC<AuthModalProps> = ({
     if (!validateForm()) return;
 
     setIsLoading(true);
+    setErrors({});
 
-    // Simulate API call
-    setTimeout(() => {
-      const user: UserType = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: mode === 'signup' ? formData.name : 'John Doe',
-        email: formData.email,
-        avatar: undefined
-      };
-
-      onLogin(user);
+    try {
+      if (mode === 'signup') {
+        const { error } = await signUp(formData.email, formData.password, formData.name);
+        if (error) {
+          setErrors({ submit: error.message });
+        } else {
+          // Success - user will be automatically signed in
+          onClose();
+          setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+        }
+      } else {
+        const { error } = await signIn(formData.email, formData.password);
+        if (error) {
+          setErrors({ submit: error.message });
+        } else {
+          // Success - user will be automatically signed in
+          onClose();
+          setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+        }
+      }
+    } catch (error) {
+      setErrors({ submit: 'An unexpected error occurred' });
+    } finally {
       setIsLoading(false);
-      setFormData({ name: '', email: '', password: '', confirmPassword: '' });
-      setErrors({});
-    }, 1500);
+    }
   };
 
   const handleSocialAuth = (provider: string) => {
     setIsLoading(true);
     
-    // Simulate social auth
+    // Simulate social auth - in real app, implement OAuth
     setTimeout(() => {
-      const user: UserType = {
+      const user = {
         id: Math.random().toString(36).substr(2, 9),
         name: provider === 'google' ? 'Google User' : 'GitHub User',
         email: `user@${provider}.com`,
@@ -111,6 +124,13 @@ const AuthModal: React.FC<AuthModalProps> = ({
             <X size={20} />
           </button>
         </div>
+
+        {/* Error Message */}
+        {errors.submit && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-400/20 rounded-lg">
+            <p className="text-red-400 text-sm">{errors.submit}</p>
+          </div>
+        )}
 
         {/* Social Auth */}
         <div className="space-y-3 mb-6">

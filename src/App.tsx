@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -7,6 +8,7 @@ import Footer from './components/Footer';
 import ShadowTwinPage from './pages/shadowtwin/ShadowTwinPage';
 import MicroDeath from './pages/MicroDeath';
 import YouInc from './pages/YouInc';
+import ProfilePage from './components/ProfilePage';
 import AuthModal from './components/AuthModal';
 
 interface User {
@@ -45,6 +47,8 @@ function App() {
         return <MicroDeath onBack={() => setCurrentView('home')} user={user} />;
       case 'youinc':
         return <YouInc onBack={() => setCurrentView('home')} user={user} />;
+      case 'profile':
+        return <ProfilePage />;
       default:
         return (
           <>
@@ -64,18 +68,20 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      {renderView()}
-      
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        mode={authMode}
-        onLogin={handleLogin}
-        onSwitchMode={setAuthMode}
-      />
-    </div>
+    <AuthProvider>
+      <div className="min-h-screen bg-black text-white overflow-x-hidden">
+        {renderView()}
+        
+        {/* Auth Modal */}
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          mode={authMode}
+          onLogin={handleLogin}
+          onSwitchMode={setAuthMode}
+        />
+      </div>
+    </AuthProvider>
   );
 }
 
