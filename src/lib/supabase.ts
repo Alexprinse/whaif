@@ -57,16 +57,6 @@ export const signIn = async (email: string, password: string) => {
   return { data, error };
 };
 
-export const signInWithProvider = async (provider: 'google' | 'github') => {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider,
-    options: {
-      redirectTo: `${window.location.origin}/`,
-    },
-  });
-  return { data, error };
-};
-
 export const signOut = async () => {
   const { error } = await supabase.auth.signOut();
   return { error };

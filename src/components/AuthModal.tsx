@@ -14,9 +14,10 @@ const AuthModal: React.FC<AuthModalProps> = ({
   isOpen, 
   onClose, 
   mode, 
+  onLogin,
   onSwitchMode 
 }) => {
-  const { signIn, signUp, signInWithProvider } = useAuth();
+  const { signIn, signUp } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,7 +26,6 @@ const AuthModal: React.FC<AuthModalProps> = ({
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   if (!isOpen) return null;
@@ -92,25 +92,21 @@ const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
-  const handleSocialAuth = async (provider: 'google' | 'github') => {
-    setSocialLoading(provider);
-    setErrors({});
+  const handleSocialAuth = (provider: string) => {
+    setIsLoading(true);
+    
+    // Simulate social auth - in real app, implement OAuth
+    setTimeout(() => {
+      const user = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: provider === 'google' ? 'Google User' : 'GitHub User',
+        email: `user@${provider}.com`,
+        avatar: undefined
+      };
 
-    try {
-      const { error } = await signInWithProvider(provider);
-      
-      if (error) {
-        setErrors({ submit: error.message });
-      } else {
-        // Success - the redirect will handle the rest
-        // Note: The modal will close automatically when the auth state changes
-      }
-    } catch (error) {
-      console.error(`${provider} auth error:`, error);
-      setErrors({ submit: `Failed to sign in with ${provider}. Please try again.` });
-    } finally {
-      setSocialLoading(null);
-    }
+      onLogin(user);
+      setIsLoading(false);
+    }, 1000);
   };
 
   return (
@@ -140,27 +136,19 @@ const AuthModal: React.FC<AuthModalProps> = ({
         <div className="space-y-3 mb-6">
           <button
             onClick={() => handleSocialAuth('google')}
-            disabled={isLoading || socialLoading !== null}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors duration-200 disabled:opacity-50"
           >
-            {socialLoading === 'google' ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <Chrome size={20} />
-            )}
-            {socialLoading === 'google' ? 'Connecting...' : 'Continue with Google'}
+            <Chrome size={20} />
+            Continue with Google
           </button>
           <button
             onClick={() => handleSocialAuth('github')}
-            disabled={isLoading || socialLoading !== null}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors duration-200 disabled:opacity-50"
           >
-            {socialLoading === 'github' ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <Github size={20} />
-            )}
-            {socialLoading === 'github' ? 'Connecting...' : 'Continue with GitHub'}
+            <Github size={20} />
+            Continue with GitHub
           </button>
         </div>
 
@@ -269,7 +257,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
 
           <button
             type="submit"
-            disabled={isLoading || socialLoading !== null}
+            disabled={isLoading}
             className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center"
           >
             {isLoading ? (

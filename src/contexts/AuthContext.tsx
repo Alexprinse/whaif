@@ -8,7 +8,6 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, fullName?: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signInWithProvider: (provider: 'google' | 'github') => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: any }>;
   refreshProfile: () => Promise<void>;
@@ -43,7 +42,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email);
         setUser(session?.user ?? null);
         if (session?.user) {
           await loadProfile(session.user.id);
@@ -59,7 +57,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loadProfile = async (userId: string) => {
     try {
-      setLoading(true);
       const { data, error } = await getProfile(userId);
       if (error) {
         console.error('Error loading profile:', error);
@@ -90,16 +87,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
-    });
-    return { error };
-  };
-
-  const signInWithProvider = async (provider: 'google' | 'github') => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}/`,
-      },
     });
     return { error };
   };
@@ -137,7 +124,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loading,
     signUp,
     signIn,
-    signInWithProvider,
     signOut,
     updateProfile,
     refreshProfile,

@@ -39,20 +39,16 @@ function App() {
     setShowAuthModal(true);
   };
 
-  const handleBackToHome = () => {
-    setCurrentView('home');
-  };
-
   const renderView = () => {
     switch (currentView) {
       case 'shadowtwin':
-        return <ShadowTwinPage onBack={handleBackToHome} />;
+        return <ShadowTwinPage onBack={() => setCurrentView('home')} />;
       case 'microdeath':
-        return <MicroDeath onBack={handleBackToHome} user={user} />;
+        return <MicroDeath onBack={() => setCurrentView('home')} user={user} />;
       case 'youinc':
-        return <YouInc onBack={handleBackToHome} user={user} />;
+        return <YouInc onBack={() => setCurrentView('home')} user={user} />;
       case 'profile':
-        return <ProfilePage onBack={handleBackToHome} />;
+        return <ProfilePage />;
       default:
         return (
           <>

@@ -76,13 +76,9 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, onAuthClick, onLogo
   };
 
   const handleSignOut = async () => {
-    try {
-      setIsMobileMenuOpen(false); // Close mobile menu first
-      await signOut(); // Wait for sign out to complete
-      onLogout(); // Then notify parent component
-    } catch (error) {
-      console.error('Sign out failed:', error);
-    }
+    await signOut();
+    onLogout();
+    setActiveDropdown(null);
   };
 
   const productDropdownItems = [
@@ -266,138 +262,226 @@ const Navigation: React.FC<NavigationProps> = ({ onNavigate, onAuthClick, onLogo
         <>
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-black/90 z-40 lg:hidden"
             onClick={handleBackdropClick}
           />
           
-          {/* Right Sidebar */}
+          {/* Right Sidebar - COMPLETELY SOLID WITH RGB VALUES */}
           <div 
-            className={`mobile-sidebar fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-gradient-to-b from-gray-900 to-black border-l border-white/10 shadow-2xl z-50 lg:hidden transform transition-all duration-300 ease-out ${
+            className={`mobile-sidebar fixed top-0 right-0 h-full w-80 max-w-[85vw] border-l-4 border-white/40 shadow-2xl z-50 lg:hidden transform transition-transform duration-300 ease-out ${
               isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
             }`}
+            style={{
+              backgroundColor: 'rgb(0, 0, 0)', // Pure black - no transparency
+              backgroundImage: 'linear-gradient(135deg, rgb(15, 15, 15) 0%, rgb(0, 0, 0) 100%)'
+            }}
           >
-            {/* Sidebar Header */}
-            <div className="sticky top-0 z-10 bg-gradient-to-b from-gray-900 to-gray-900/95 backdrop-blur-sm border-b border-white/10 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                    WHATIF
-                  </h2>
-                  <p className="text-gray-400 text-sm">Explore alternate realities</p>
-                </div>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors duration-200"
-                >
-                  <X size={20} />
-                </button>
+            {/* Sidebar Header - SOLID RGB */}
+            <div 
+              className="flex items-center justify-between p-6 border-b-4 border-white/40"
+              style={{
+                backgroundColor: 'rgb(30, 30, 30)', // Dark gray - completely solid
+                backgroundImage: 'linear-gradient(135deg, rgb(45, 45, 45) 0%, rgb(20, 20, 20) 100%)'
+              }}
+            >
+              <div>
+                <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+                  WHATIF
+                </h2>
+                <p className="text-white text-sm font-bold">Explore alternate realities</p>
               </div>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-3 rounded-xl text-white hover:text-blue-400 transition-colors duration-200 border-2 border-white/30 hover:border-blue-400/50"
+                style={{ backgroundColor: 'rgb(40, 40, 40)' }}
+              >
+                <X size={20} />
+              </button>
             </div>
 
-            {/* Scrollable Content with Improved Styling */}
-            <div className="overflow-y-auto h-[calc(100vh-76px)] px-4 py-6 space-y-6">
-              {user ? (
-                <div className="p-4 bg-white/5 rounded-lg border border-white/10 mb-6">
-                  <div className="flex items-center gap-4">
+            {/* Auth Section for Non-logged Users - SOLID RGB */}
+            {!user && (
+              <div 
+                className="p-6 border-b-4 border-white/40"
+                style={{
+                  backgroundColor: 'rgb(25, 25, 25)', // Solid dark gray
+                  backgroundImage: 'linear-gradient(135deg, rgb(35, 35, 35) 0%, rgb(15, 15, 15) 100%)'
+                }}
+              >
+                <div className="space-y-4">
+                  <div className="text-center mb-4">
+                    <h3 className="text-white font-bold text-lg mb-1">Welcome to WHATIF</h3>
+                    <p className="text-white text-sm font-medium">Sign in to explore your alternate realities</p>
+                  </div>
+                  
+                  <button 
+                    onClick={() => {
+                      onAuthClick('signin');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full px-6 py-4 rounded-xl text-white font-bold hover:scale-105 transition-all duration-300 shadow-lg border-4 border-white/50 hover:border-white/70"
+                    style={{
+                      backgroundColor: 'rgb(60, 60, 60)',
+                      backgroundImage: 'linear-gradient(135deg, rgb(80, 80, 80) 0%, rgb(40, 40, 40) 100%)'
+                    }}
+                  >
+                    Sign In
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      onAuthClick('signup');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-violet-600 rounded-xl text-white font-bold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 border-2 border-blue-400/50"
+                  >
+                    Get Started Free
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Scrollable Content - COMPLETELY SOLID RGB */}
+            <div 
+              className="flex-1 overflow-y-auto" 
+              style={{ 
+                height: user ? 'calc(100vh - 140px)' : 'calc(100vh - 280px)',
+                backgroundColor: 'rgb(0, 0, 0)', // Pure black
+                backgroundImage: 'linear-gradient(180deg, rgb(10, 10, 10) 0%, rgb(0, 0, 0) 100%)'
+              }}
+            >
+              {/* User Section */}
+              {user && (
+                <div className="p-4 border-b-4 border-white/40">
+                  <div 
+                    className="flex items-center gap-3 p-4 rounded-xl border-4 border-blue-400/50"
+                    style={{
+                      backgroundColor: 'rgb(30, 30, 30)',
+                      backgroundImage: 'linear-gradient(135deg, rgb(45, 45, 45) 0%, rgb(20, 20, 20) 100%)'
+                    }}
+                  >
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
                       {profile?.avatar_url ? (
                         <img src={profile.avatar_url} alt={profile?.full_name || 'User'} className="w-full h-full rounded-full object-cover" />
                       ) : (
-                        <span className="text-white text-lg font-bold">
+                        <span className="text-white font-bold text-lg">
                           {(profile?.full_name || user.email)?.charAt(0).toUpperCase()}
                         </span>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-medium truncate">{profile?.full_name || user.email}</h3>
-                      <p className="text-gray-400 text-sm truncate">{user.email}</p>
+                      <h3 className="text-white font-bold truncate">{profile?.full_name || user.email}</h3>
+                      <p className="text-white text-sm truncate font-medium">{user.email}</p>
                     </div>
-                  </div>
-                </div>
-              ) : (
-                <div 
-                  className="p-6 border-b-4 border-white/40"
-                  style={{
-                    backgroundColor: 'rgb(25, 25, 25)', // Solid dark gray
-                    backgroundImage: 'linear-gradient(135deg, rgb(35, 35, 35) 0%, rgb(15, 15, 15) 100%)'
-                  }}
-                >
-                  <div className="space-y-4">
-                    <div className="text-center mb-4">
-                      <h3 className="text-white font-bold text-lg mb-1">Welcome to WHATIF</h3>
-                      <p className="text-white text-sm font-medium">Sign in to explore your alternate realities</p>
-                    </div>
-                    
-                    <button 
-                      onClick={() => {
-                        onAuthClick('signin');
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="w-full px-6 py-4 rounded-xl text-white font-bold hover:scale-105 transition-all duration-300 shadow-lg border-4 border-white/50 hover:border-white/70"
-                      style={{
-                        backgroundColor: 'rgb(60, 60, 60)',
-                        backgroundImage: 'linear-gradient(135deg, rgb(80, 80, 80) 0%, rgb(40, 40, 40) 100%)'
-                      }}
-                    >
-                      Sign In
-                    </button>
-                    
-                    <button 
-                      onClick={() => {
-                        onAuthClick('signup');
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-violet-600 rounded-xl text-white font-bold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 border-2 border-blue-400/50"
-                    >
-                      Get Started Free
-                    </button>
                   </div>
                 </div>
               )}
 
-              {/* Navigation Items with Improved Styling */}
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">
+              {/* Navigation Sections */}
+              <div className="p-4">
+                {/* Products Section */}
+                <div className="mb-6">
+                  <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-3 px-2">
                     Products
                   </h3>
-                  <div className="space-y-1">
+                  <div className="space-y-3">
                     {productDropdownItems.map((item, index) => (
                       <button
                         key={index}
                         onClick={item.action}
-                        className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition-colors duration-200"
+                        className="w-full text-left p-4 rounded-xl transition-all duration-200 group border-4 border-white/20 hover:border-blue-400/50 hover:scale-105"
+                        style={{
+                          backgroundColor: 'rgb(25, 25, 25)',
+                          backgroundImage: 'linear-gradient(135deg, rgb(35, 35, 35) 0%, rgb(15, 15, 15) 100%)'
+                        }}
                       >
-                        <div className="text-white font-medium">{item.name}</div>
-                        <div className="text-gray-400 text-sm">{item.description}</div>
+                        <div className="text-white font-bold group-hover:text-blue-300 transition-colors duration-200 mb-1">
+                          {item.name}
+                        </div>
+                        <div className="text-white text-sm font-medium">
+                          {item.description}
+                        </div>
                       </button>
                     ))}
                   </div>
                 </div>
 
+                {/* Other Links */}
+                <div className="mb-6">
+                  <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-3 px-2">
+                    More
+                  </h3>
+                  <div className="space-y-3">
+                    {['Resources', 'Pricing', 'About'].map((item, index) => (
+                      <button 
+                        key={index}
+                        className="w-full text-left p-4 rounded-xl transition-all duration-200 text-white font-bold border-4 border-white/20 hover:border-white/40 hover:scale-105"
+                        style={{
+                          backgroundColor: 'rgb(25, 25, 25)',
+                          backgroundImage: 'linear-gradient(135deg, rgb(35, 35, 35) 0%, rgb(15, 15, 15) 100%)'
+                        }}
+                      >
+                        {item}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* User Actions */}
                 {user && (
-                  <div>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">
+                  <div className="mb-6">
+                    <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-3 px-2">
                       Account
                     </h3>
-                    <div className="space-y-1">
-                      {userDropdownItems.map((item, index) => (
-                        <button
-                          key={index}
-                          onClick={item.action}
-                          className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors duration-200 ${
-                            item.name === 'Sign Out'
-                              ? 'text-red-400 hover:bg-red-500/10'
-                              : 'text-gray-300 hover:bg-white/5'
-                          }`}
-                        >
-                          {item.icon}
-                          <span>{item.name}</span>
-                        </button>
-                      ))}
+                    <div className="space-y-3">
+                      <button 
+                        onClick={() => handleNavigation('profile')}
+                        className="w-full text-left p-4 rounded-xl transition-all duration-200 flex items-center gap-3 text-white hover:text-blue-300 border-4 border-white/20 hover:border-white/40 hover:scale-105"
+                        style={{
+                          backgroundColor: 'rgb(25, 25, 25)',
+                          backgroundImage: 'linear-gradient(135deg, rgb(35, 35, 35) 0%, rgb(15, 15, 15) 100%)'
+                        }}
+                      >
+                        <UserCircle size={18} />
+                        <span className="font-bold">Profile</span>
+                      </button>
+                      <button 
+                        className="w-full text-left p-4 rounded-xl transition-all duration-200 flex items-center gap-3 text-white hover:text-blue-300 border-4 border-white/20 hover:border-white/40 hover:scale-105"
+                        style={{
+                          backgroundColor: 'rgb(25, 25, 25)',
+                          backgroundImage: 'linear-gradient(135deg, rgb(35, 35, 35) 0%, rgb(15, 15, 15) 100%)'
+                        }}
+                      >
+                        <Settings size={18} />
+                        <span className="font-bold">Settings</span>
+                      </button>
+                      <button 
+                        onClick={handleSignOut}
+                        className="w-full text-left p-4 rounded-xl transition-all duration-200 flex items-center gap-3 text-red-300 hover:text-red-200 border-4 border-red-400/30 hover:border-red-400/50 hover:scale-105"
+                        style={{
+                          backgroundColor: 'rgb(40, 20, 20)',
+                          backgroundImage: 'linear-gradient(135deg, rgb(60, 30, 30) 0%, rgb(30, 15, 15) 100%)'
+                        }}
+                      >
+                        <LogOut size={18} />
+                        <span className="font-bold">Sign Out</span>
+                      </button>
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* Footer - SOLID RGB */}
+            <div 
+              className="p-4 border-t-4 border-white/40"
+              style={{
+                backgroundColor: 'rgb(15, 15, 15)',
+                backgroundImage: 'linear-gradient(135deg, rgb(25, 25, 25) 0%, rgb(10, 10, 10) 100%)'
+              }}
+            >
+              <div className="text-xs text-white text-center font-bold">
+                WHATIF v1.0 • Explore Your Alternate Reality
               </div>
             </div>
           </div>
