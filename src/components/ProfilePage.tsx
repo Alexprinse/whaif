@@ -42,7 +42,8 @@ import {
   Calendar as CalendarIcon,
   Plus,
   Minus,
-  ChevronLeft
+  ChevronLeft,
+  Loader2
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { uploadAvatar, getUserSimulations, UserSimulation } from '../lib/supabase';
@@ -52,12 +53,13 @@ interface ProfilePageProps {
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
-  const { user, profile, updateProfile, refreshProfile } = useAuth();
+  const { user, profile, updateProfile, refreshProfile, loading: authLoading } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [simulations, setSimulations] = useState<UserSimulation[]>([]);
   const [simulationsLoading, setSimulationsLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
   const [newInterest, setNewInterest] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -87,8 +89,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
 
   // Load simulations on component mount
   useEffect(() => {
-    loadSimulations();
-  }, [user]);
+    if (user && !authLoading) {
+      loadSimulations();
+    }
+  }, [user, authLoading]);
 
   // Update form data when profile changes
   useEffect(() => {
@@ -122,10 +126,17 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
   };
 
   const handleSave = async () => {
-    const { error } = await updateProfile(formData);
-    if (!error) {
-      setIsEditing(false);
-      await refreshProfile();
+    setProfileLoading(true);
+    try {
+      const { error } = await updateProfile(formData);
+      if (!error) {
+        setIsEditing(false);
+        await refreshProfile();
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    } finally {
+      setProfileLoading(false);
     }
   };
 
@@ -178,6 +189,47 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
       interests: formData.interests.filter(i => i !== interest)
     });
   };
+
+  // Show loading state while auth is loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-6 relative">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 animate-spin">
+              <div className="absolute inset-2 rounded-full bg-black" />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <User className="text-violet-400" size={24} />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Loading Profile</h2>
+          <p className="text-gray-400">Fetching your account information...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if no user after loading
+  if (!authLoading && !user) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/20 flex items-center justify-center">
+            <X className="text-red-400" size={24} />
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Access Denied</h2>
+          <p className="text-gray-400 mb-6">Please sign in to view your profile.</p>
+          <button
+            onClick={onBack}
+            className="px-6 py-3 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate real-time stats
   const stats = {
@@ -237,7 +289,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
               className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-r from-violet-500 to-blue-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 disabled:opacity-50"
             >
               {isUploading ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <Loader2 className="text-white animate-spin" size={16} />
               ) : (
                 <Camera className="text-white" size={16} />
               )}
@@ -260,9 +312,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
               </h1>
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className="px-4 py-2 bg-gradient-to-r from-violet-500 to-blue-500 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300 flex items-center gap-2"
+                disabled={profileLoading}
+                className="px-4 py-2 bg-gradient-to-r from-violet-500 to-blue-500 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300 flex items-center gap-2 disabled:opacity-50"
               >
-                <Edit3 size={16} />
+                {profileLoading ? (
+                  <Loader2 className="animate-spin" size={16} />
+                ) : (
+                  <Edit3 size={16} />
+                )}
                 {isEditing ? 'Cancel' : 'Edit Profile'}
               </button>
             </div>
@@ -443,14 +500,20 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
           <div className="flex gap-4 mt-8">
             <button
               onClick={handleSave}
-              className="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300 flex items-center gap-2"
+              disabled={profileLoading}
+              className="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg text-white font-medium hover:scale-105 transition-all duration-300 flex items-center gap-2 disabled:opacity-50"
             >
-              <Save size={16} />
-              Save Changes
+              {profileLoading ? (
+                <Loader2 className="animate-spin" size={16} />
+              ) : (
+                <Save size={16} />
+              )}
+              {profileLoading ? 'Saving...' : 'Save Changes'}
             </button>
             <button
               onClick={handleCancel}
-              className="px-6 py-3 border border-white/20 rounded-lg text-white font-medium hover:bg-white/5 transition-all duration-300 flex items-center gap-2"
+              disabled={profileLoading}
+              className="px-6 py-3 border border-white/20 rounded-lg text-white font-medium hover:bg-white/5 transition-all duration-300 flex items-center gap-2 disabled:opacity-50"
             >
               <X size={16} />
               Cancel
