@@ -41,12 +41,17 @@ import {
   Search,
   Calendar as CalendarIcon,
   Plus,
-  Minus
+  Minus,
+  ChevronLeft
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { uploadAvatar, getUserSimulations, UserSimulation } from '../lib/supabase';
 
-const ProfilePage: React.FC = () => {
+interface ProfilePageProps {
+  onBack?: () => void;
+}
+
+const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
   const { user, profile, updateProfile, refreshProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -968,13 +973,21 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-6xl mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Profile
-            <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Dashboard</span>
-          </h1>
-          <p className="text-gray-300">Manage your account and view your simulation analytics</p>
+        {/* Header with Back Button */}
+        <div className="flex items-center gap-6 mb-8">
+          <button
+            onClick={onBack}
+            className="p-2 hover:bg-white/5 rounded-lg transition-colors group"
+          >
+            <ChevronLeft size={24} className="text-gray-400 group-hover:text-white transition-colors" />
+          </button>
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">
+              Profile
+              <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> Dashboard</span>
+            </h1>
+            <p className="text-gray-300">Manage your account and view your simulation analytics</p>
+          </div>
         </div>
 
         {/* Tabs */}
